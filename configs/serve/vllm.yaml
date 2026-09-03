@@ -1,0 +1,27 @@
+server:
+  type: vllm
+  host: 0.0.0.0
+  port: 8080
+catalogstore:
+  type: matmulint4awq
+cache:
+  type: lru
+  maxentries: 10000
+auth:
+  type: apikey
+ratelimit:
+  type: tokenbucket
+  rate: 1000
+reqpre:
+  - normalize
+  - validate
+resppost:
+  - calibrate
+  - diversity
+metrics:
+  type: prometheus
+  port: 9090
+tracing:
+  type: otlp
+log:
+  type: structlogjson

@@ -1,0 +1,69 @@
+services:
+  braid:
+    build: .
+    image: braid:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgres://braid:braid@postgres:5432/braid
+      - JAEGER_HOST=jaeger
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+    depends_on:
+      - postgres
+      - redis
+      - prometheus
+      - jaeger
+    volumes:
+      - ./configs:/app/configs:ro
+      - ./artifacts:/app/artifacts
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: braid
+      POSTGRES_PASSWORD: braid
+      POSTGRES_DB: braid
+    ports:
+      - "5432:5432"
+    volumes:
+      - braid-pg:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - braid-redis:/data
+
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=braid
+    depends_on:
+      - prometheus
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+
+volumes:
+  braid-pg:
+  braid-redis:

@@ -1,0 +1,8 @@
+phase: rewardproxyphase
+backbone:
+  type: minicpm5
+optimizer:
+  type: adamw
+  lr: 0.00005
+maxsteps: 1000
+horizon: 30

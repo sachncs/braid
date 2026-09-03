@@ -1,0 +1,4 @@
+backbone:
+  type: minicpm5
+  dtype: bf16
+  gradientcheckpointing: true

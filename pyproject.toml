@@ -1,0 +1,144 @@
+[project]
+name = "braid"
+version = "0.1.0"
+description = "Braiding signals into ranks. LLM-backed recommendation ranker with a polymorphic spine."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "braid contributors" }]
+keywords = ["recommender", "llm", "ranking", "polymorphic"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "torch>=2.2",
+  "transformers>=4.40",
+  "pydantic>=2.6",
+  "hydra-core>=1.3",
+  "omegaconf>=2.3",
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "polars>=0.20",
+  "pyarrow>=15",
+  "pyyaml>=6.0",
+  "jinja2>=3.1",
+  "pystache>=0.6",
+  "datasets>=2.18",
+  "tokenizers>=0.15",
+  "tiktoken>=0.6",
+  "sentencepiece>=0.2",
+  "pandera>=0.18",
+  "structlog>=24.1",
+  "pydocstyle>=6.3",
+  "hypothesis>=6.100",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.4",
+  "mypy>=1.10",
+  "pytest>=8.1",
+  "pytest-xdist>=3.5",
+  "pytest-cov>=5.0",
+  "pre-commit>=3.7",
+]
+vllm = ["vllm>=0.4"]
+triton = ["tritonclient>=2.40"]
+redis = ["redis>=5.0"]
+memcached = ["pymemcache>=4.0"]
+kafka = ["aiokafka>=0.10", "kafka-python>=2.0"]
+postgres = ["asyncpg>=0.29", "psycopg[binary]>=3.1"]
+s3 = ["aiobotocore>=2.7", "s3fs>=2024.3"]
+opentelemetry = ["opentelemetry-api>=1.24", "opentelemetry-sdk>=1.24", "opentelemetry-exporter-otlp>=1.24"]
+jaeger = ["opentelemetry-exporter-jaeger-thrift>=1.24"]
+metrics = ["prometheus-client>=0.20", "statsd>=4.0"]
+tracking = ["aim>=3.19", "mlflow>=2.13", "wandb>=0.17", "tensorboard>=2.16"]
+quantization = ["bitsandbytes>=0.42", "awq>=0.0.5"]
+secrets = ["hvac>=2.1", "kubernetes>=29.0"]
+rqvae = ["einops>=0.7"]
+all = [
+  "vllm>=0.4",
+  "tritonclient>=2.40",
+  "redis>=5.0",
+  "pymemcache>=4.0",
+  "aiokafka>=0.10",
+  "asyncpg>=0.29",
+  "s3fs>=2024.3",
+  "opentelemetry-api>=1.24",
+  "prometheus-client>=0.20",
+  "aim>=3.19",
+  "bitsandbytes>=0.42",
+  "einops>=0.7",
+]
+
+[project.entry-points."braid.backbone"]
+minicpm5 = "braid.backbone.minicpm5:minicpm5"
+llama32 = "braid.backbone.llama32:llama32"
+qwen25 = "braid.backbone.qwen25:qwen25"
+pythia1 = "braid.backbone.pythia1:pythia1"
+
+[project.entry-points."braid.catalogstore"]
+matmulinmem = "braid.catalogstore.matmulinmem:matmulinmem"
+matmulint4awq = "braid.catalogstore.matmulint4awq:matmulint4awq"
+faissivfstore = "braid.catalogstore.faissivfstore:faissivfstore"
+rqvaestore = "braid.catalogstore.rqvaestore:rqvaestore"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["braid"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011", "S101"]
+"braid/catalogstore/*.py" = ["E402"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+files = ["braid", "tests"]
+
+[tool.pytest.ini_options]
+python_files = ["*contract*.py", "*spec*.py", "conftest.py"]
+testpaths = ["braid", "tests"]
+addopts = "-q --strict-markers"
+markers = [
+  "conformance: protocol contract suite",
+  "integration: medium-scale tests",
+  "e2e: end-to-end tests",
+  "unit: unit tests",
+  "slow: long-running tests",
+]
+
+[tool.pydocstyle]
+convention = "numpy"
+add-select = ["D200", "D201", "D202", "D204", "D205", "D210", "D400", "D403"]
+match-dir = "(?!_).*"
+
+[tool.coverage.run]
+source = ["braid"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
