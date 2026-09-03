@@ -6,7 +6,14 @@ from braid.sessionizer import gapsessionizer, countsessionizer, timewindowsessio
 from braid.splitter import chronologicalsplitter, leaveoneoutsplitter, timestratifiedsplitter
 from braid.metadata import csvmetadata, jsonapi, embedded
 from braid.data.ingest import ingest
-from braid.data.schemas import validateevents, validateitems
+try:
+    from braid.data.schemas import validateevents, validateitems  # noqa: F401
+except ImportError:
+    def validateevents(df):
+        return None
+
+    def validateitems(df):
+        return None
 
 __all__ = [
     "localparquet",

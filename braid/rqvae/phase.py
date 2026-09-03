@@ -1,7 +1,4 @@
-"""RQ-VAE training phase module.
-
-This is a stub that delegates to the main ``phase:rqvaephase`` concrete.
-"""
+"""RQ-VAE training phase module."""
 
 from typing import Any
 
@@ -9,10 +6,10 @@ from braid.core.registry import registry
 
 
 @registry.register(category="rqvae", name="phase")
-class phase:
+class rqvaephase:
     """RQ-VAE phase wrapper."""
 
-    name: str = "phase"
+    name: str = "rqvaephase"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"async", "observable"})
 

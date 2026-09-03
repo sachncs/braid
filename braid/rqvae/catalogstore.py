@@ -10,10 +10,15 @@ from braid.core.registry import registry
 
 
 @registry.register(category="rqvae", name="catalogstore")
-class catalogstore:
-    """Catalog store backed by RQ-VAE semantic IDs."""
+class rqvaestore:
+    """Catalog store backed by RQ-VAE semantic IDs.
 
-    name: str = "catalogstore"
+    Attributes:
+        codebook: ``[codebooksize, dim]`` array.
+        itemids: list of semantic IDs per item.
+    """
+
+    name: str = "rqvaestore"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"async", "observable", "speculative"})
 
@@ -35,6 +40,9 @@ class catalogstore:
             if seq and seq[0] == int(top[0]):
                 out[:, j] = 1.0
         return out
+
+    def warmup(self) -> None:
+        return None
 
     def observability(self) -> dict[str, Any]:
         return {}

@@ -1,38 +1,60 @@
-"""braid: a polymorphic LLM-backed recommendation ranker.
-
-Braiding signals into ranks.
-
-This top-level package exposes the registry, the polymorphic primitives,
-and the CLI entry points used by the `braid` command.
-"""
-
-from braid.core.registry import registry
-from braid.core.capability import capability
-from braid.core.trait import asyncable, cachable, distributable, idempotent, observable, persistable, streamable, teachable
-from braid.core.lifecycle import healthstatus, lifecycle
-from braid.core.context import requestcontext
-from braid.core.error import braiderror, configurationerror, registryerror
-from braid.core.transform import pipeline, transform
+"""braid: braiding signals into ranks."""
 
 __version__ = "0.1.0"
-__all__ = [
-    "registry",
-    "capability",
-    "streamable",
-    "cachable",
-    "persistable",
-    "observable",
-    "idempotent",
-    "asyncable",
-    "distributable",
-    "teachable",
-    "lifecycle",
-    "healthstatus",
-    "requestcontext",
-    "braiderror",
-    "configurationerror",
-    "registryerror",
-    "transform",
-    "pipeline",
-    "__version__",
-]
+
+from braid.core.registry import registry  # noqa: F401  — exposed as braid.registry
+
+# Eagerly import every category module so all concretes are registered.
+from braid import (  # noqa: F401
+    core,
+    data,
+    datasource,
+    datasink,
+    sessionizer,
+    splitter,
+    metadata,
+    verbalizer,
+    template,
+    truncation,
+    tokenizer,
+    tokencounter,
+    backbone,
+    rewards,
+    catalogstore,
+    indexer,
+    embedding,
+    loss,
+    optimizer,
+    scheduler,
+    checkpoint,
+    regularizer,
+    tracker,
+    phase,
+    miner,
+    curriculum,
+    batcher,
+    server,
+    cache,
+    auth,
+    ratelimit,
+    reqpre,
+    resppost,
+    eval,
+    metrics,
+    drift,
+    driftresponse,
+    tracing,
+    log,
+    secret,
+    router,
+    cflog,
+    bandit,
+    rankaggregator,
+    rqvae,
+    serving,
+    training,
+    monitoring,
+    testing,
+    obsgen,
+)
+
