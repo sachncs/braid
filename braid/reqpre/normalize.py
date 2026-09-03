@@ -13,7 +13,7 @@ class normalize:
 
     name: str = "normalize"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent", "lowlatency"})
+    capabilities: frozenset[str] = frozenset({"observable", "lowlatency"})
 
     def process(self, request: dict[str, Any]) -> dict[str, Any]:
         """Normalize a request dict."""

@@ -16,7 +16,7 @@ class twostagecurriculum:
 
     name: str = "twostagecurriculum"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, maxsteps: int, switchat: float = 0.5) -> None:
         if not 0 < switchat < 1:

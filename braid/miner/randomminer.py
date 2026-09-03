@@ -13,7 +13,7 @@ class randomminer:
 
     name: str = "randomminer"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, numitems: int, k: int = 64, seed: int = 0) -> None:
         self.numitems = numitems

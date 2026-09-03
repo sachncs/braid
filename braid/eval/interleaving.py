@@ -13,7 +13,7 @@ class interleavingeval:
 
     name: str = "interleaving"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "replayable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", "replayable", })
 
     def __init__(self, teamalabel: str = "A", teamblabel: str = "B") -> None:
         self.teamalabel = teamalabel

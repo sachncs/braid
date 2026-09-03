@@ -16,7 +16,7 @@ class diversityentropy:
 
     name: str = "diversityentropy"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def compute(self, scores: Any, weight: float = 1.0) -> Any:
         """Negative entropy of softmax(scores)."""

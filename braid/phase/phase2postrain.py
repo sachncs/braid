@@ -13,7 +13,7 @@ class phase2postrain:
 
     name: str = "phase2postrain"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"async", "observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"async", "observable", })
 
     def __init__(
         self,

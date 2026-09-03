@@ -14,7 +14,7 @@ class rrf:
 
     name: str = "rrf"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, k: int = 60) -> None:
         self.k = k

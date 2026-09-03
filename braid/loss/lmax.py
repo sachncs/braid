@@ -13,7 +13,7 @@ class lmax:
 
     name: str = "lmax"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def compute(self, lmLogits: Any, labels: Any, weight: float = 1.0) -> Any:
         try:

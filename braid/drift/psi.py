@@ -15,7 +15,7 @@ class psi:
 
     name: str = "psi"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, nbins: int = 10, threshold: float = 0.2) -> None:
         self.nbins = nbins

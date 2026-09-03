@@ -16,7 +16,7 @@ class packedbatcher:
 
     name: str = "packedbatcher"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, maxtokens: int = 8192) -> None:
         self.maxtokens = maxtokens

@@ -13,7 +13,7 @@ class labelsmoothing:
 
     name: str = "labelsmoothing"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, epsilon: float = 0.1) -> None:
         if not 0 <= epsilon < 1:

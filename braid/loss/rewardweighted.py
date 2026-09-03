@@ -16,7 +16,7 @@ class rewardweighted:
 
     name: str = "rewardweighted"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, normalize: bool = True) -> None:
         self.normalize = normalize

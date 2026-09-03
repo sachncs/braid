@@ -14,7 +14,7 @@ class ema:
 
     name: str = "ema"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"persistable", "observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"persistable", "observable", })
 
     def __init__(self, dir: str, decay: float = 0.999) -> None:
         self.dir = Path(dir)

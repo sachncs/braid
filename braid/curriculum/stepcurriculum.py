@@ -16,7 +16,7 @@ class stepcurriculum:
 
     name: str = "stepcurriculum"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, maxsteps: int, nsteps: int = 4) -> None:
         if nsteps <= 0:

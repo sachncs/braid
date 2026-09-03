@@ -18,7 +18,7 @@ class redactpii:
 
     name: str = "redactpii"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def _redact(self, value: str) -> str:
         return EMAIL.sub("[email]", PHONE.sub("[phone]", value))

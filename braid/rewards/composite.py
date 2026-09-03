@@ -43,7 +43,16 @@ class compositereward:
         for name, w in self.members:
             reward = self._cache.get(name) or registry.create("reward", name)
             self._cache[name] = reward
-            score = reward.score(event, ctx) if hasattr(reward, "score") else 0.0
+            try:
+                import inspect
+
+                sig = inspect.signature(reward.score)
+                kwargs: dict[str, Any] = {}
+                if "history" in sig.parameters and ctx is not None:
+                    kwargs["history"] = ctx.get("history", ctx if isinstance(ctx, list) else [])
+                score = reward.score(event, **kwargs) if hasattr(reward, "score") else 0.0
+            except Exception:  # noqa: BLE001
+                score = 0.0
             total += w * score
             wsum += abs(w)
         return total / wsum if wsum else 0.0

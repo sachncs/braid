@@ -13,7 +13,7 @@ class calibrate:
 
     name: str = "calibrate"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent", "lowlatency"})
+    capabilities: frozenset[str] = frozenset({"observable", "lowlatency"})
 
     def __init__(self, temperature: float = 1.0) -> None:
         if temperature <= 0:

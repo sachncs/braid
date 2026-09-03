@@ -13,7 +13,7 @@ class linearwarmupcosine:
 
     name: str = "linearwarmupcosine"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, warmupsteps: int, maxsteps: int, minratio: float = 0.1) -> None:
         self.warmupsteps = warmupsteps

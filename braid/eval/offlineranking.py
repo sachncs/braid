@@ -15,7 +15,7 @@ class offlineranking:
 
     name: str = "offlineranking"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def evaluate(self, predictions: list[list[int]], groundtruth: list[int]) -> dict[str, float]:
         """Compute MRR, NDCG@10, HitRate@10, MAP@10."""

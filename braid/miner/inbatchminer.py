@@ -13,7 +13,7 @@ class inbatchminer:
 
     name: str = "inbatchminer"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def mine(self, positives: Any, scoresfn: Any | None = None) -> Any:
         try:

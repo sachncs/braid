@@ -13,7 +13,7 @@ class adafactor:
 
     name: str = "adafactor"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, lr: float = 1e-3, weightdecay: float = 0.0) -> None:
         self.lr = lr

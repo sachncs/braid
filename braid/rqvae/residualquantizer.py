@@ -15,7 +15,7 @@ class residualquantizer:
 
     name: str = "residualquantizer"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, numcodes: int = 256, dim: int = 64, numstages: int = 4, seed: int = 0) -> None:
         self.numcodes = numcodes

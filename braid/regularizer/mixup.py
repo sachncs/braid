@@ -13,7 +13,7 @@ class mixup:
 
     name: str = "mixup"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, alpha: float = 0.2) -> None:
         if alpha < 0:

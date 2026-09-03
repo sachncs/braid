@@ -13,7 +13,7 @@ class cosine:
 
     name: str = "cosine"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, maxsteps: int, minratio: float = 0.0) -> None:
         self.maxsteps = maxsteps

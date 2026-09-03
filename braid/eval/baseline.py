@@ -15,7 +15,7 @@ class baseline:
 
     name: str = "baseline"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def evaluate(self, predictions: list[list[int]], groundtruth: list[int], numitems: int = 1000, popularity: np.ndarray | None = None) -> dict[str, Any]:
         """Compare ``predictions`` to a random baseline and popularity (if provided)."""

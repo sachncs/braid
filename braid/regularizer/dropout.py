@@ -13,7 +13,7 @@ class dropout:
 
     name: str = "dropout"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, p: float = 0.1) -> None:
         if not 0 <= p < 1:

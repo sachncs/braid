@@ -13,7 +13,7 @@ class constant:
 
     name: str = "constant"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def create(self, optimizer: Any) -> Any:
         try:

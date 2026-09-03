@@ -23,7 +23,7 @@ class braidedloss:
 
     name: str = "braidedloss"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, terms: list[tuple[str, float]] | None = None) -> None:
         """Build the braid.

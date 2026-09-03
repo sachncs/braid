@@ -15,7 +15,7 @@ class jsd:
 
     name: str = "jsd"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, threshold: float = 0.1) -> None:
         self.threshold = threshold

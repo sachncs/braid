@@ -15,7 +15,7 @@ class calibration:
 
     name: str = "calibration"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, nbins: int = 10) -> None:
         self.nbins = nbins

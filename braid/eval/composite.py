@@ -13,7 +13,7 @@ class composite:
 
     name: str = "composite"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, members: list[tuple[str, float]] | None = None) -> None:
         self.members = members or [("offlineranking", 1.0), ("calibration", 0.5), ("diversity", 0.5)]

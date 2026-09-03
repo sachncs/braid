@@ -15,7 +15,7 @@ class diversityeval:
 
     name: str = "diversity"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, k: int = 10) -> None:
         self.k = k

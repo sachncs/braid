@@ -13,7 +13,7 @@ class sortedpaddedbatcher:
 
     name: str = "sortedpaddedbatcher"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
+    capabilities: frozenset[str] = frozenset({"observable", })
 
     def __init__(self, batchsize: int, padtoken: int = 0) -> None:
         self.batchsize = batchsize
