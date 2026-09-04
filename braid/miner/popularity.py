@@ -1,6 +1,6 @@
-"""Popularity-aware miner.
+"""Popularity-aware negative miner.
 
-Samples negatives inversely weighted by popularity (boosts cold items).
+Samples negatives inversely weighted by item popularity (boosts cold items).
 """
 
 from __future__ import annotations
@@ -12,26 +12,44 @@ import numpy as np
 from braid.core.registry import registry
 
 
-@registry.register(category="miner", name="popularityawareminer")
-class popularityawareminer:
-    """Popularity-aware negative sampler."""
+@registry.register(category="miner", name="popularity")
+class popularity:
+    """Popularity-aware negative sampler.
 
-    name: str = "popularityawareminer"
+    Attributes:
+        popularity: ``[numitems]`` array of item popularity counts.
+        k: negatives per positive.
+        alpha: power applied to popularity (higher favors cold items).
+        rng: deterministic numpy RNG.
+    """
+
+    name: str = "popularity"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable"})
 
     def __init__(self, popularity: np.ndarray, k: int = 64, alpha: float = 0.5, seed: int = 0) -> None:
-        self.popularity = np.asarray(popularity, dtype=np.float64)
-        if self.popularity.ndim != 1:
+        if k <= 0:
+            raise ValueError("k must be > 0")
+        pop = np.asarray(popularity, dtype=np.float64)
+        if pop.ndim != 1:
             raise ValueError("popularity must be 1D")
+        self.popularity = pop
         self.k = k
         self.alpha = alpha
         self.rng = np.random.default_rng(seed)
-        w = 1.0 / np.power(self.popularity + 1e-8, alpha)
-        self.weights = w / w.sum()
+        weights = 1.0 / np.power(pop + 1e-8, alpha)
+        self.weights = weights / weights.sum()
 
     def mine(self, positives: Any, scoresfn: Any | None = None) -> Any:
-        """Sample k negatives per positive inversely weighted by popularity."""
+        """Sample k negatives per positive inversely weighted by popularity.
+
+        Args:
+            positives: ``[batch]`` positive item ids (length defines batch).
+            scoresfn: unused.
+
+        Returns:
+            ``[batch, k]`` int64 numpy array of negative item ids.
+        """
         n = positives.shape[0] if hasattr(positives, "shape") else len(positives)
         idx = self.rng.choice(len(self.weights), size=(n, self.k), p=self.weights)
         return idx
