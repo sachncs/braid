@@ -1,8 +1,9 @@
-"""Plain log backend."""
+"""Plain stdlib log backend."""
 
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any
 
 from braid.core.registry import registry
@@ -10,14 +11,18 @@ from braid.core.registry import registry
 
 @registry.register(category="log", name="plain")
 class plain:
-    """Plain log backend (basic stdlib)."""
+    """Plain stdlib logging."""
 
     name: str = "plain"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable", "lowlatency"})
 
-    def __init__(self, level: str = "INFO") -> None:
-        logging.basicConfig(level=getattr(logging, level), format="%(asctime)s %(levelname)s %(name)s %(message)s")
+    def __init__(self, level: str | None = None) -> None:
+        level = (level or os.environ.get("BRAID_LOG_LEVEL") or "INFO").upper()
+        logging.basicConfig(
+            level=getattr(logging, level),
+            format="%(asctime)s %(levelname)s %(name)s %(message)s",
+        )
         self.log = logging.getLogger("braid")
 
     def info(self, msg: str, **kwargs: Any) -> None:
