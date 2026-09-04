@@ -7,7 +7,7 @@ from typing import Any
 import numpy as np
 
 from braid.core.registry import registry
-from braid.quantizer.residualquantizer import residualquantizer
+from braid.quantizer.quantizer import quantizer
 
 
 @registry.register(category="rqvae", name="index")
