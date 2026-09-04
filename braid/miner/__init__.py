@@ -1,15 +1,9 @@
 """Hard-negative miners."""
 
-from braid.miner.randomminer import randomminer
-from braid.miner.inbatchminer import inbatchminer
-from braid.miner.checkpointtopkminer import checkpointtopkminer
-from braid.miner.popularityawareminer import popularityawareminer
-from braid.miner.contrastiveminer import contrastiveminer
+from braid.miner.random import random
+from braid.miner.inbatch import inbatch
+from braid.miner.checkpoint import checkpoint
+from braid.miner.popularity import popularity
+from braid.miner.contrastive import contrastive
 
-__all__ = [
-    "randomminer",
-    "inbatchminer",
-    "checkpointtopkminer",
-    "popularityawareminer",
-    "contrastiveminer",
-]
+__all__ = ["random", "inbatch", "checkpoint", "popularity", "contrastive"]
