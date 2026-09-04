@@ -1,7 +1,5 @@
 """Drift responses."""
 
-from braid.driftresponse.alert import alert
-from braid.driftresponse.retraintrigger import retraintrigger
-from braid.driftresponse.fallbackbaseline import fallbackbaseline
+from braid.driftresponse.fallback import fallback
 
-__all__ = ["alert", "retraintrigger", "fallbackbaseline"]
+__all__ = ["fallback"]
