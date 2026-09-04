@@ -1,4 +1,10 @@
-"""Adaptive difficulty curriculum."""
+"""Adaptive difficulty curriculum.
+
+Difficulty grows on loss improvement, decays on stagnation. Uses
+public attribute names exclusively (no leading underscores) — see
+the class docstring for which fields are operational state vs.
+contractual surface.
+"""
 
 from __future__ import annotations
 
@@ -11,12 +17,14 @@ from braid.core.registry import registry
 class adaptive:
     """Difficulty adapts to recent loss improvements.
 
-    Difficulty grows on loss improvement, decays on stagnation.
+    Operational state (set during ``step``):
+        prevloss: last observed loss.
+        stagnation: consecutive count of stagnation rounds.
+        difficulty: current difficulty in ``[0, 1]``.
 
     Attributes:
         maxtries: stagnation count before decay kicks in.
         minlossdelta: minimum loss change considered improvement.
-        difficulty: current difficulty in ``[0, 1]``.
     """
 
     name: str = "adaptive"
@@ -30,13 +38,13 @@ class adaptive:
             raise ValueError("minlossdelta must be >= 0")
         self.maxtries = maxtries
         self.minlossdelta = minlossdelta
-        self._prevloss: float | None = None
-        self._stagnation: int = 0
-        self._difficulty: float = 0.0
+        self.prevloss: float | None = None
+        self.stagnation: int = 0
+        self.difficulty: float = 0.0
 
-    def difficulty(self, step: int) -> float:
+    def getdifficulty(self, step: int) -> float:
         """Return current difficulty in [0, 1]."""
-        return self._difficulty
+        return self.difficulty
 
     def step(self, loss: float) -> float:
         """Update internal state given a new loss and return new difficulty.
@@ -47,20 +55,20 @@ class adaptive:
         Returns:
             Updated difficulty in ``[0, 1]``.
         """
-        if self._prevloss is None:
-            self._prevloss = loss
-            return self._difficulty
-        delta = self._prevloss - loss
+        if self.prevloss is None:
+            self.prevloss = loss
+            return self.difficulty
+        delta = self.prevloss - loss
         if delta < self.minlossdelta:
-            self._stagnation += 1
+            self.stagnation += 1
         else:
-            self._stagnation = 0
-            self._difficulty = min(1.0, self._difficulty + 0.1)
-        if self._stagnation >= self.maxtries:
-            self._difficulty = max(0.0, self._difficulty - 0.05)
-            self._stagnation = 0
-        self._prevloss = loss
-        return self._difficulty
+            self.stagnation = 0
+            self.difficulty = min(1.0, self.difficulty + 0.1)
+        if self.stagnation >= self.maxtries:
+            self.difficulty = max(0.0, self.difficulty - 0.05)
+            self.stagnation = 0
+        self.prevloss = loss
+        return self.difficulty
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.curriculum.adaptive.difficulty", "type": "gauge"}]}
