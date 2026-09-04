@@ -14,6 +14,7 @@ class sentencepiece:
 
     Attributes:
         modelpath: path to a ``.model`` file.
+        sp: the loaded SentencePieceProcessor (public).
     """
 
     name: str = "sentencepiece"
@@ -24,19 +25,20 @@ class sentencepiece:
         try:
             import sentencepiece as spm
 
-            self._sp = spm.SentencePieceProcessor()
-            self._sp.Load(modelpath)
+            self.modelpath = modelpath
+            self.sp = spm.SentencePieceProcessor()
+            self.sp.Load(modelpath)
         except ImportError as exc:
             raise requiresenvironment(
-                "sentencepiece is required for tokenizer:sentencepiece",
+                "sentencepiece required for tokenizer:sentencepiece",
                 hint="pip install sentencepiece",
             ) from exc
 
     def encode(self, text: str) -> list[int]:
-        return list(self._sp.EncodeAsIds(text))
+        return list(self.sp.EncodeAsIds(text))
 
     def decode(self, ids: Iterable[int]) -> str:
-        return self._sp.DecodeIds(list(ids))
+        return self.sp.DecodeIds(list(ids))
 
     def count(self, text: str) -> int:
         return len(self.encode(text))
