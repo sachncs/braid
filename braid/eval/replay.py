@@ -8,7 +8,7 @@ from braid.core.registry import registry
 
 
 @registry.register(category="eval", name="replay")
-class replayeval:
+class replay:
     """Counterfactual replay evaluator: rank log queries, compare to actual engagement."""
 
     name: str = "replay"
