@@ -24,9 +24,9 @@ class llama32:
             from transformers import AutoModelForCausalLM, AutoTokenizer
 
             repo = "meta-llama/Llama-3.2-3B-Instruct"
-            self._tok = AutoTokenizer.from_pretrained(repo)
+            self.tok = AutoTokenizer.from_pretrained(repo)
             dtypeobj = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[dtype]
-            self._model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=dtypeobj)
+            self.model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=dtypeobj)
         except ImportError as exc:
             raise requiresenvironment(
                 "transformers+torch are required for backbone:llama32",
@@ -42,13 +42,13 @@ class llama32:
         self.gradientcheckpointing = gradientcheckpointing
         if gradientcheckpointing:
             try:
-                self._model.gradient_checkpointing_enable()
+                self.model.gradient_checkpointing_enable()
             except Exception:
                 pass
 
     def encode(self, inputids: Any, attentionmask: Any | None = None) -> Any:
         """Run encoder; return hidden states + pooled vector."""
-        out = self._model(
+        out = self.model(
             input_ids=inputids,
             attention_mask=attentionmask,
             output_hidden_states=True,
@@ -64,11 +64,11 @@ class llama32:
 
     def tok(self, text: str) -> Any:
         """Tokenize ``text`` via the bundled tokenizer."""
-        return self._tok(text, return_tensors="pt")
+        return self.tok(text, return_tensors="pt")
 
     @property
     def hiddendim(self) -> int:
-        return int(self._model.config.hidden_size)
+        return int(self.model.config.hidden_size)
 
     def teachexamples(self) -> list[str]:
         return ["Q: hi\nA: hello!"]

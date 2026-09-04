@@ -48,7 +48,7 @@ class minicpm5:
             raise ValueError(f"size must be 1B or 2B, got {size!r}")
         repo = "openbmb/MiniCPM5-1B" if size == "1B" else "openbmb/MiniCPM5-2B"
         try:
-            self._tok = AutoTokenizer.from_pretrained(repo)
+            self.tok = AutoTokenizer.from_pretrained(repo)
         except Exception as exc:
             raise requiresresource(
                 f"failed to load tokenizer for {repo}",
@@ -56,7 +56,7 @@ class minicpm5:
             ) from exc
         try:
             dtypeobj = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[dtype]
-            self._model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=dtypeobj)
+            self.model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=dtypeobj)
         except Exception as exc:
             raise requiresresource(
                 f"failed to load weights for {repo}",
@@ -67,7 +67,7 @@ class minicpm5:
         self.gradientcheckpointing = gradientcheckpointing
         if gradientcheckpointing:
             try:
-                self._model.gradient_checkpointing_enable()
+                self.model.gradient_checkpointing_enable()
             except Exception:
                 pass
 
@@ -81,7 +81,7 @@ class minicpm5:
         Returns:
             Dict ``{"hiddens": [batch, seqlen, dim], "pooled": [batch, dim]}``.
         """
-        out = self._model(
+        out = self.model(
             input_ids=inputids,
             attention_mask=attentionmask,
             output_hidden_states=True,
@@ -97,11 +97,11 @@ class minicpm5:
 
     def tok(self, text: str) -> Any:
         """Tokenize ``text`` via the bundled tokenizer."""
-        return self._tok(text, return_tensors="pt")
+        return self.tok(text, return_tensors="pt")
 
     @property
     def hiddendim(self) -> int:
-        return int(self._model.config.hidden_size)
+        return int(self.model.config.hidden_size)
 
     def teachexamples(self) -> list[str]:
         """Few-shot examples suited to MiniCPM5."""

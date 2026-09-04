@@ -108,7 +108,7 @@ def dryruncmd(args: argparse.Namespace) -> int:
     return 0
 
 
-def _flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
+def flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
     if isinstance(node, dict):
         for k, v in node.items():
             path = f"{prefix}.{k}" if prefix else k
@@ -143,7 +143,7 @@ def conformancecmd(args: argparse.Namespace) -> int:
     return 0 if not failed else 1
 
 
-def _runpipeline(args: argparse.Namespace, phase: str) -> int:
+def runpipeline(args: argparse.Namespace, phase: str) -> int:
     """Dispatch a phase subcommand by constructing the registered concrete.
 
     Args:

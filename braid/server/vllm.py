@@ -33,7 +33,7 @@ class vllm:
         try:
             from vllm import LLM
 
-            self._engine: Any = LLM(
+            self.engine: Any = LLM(
                 model=model,
                 max_model_len=maxmodellen,
                 enforce_eager=False,
@@ -56,7 +56,7 @@ class vllm:
     def rank(self, prompt: str, catalogscoresfn: Any, topk: int = 50) -> dict[str, Any]:
         """Run prefill-only ranking; return top-k item ids and scores."""
         try:
-            outputs = self._engine.generate([prompt], sampling_params=None, use_tqdm=False)
+            outputs = self.engine.generate([prompt], sampling_params=None, use_tqdm=False)
         except Exception as exc:
             raise requiresresource(f"vLLM generate failed: {exc}") from exc
         if not outputs:
@@ -70,7 +70,7 @@ class vllm:
 
     def shutdown(self) -> None:
         """Release vLLM engine."""
-        self._engine = None
+        self.engine = None
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.server.vllm.qps", "type": "counter"}]}

@@ -28,8 +28,8 @@ class hflocal:
             import torch
 
             dtypeobj = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[dtype]
-            self._model: Any = AutoModel.from_pretrained(model, torch_dtype=dtypeobj)
-            self._model.eval()
+            self.model: Any = AutoModel.from_pretrained(model, torch_dtype=dtypeobj)
+            self.model.eval()
         except ImportError as exc:
             raise requiresenvironment(
                 "transformers+torch required for server:hflocal",
@@ -63,7 +63,7 @@ class hflocal:
             tokens = prompt.encode("utf-8")[:64]
             ids = torch.tensor([list(tokens)], dtype=torch.long)
             try:
-                outputs = self._model(input_ids=ids, output_hidden_states=True, return_dict=True)
+                outputs = self.model(input_ids=ids, output_hidden_states=True, return_dict=True)
                 last = outputs.hidden_states[-1]
                 mask = torch.ones_like(ids)
                 userrepr = (last * mask.unsqueeze(-1).float()).sum(dim=1) / mask.sum(dim=1).clamp(min=1)
@@ -76,7 +76,7 @@ class hflocal:
 
     def shutdown(self) -> None:
         """Release model."""
-        self._model = None
+        self.model = None
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.server.hflocal.qps", "type": "counter"}]}

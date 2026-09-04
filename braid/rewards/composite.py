@@ -36,7 +36,7 @@ class compositereward:
             self.instances[name] = registry.create("reward", name)
         self.members.append((name, weight))
 
-    def _resolve(self, name: str) -> Any:
+    def resolve(self, name: str) -> Any:
         """Instantiate a reward concrete by registry name."""
         if name not in self.instances:
             self.instances[name] = registry.create("reward", name)
@@ -58,7 +58,7 @@ class compositereward:
         total = 0.0
         wsum = 0.0
         for name, w in self.members:
-            comp = self._resolve(name)
+            comp = self.resolve(name)
             try:
                 sig = inspect.signature(comp.score)
                 kwargs: dict[str, Any] = {}
