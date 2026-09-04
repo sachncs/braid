@@ -1,6 +1,7 @@
 """Checkpoint top-K miner.
 
-Mines hard negatives from the top-K predictions of a previous checkpoint.
+Mines hard negatives from a previous checkpoint's top-K predictions.
+Score function is supplied externally.
 """
 
 from __future__ import annotations
@@ -10,26 +11,42 @@ from typing import Any
 from braid.core.registry import registry
 
 
-@registry.register(category="miner", name="checkpointtopkminer")
-class checkpointtopkminer:
-    """Hard negatives from a previous checkpoint's top-K predictions."""
+@registry.register(category="miner", name="checkpoint")
+class checkpoint:
+    """Mines hard negatives using a previously computed score function.
 
-    name: str = "checkpointtopkminer"
+    Attributes:
+        k: number of top items to use as hard negatives.
+    """
+
+    name: str = "checkpoint"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable"})
 
     def __init__(self, k: int = 64) -> None:
+        if k <= 0:
+            raise ValueError("k must be > 0")
         self.k = k
 
     def mine(self, positives: Any, scoresfn: Any) -> Any:
-        """Mine hard negatives using ``scoresfn``."""
+        """Compute hard negatives from ``scoresfn``.
+
+        Args:
+            positives: ``[batch]`` positive item ids (unused; positives are
+                the targets the score function was trained on).
+            scoresfn: callable returning a ``[batch, numitems]`` score tensor.
+
+        Returns:
+            ``[batch, k]`` int64 tensor of hard-negative ids per row.
+        """
         try:
             import torch
+
+            scores = scoresfn()
+            topk = scores.topk(self.k, dim=-1).indices
+            return topk
         except ImportError:
-            return []
-        scores = scoresfn()
-        topk = scores.topk(self.k, dim=-1).indices
-        return topk
+            raise
 
     def observability(self) -> dict[str, Any]:
         return {}
