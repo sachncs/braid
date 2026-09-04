@@ -89,7 +89,7 @@ pythia1 = "braid.backbone.pythia1:pythia1"
 matmulinmem = "braid.catalogstore.matmulinmem:matmulinmem"
 matmulint4awq = "braid.catalogstore.matmulint4awq:matmulint4awq"
 faissivfstore = "braid.catalogstore.faissivfstore:faissivfstore"
-rqvaestore = "braid.catalogstore.rqvaestore:rqvaestore"
+semanticids = "braid.catalogstore.semanticids:semanticids"
 
 [build-system]
 requires = ["hatchling"]
