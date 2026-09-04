@@ -1,9 +1,10 @@
-"""MLflow tracker integration."""
+"""MLflow tracker integration. Requires ``mlflow``."""
 
 from __future__ import annotations
 
 from typing import Any
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -16,27 +17,23 @@ class mlflow:
     capabilities: frozenset[str] = frozenset({"cachable", "observable"})
 
     def __init__(self, runname: str = "default") -> None:
-        self.runname = runname
-        self.run: Any | None = None
-
-    def init(self) -> None:
         try:
             import mlflow
 
-            self.run = mlflow.start_run(run_name=self.runname)
-        except Exception:  # noqa: BLE001
-            self.run = None
+            self.runname = runname
+            self.runobj: Any = mlflow.start_run(run_name=self.runname)
+        except ImportError as exc:
+            raise requiresenvironment(
+                "mlflow is required for tracker:mlflow", hint="pip install mlflow"
+            ) from exc
 
     def log(self, key: str, value: float, step: int | None = None) -> None:
-        if self.run is None:
-            self.init()
-        if self.run is not None:
-            try:
-                import mlflow
+        try:
+            import mlflow
 
-                mlflow.log_metric(key, value, step=step or 0)
-            except Exception:  # noqa: BLE001
-                pass
+            mlflow.log_metric(key, value, step=step or 0)
+        except Exception:
+            pass
 
     def observability(self) -> dict[str, Any]:
         return {}

@@ -1,9 +1,10 @@
-"""Weights & Biases tracker."""
+"""Weights & Biases tracker. Requires ``wandb``."""
 
 from __future__ import annotations
 
 from typing import Any
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -16,26 +17,22 @@ class wandb:
     capabilities: frozenset[str] = frozenset({"cachable", "observable"})
 
     def __init__(self, project: str = "braid", run: str = "default") -> None:
-        self.project = project
-        self.runname = run
-        self.run: Any | None = None
-
-    def init(self) -> None:
         try:
             import wandb
 
-            self.run = wandb.init(project=self.project, name=self.runname, reinit=True)
-        except Exception:  # noqa: BLE001
-            self.run = None
+            self.project = project
+            self.runname = run
+            self.runobj: Any = wandb.init(project=self.project, name=self.runname, reinit=True)
+        except ImportError as exc:
+            raise requiresenvironment(
+                "wandb is required for tracker:wandb", hint="pip install wandb"
+            ) from exc
 
     def log(self, key: str, value: float, step: int | None = None) -> None:
-        if self.run is None:
-            self.init()
-        if self.run is not None:
-            try:
-                self.run.log({key: value}, step=step)
-            except Exception:  # noqa: BLE001
-                pass
+        try:
+            self.runobj.log({key: value}, step=step)
+        except Exception:
+            pass
 
     def observability(self) -> dict[str, Any]:
         return {}
