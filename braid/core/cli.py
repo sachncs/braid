@@ -174,6 +174,7 @@ def _runpipeline(args: argparse.Namespace, phase: str) -> int:
         "drift": run_drift,
         "elbow": run_elbow,
         "serve": run_serve,
+        "obsgen": lambda c, l: run_obsgen(argparse.Namespace(out="artifacts/obsgen")),
     }
     runner = runners.get(phase)
     if runner is None:
@@ -278,6 +279,23 @@ def run_elbow(cfg: dict, log: Any) -> None:
         log.warning("elbow.failed", error=str(exc))
 
 
+def run_obsgen(args: argparse.Namespace) -> int:
+    """Generate Prometheus + Grafana + catalog artifacts from registry observability.
+
+    Args:
+        args: parsed CLI args (expects ``args.out``).
+
+    Returns:
+        Exit code.
+    """
+    from braid.core.obsgen import generate
+
+    outdir = Path(getattr(args, "out", "artifacts/obsgen"))
+    summary = generate(outdir)
+    print(json.dumps(summary, indent=2))
+    return 0
+
+
 def run_serve(cfg: dict, log: Any) -> None:
     """Start the FastAPI ranker server."""
     log.info("serve.start", host="0.0.0.0", port=cfg.get("server", {}).get("port", 8080))
@@ -343,6 +361,10 @@ def buildparser() -> argparse.ArgumentParser:
     p = sub.add_parser("elbow", help="context-length search")
     p.add_argument("--config", required=True)
     p.set_defaults(func=lambda a: _runpipeline(a, "elbow"))
+
+    p = sub.add_parser("obsgen", help="generate Prometheus/Grafana/catalog")
+    p.add_argument("--out", default="artifacts/obsgen")
+    p.set_defaults(func=run_obsgen)
 
     return parser
 
