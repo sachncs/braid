@@ -1,11 +1,14 @@
-"""Data subsystem."""
+"""Data subsystem.
+
+Data: local parquet source, sink, sessionizer, splitter, metadata, ingest, schemas.
+"""
 
 from braid.datasource import localparquet
-from braid.datasink import parquetsink, arrowsink, postgres
+from braid.datasink import parquetsink, arrowsink
 from braid.sessionizer import gapsessionizer, countsessionizer, timewindowsessionizer
 from braid.splitter import chronologicalsplitter, leaveoneoutsplitter, timestratifiedsplitter
 from braid.metadata import csvmetadata, jsonapi, embedded
-from braid.data.ingest import ingest
+
 try:
     from braid.data.schemas import validateevents, validateitems  # noqa: F401
 except ImportError:
@@ -17,9 +20,6 @@ except ImportError:
 
 __all__ = [
     "localparquet",
-    "s3parquet",
-    "kafka",
-    "postgres",
     "parquetsink",
     "arrowsink",
     "gapsessionizer",
@@ -31,7 +31,6 @@ __all__ = [
     "csvmetadata",
     "jsonapi",
     "embedded",
-    "ingest",
     "validateevents",
     "validateitems",
 ]

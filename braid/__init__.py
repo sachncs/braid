@@ -2,7 +2,8 @@
 
 __version__ = "0.1.0"
 
-from braid.core.registry import registry  # noqa: F401  — exposed as braid.registry
+from braid.core.registry import registry  # noqa: F401  -- exposed as braid.registry
+from braid.core.capability import capability  # noqa: F401
 
 # Eagerly import every category module so all concretes are registered.
 from braid import (  # noqa: F401
@@ -57,4 +58,3 @@ from braid import (  # noqa: F401
     testing,
     obsgen,
 )
-

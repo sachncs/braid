@@ -1,7 +1,5 @@
-"""Cache concretes."""
+"""Cache concretes (1 — in-process LRU)."""
 
 from braid.cache.lru import lru
-from braid.cache.redis import redis
-from braid.cache.memcached import memcached
 
-__all__ = ["lru", "redis", "memcached"]
+__all__ = ["lru"]

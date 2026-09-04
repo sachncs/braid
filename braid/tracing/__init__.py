@@ -1,7 +1,5 @@
-"""Tracing backends."""
+"""Tracing backends (1 — console)."""
 
-from braid.tracing.otlp import otlp
-from braid.tracing.jaeger import jaeger
 from braid.tracing.console import console
 
-__all__ = ["otlp", "jaeger", "console"]
+__all__ = ["console"]
