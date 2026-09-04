@@ -1,4 +1,4 @@
-phase: rewardproxyphase
+phase: reward
 backbone:
   type: minicpm5
 optimizer:
