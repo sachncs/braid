@@ -10,7 +10,7 @@ from braid.core.registry import registry
 
 
 @registry.register(category="eval", name="diversity")
-class diversityeval:
+class diversity:
     """Intra-list diversity and coverage evaluators."""
 
     name: str = "diversity"
