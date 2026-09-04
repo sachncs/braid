@@ -45,27 +45,27 @@ class hnsw:
         self.m = m
         self.efconstruction = efconstruction
         self.efsearch = efsearch
-        self._index: Any | None = None
+        self.index: Any | None = None
         try:
             import hnswlib
 
-            self._index = hnswlib.Index(space="ip", dim=self.dim)
-            self._index.init_index(
+            self.index = hnswlib.Index(space="ip", dim=self.dim)
+            self.index.init_index(
                 max_elements=self.numitems,
                 ef_construction=self.efconstruction,
                 M=self.m,
             )
-            self._index.add_items(self.embeddings)
-            self._index.set_ef(self.efsearch)
+            self.index.add_items(self.embeddings)
+            self.index.set_ef(self.efsearch)
         except ImportError:
-            self._index = None
+            self.index = None
         except Exception as exc:  # noqa: BLE001
             raise ioerror(f"hnsw initialization failed: {exc}", retryable=False) from exc
 
     def query(self, vector: np.ndarray, topk: int = 10) -> np.ndarray:
         """Return topk indices; falls back to brute force if hnswlib unavailable."""
-        if self._index is not None:
-            ids, _ = self._index.knn_query(vector.reshape(1, -1), k=topk)
+        if self.index is not None:
+            ids, _ = self.index.knn_query(vector.reshape(1, -1), k=topk)
             return ids[0]
         scores = self.embeddings @ vector
         return np.argsort(-scores)[:topk]

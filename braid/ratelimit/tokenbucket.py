@@ -19,22 +19,22 @@ class tokenbucket:
     def __init__(self, rate: float = 1000.0, capacity: float = 5000.0) -> None:
         self.rate = rate
         self.capacity = capacity
-        self._tokens = capacity
-        self._last = time.monotonic()
+        self.tokens = capacity
+        self.last = time.monotonic()
 
     def allow(self, key: str = "default", cost: float = 1.0) -> bool:
         """Return True if the request is allowed."""
         now = time.monotonic()
-        self._tokens = min(self.capacity, self._tokens + (now - self._last) * self.rate)
-        self._last = now
-        if self._tokens >= cost:
-            self._tokens -= cost
+        self.tokens = min(self.capacity, self.tokens + (now - self.last) * self.rate)
+        self.last = now
+        if self.tokens >= cost:
+            self.tokens -= cost
             return True
         return False
 
     def reset(self) -> None:
-        self._tokens = self.capacity
-        self._last = time.monotonic()
+        self.tokens = self.capacity
+        self.last = time.monotonic()
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.ratelimit.denied", "type": "counter"}]}

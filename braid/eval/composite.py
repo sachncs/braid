@@ -17,14 +17,14 @@ class composite:
 
     def __init__(self, members: list[tuple[str, float]] | None = None) -> None:
         self.members = members or [("offlineranking", 1.0), ("calibration", 0.5), ("diversity", 0.5)]
-        self._cache: dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
     def evaluate(self, predictions: Any, groundtruth: Any = None, **kwargs: Any) -> dict[str, Any]:
         """Run each member and merge reports."""
         report: dict[str, Any] = {}
         for name, _w in self.members:
-            ev = self._cache.get(name) or registry.create("eval", name)
-            self._cache[name] = ev
+            ev = self.cache.get(name) or registry.create("eval", name)
+            self.cache[name] = ev
             try:
                 if name == "diversity":
                     rep = ev.evaluate(predictions, embeddings=kwargs.get("embeddings"), universe=kwargs.get("universe"))

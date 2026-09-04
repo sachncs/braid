@@ -40,23 +40,23 @@ class faiss:
         self.nprobe = min(nprobe, self.nlist)
         self.dim = self.embeddings.shape[1]
         self.numitems = self.embeddings.shape[0]
-        self._faissmod: Any | None = None
-        self._index: Any | None = None
+        self.faissmod: Any | None = None
+        self.index: Any | None = None
         try:
             import faiss  # noqa: F401
 
-            self._faissmod = faiss
+            self.faissmod = faiss
         except ImportError as exc:
-            self._faissmod = None
-        if self._faissmod is not None and self.embeddings.shape[0] > 0:
+            self.faissmod = None
+        if self.faissmod is not None and self.embeddings.shape[0] > 0:
             try:
-                quantizer = self._faissmod.IndexFlatIP(self.dim)
-                self._index = self._faissmod.IndexIVFFlat(quantizer, self.dim, self.nlist)
-                self._index.train(self.embeddings)
-                self._index.add(self.embeddings)
-                self._index.nprobe = self.nprobe
+                quantizer = self.faissmod.IndexFlatIP(self.dim)
+                self.index = self.faissmod.IndexIVFFlat(quantizer, self.dim, self.nlist)
+                self.index.train(self.embeddings)
+                self.index.add(self.embeddings)
+                self.index.nprobe = self.nprobe
             except Exception:
-                self._index = None
+                self.index = None
 
     def query(self, vector: np.ndarray, topk: int = 10) -> np.ndarray:
         """Return topk indices.
@@ -68,8 +68,8 @@ class faiss:
         Returns:
             ``[topk]`` int array.
         """
-        if self._index is not None:
-            _, ids = self._index.search(vector.astype(np.float32).reshape(1, -1), topk)
+        if self.index is not None:
+            _, ids = self.index.search(vector.astype(np.float32).reshape(1, -1), topk)
             return ids[0]
         scores = self.embeddings @ vector
         return np.argsort(-scores)[:topk]

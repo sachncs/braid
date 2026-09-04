@@ -40,15 +40,15 @@ class localparquet:
         self.path = Path(path)
         if not self.path.exists():
             raise FileNotFoundError(f"datasource path not found: {path}")
-        self._index = 0
-        self._rows: list[dict[str, Any]] = []
-        self._load()
+        self.index = 0
+        self.rows: list[dict[str, Any]] = []
+        self.load()
 
-    def _load(self) -> None:
+    def load(self) -> None:
         try:
             import pyarrow.parquet as pq
         except ImportError:
-            self._rows = []
+            self.rows = []
             return
         rows: list[dict[str, Any]] = []
         for f in sorted(self.path.glob("*.parquet")):
@@ -57,7 +57,7 @@ class localparquet:
                 rows.extend(table.to_pylist())
             except Exception:  # noqa: BLE001 — degraded mode
                 continue
-        self._rows = rows
+        self.rows = rows
 
     def read(self) -> Iterator[dict[str, Any]]:
         """Yield rows from the source.
@@ -65,7 +65,7 @@ class localparquet:
         Yields:
             Each row as a dict.
         """
-        yield from iter(self._rows)
+        yield from iter(self.rows)
 
     async def aread(self) -> Any:
         """Async read (returns the full list; subclasses may override)."""
@@ -81,8 +81,8 @@ class localparquet:
     def restore(self, path: str) -> None:
         """Reload from ``path``."""
         self.path = Path(path)
-        self._index = 0
-        self._load()
+        self.index = 0
+        self.load()
 
     def idempotencykey(self, *args: Any, **kwargs: Any) -> str:
         return f"localparquet:{self.path}"

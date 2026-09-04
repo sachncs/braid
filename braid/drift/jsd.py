@@ -19,16 +19,16 @@ class jsd:
 
     def __init__(self, threshold: float = 0.1) -> None:
         self.threshold = threshold
-        self._reference: np.ndarray | None = None
+        self.reference: np.ndarray | None = None
 
     def setreference(self, ref: np.ndarray) -> None:
-        self._reference = np.asarray(ref, dtype=np.float64)
+        self.reference = np.asarray(ref, dtype=np.float64)
 
     def update(self, dist: np.ndarray) -> dict[str, Any]:
         """Compute JSD between reference and the new distribution."""
-        if self._reference is None:
+        if self.reference is None:
             return {"score": 0.0, "drifted": False}
-        a = np.asarray(self._reference, dtype=np.float64)
+        a = np.asarray(self.reference, dtype=np.float64)
         b = np.asarray(dist, dtype=np.float64)
         n = min(len(a), len(b))
         a = a[:n] + 1e-12

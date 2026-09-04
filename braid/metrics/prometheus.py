@@ -17,43 +17,43 @@ class prometheus:
 
     def __init__(self, port: int = 9090) -> None:
         self.port = port
-        self._client: Any | None = None
-        self._start()
+        self.client: Any | None = None
+        self.start()
 
-    def _start(self) -> None:
+    def start(self) -> None:
         try:
             from prometheus_client import start_http_server, Counter, Gauge, Histogram
 
-            self._countercls = Counter
-            self._gaugecls = Gauge
-            self._histogramcls = Histogram
-            self._server = start_http_server(self.port)
+            self.countercls = Counter
+            self.gaugecls = Gauge
+            self.histogramcls = Histogram
+            self.server = start_http_server(self.port)
         except Exception:  # noqa: BLE001
-            self._countercls = None
+            self.countercls = None
 
     def counter(self, name: str, value: float = 1.0, labels: dict | None = None) -> None:
-        if self._countercls is None:
+        if self.countercls is None:
             return
         try:
-            c = self._countercls(name, "braid counter", list(labels or {}))
+            c = self.countercls(name, "braid counter", list(labels or {}))
             c.inc(value)
         except Exception:  # noqa: BLE001
             return
 
     def gauge(self, name: str, value: float, labels: dict | None = None) -> None:
-        if self._gaugecls is None:
+        if self.gaugecls is None:
             return
         try:
-            g = self._gaugecls(name, "braid gauge", list(labels or {}))
+            g = self.gaugecls(name, "braid gauge", list(labels or {}))
             g.set(value)
         except Exception:  # noqa: BLE001
             return
 
     def histogram(self, name: str, value: float, labels: dict | None = None) -> None:
-        if self._histogramcls is None:
+        if self.histogramcls is None:
             return
         try:
-            h = self._histogramcls(name, "braid histogram", list(labels or {}))
+            h = self.histogramcls(name, "braid histogram", list(labels or {}))
             h.observe(value)
         except Exception:  # noqa: BLE001
             return

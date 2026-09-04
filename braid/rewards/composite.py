@@ -25,15 +25,15 @@ class compositereward:
         if members is None:
             members = [("longtermreturn", 1.0), ("diversitybonus", 0.3)]
         self.members = list(members)
-        self._cache: dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
         for n, _ in self.members:
-            if n not in self._cache:
-                self._cache[n] = registry.create("reward", n)
+            if n not in self.cache:
+                self.cache[n] = registry.create("reward", n)
 
     def add(self, name: str, weight: float) -> None:
         """Add a member; instantiated lazily."""
-        if name not in self._cache:
-            self._cache[name] = registry.create("reward", name)
+        if name not in self.cache:
+            self.cache[name] = registry.create("reward", name)
         self.members.append((name, weight))
 
     def score(self, event: dict[str, Any], ctx: dict[str, Any] | None = None) -> float:
@@ -41,8 +41,8 @@ class compositereward:
         total = 0.0
         wsum = 0.0
         for name, w in self.members:
-            reward = self._cache.get(name) or registry.create("reward", name)
-            self._cache[name] = reward
+            reward = self.cache.get(name) or registry.create("reward", name)
+            self.cache[name] = reward
             try:
                 import inspect
 

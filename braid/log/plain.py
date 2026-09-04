@@ -18,16 +18,16 @@ class plain:
 
     def __init__(self, level: str = "INFO") -> None:
         logging.basicConfig(level=getattr(logging, level), format="%(asctime)s %(levelname)s %(name)s %(message)s")
-        self._log = logging.getLogger("braid")
+        self.log = logging.getLogger("braid")
 
     def info(self, msg: str, **kwargs: Any) -> None:
-        self._log.info(msg, extra=kwargs)
+        self.log.info(msg, extra=kwargs)
 
     def warning(self, msg: str, **kwargs: Any) -> None:
-        self._log.warning(msg, extra=kwargs)
+        self.log.warning(msg, extra=kwargs)
 
     def error(self, msg: str, **kwargs: Any) -> None:
-        self._log.error(msg, extra=kwargs)
+        self.log.error(msg, extra=kwargs)
 
     def observability(self) -> dict[str, Any]:
         return {}

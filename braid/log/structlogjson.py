@@ -27,16 +27,16 @@ class structlogjson:
             wrapper_class=structlog.make_filtering_bound_logger(getattr(logging, level)),
             logger_factory=structlog.PrintLoggerFactory(),
         )
-        self._log = structlog.get_logger("braid")
+        self.log = structlog.get_logger("braid")
 
     def info(self, msg: str, **kwargs: Any) -> None:
-        self._log.info(msg, **kwargs)
+        self.log.info(msg, **kwargs)
 
     def warning(self, msg: str, **kwargs: Any) -> None:
-        self._log.warning(msg, **kwargs)
+        self.log.warning(msg, **kwargs)
 
     def error(self, msg: str, **kwargs: Any) -> None:
-        self._log.error(msg, **kwargs)
+        self.log.error(msg, **kwargs)
 
     def observability(self) -> dict[str, Any]:
         return {}

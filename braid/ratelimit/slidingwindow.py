@@ -20,14 +20,14 @@ class slidingwindow:
     def __init__(self, windowseconds: float = 60.0, maxcalls: int = 1000) -> None:
         self.windowseconds = windowseconds
         self.maxcalls = maxcalls
-        self._calls: dict[str, deque[float]] = {}
+        self.calls: dict[str, deque[float]] = {}
 
     def allow(self, key: str = "default", cost: float = 1.0) -> bool:
         """Return True if the request fits in the window."""
         now = time.monotonic()
-        if key not in self._calls:
-            self._calls[key] = deque()
-        dq = self._calls[key]
+        if key not in self.calls:
+            self.calls[key] = deque()
+        dq = self.calls[key]
         cutoff = now - self.windowseconds
         while dq and dq[0] < cutoff:
             dq.popleft()

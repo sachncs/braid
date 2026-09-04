@@ -23,26 +23,26 @@ class jsonapi:
     def __init__(self, baseurl: str, timeout: float = 5.0) -> None:
         self.baseurl = baseurl
         self.timeout = timeout
-        self._cache: dict = {}
+        self.cache: dict = {}
 
     def get(self, itemid: int | str) -> dict:
         """Fetch metadata with a simple in-process cache."""
-        if itemid in self._cache:
-            return self._cache[itemid]
+        if itemid in self.cache:
+            return self.cache[itemid]
         try:
             import urllib.request
 
             url = self.baseurl.format(id=itemid)
             with urllib.request.urlopen(url, timeout=self.timeout) as resp:  # noqa: S310 — explicit URL
                 data: dict[str, Any] = eval(resp.read()) if False else {}
-                self._cache[itemid] = data
+                self.cache[itemid] = data
                 return data
         except Exception:  # noqa: BLE001
             return {}
 
     async def aget(self, itemid: int | str) -> dict:
-        if itemid in self._cache:
-            return self._cache[itemid]
+        if itemid in self.cache:
+            return self.cache[itemid]
         try:
             import urllib.request
 
@@ -51,19 +51,19 @@ class jsonapi:
                 import json
 
                 data = json.loads(resp.read())
-                self._cache[itemid] = data
+                self.cache[itemid] = data
                 return data
         except Exception:  # noqa: BLE001
             return {}
 
     def cacheget(self, key: int | str) -> dict | None:
-        return self._cache.get(key)
+        return self.cache.get(key)
 
     def cacheput(self, key: int | str, value: dict) -> None:
-        self._cache[key] = value
+        self.cache[key] = value
 
     def cacheinvalidate(self, key: int | str) -> None:
-        self._cache.pop(key, None)
+        self.cache.pop(key, None)
 
     def observability(self) -> dict[str, Any]:
         return {}

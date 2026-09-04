@@ -19,15 +19,15 @@ class leakybucket:
     def __init__(self, dripRate: float = 100.0, capacity: float = 1000.0) -> None:
         self.driprate = dripRate
         self.capacity = capacity
-        self._level = 0.0
-        self._last = time.monotonic()
+        self.level = 0.0
+        self.last = time.monotonic()
 
     def allow(self, key: str = "default", cost: float = 1.0) -> bool:
         now = time.monotonic()
-        self._level = max(0.0, self._level - (now - self._last) * self.driprate)
-        self._last = now
-        if self._level + cost <= self.capacity:
-            self._level += cost
+        self.level = max(0.0, self.level - (now - self.last) * self.driprate)
+        self.last = now
+        if self.level + cost <= self.capacity:
+            self.level += cost
             return True
         return False
 

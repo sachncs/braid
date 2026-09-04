@@ -20,18 +20,18 @@ class ema:
         self.dir = Path(dir)
         self.dir.mkdir(parents=True, exist_ok=True)
         self.decay = decay
-        self._shadow: dict[str, Any] = {}
+        self.shadow: dict[str, Any] = {}
 
     def update(self, modelparams: dict[str, Any]) -> None:
         """Update shadow params with EMA."""
         for k, v in modelparams.items():
-            if k not in self._shadow:
-                self._shadow[k] = v.detach().clone()
+            if k not in self.shadow:
+                self.shadow[k] = v.detach().clone()
             else:
-                self._shadow[k].mul_(self.decay).add_(v.detach(), alpha=1.0 - self.decay)
+                self.shadow[k].mul_(self.decay).add_(v.detach(), alpha=1.0 - self.decay)
 
     def shadowcopy(self) -> dict[str, Any]:
-        return {k: v.detach().clone() for k, v in self._shadow.items()}
+        return {k: v.detach().clone() for k, v in self.shadow.items()}
 
     def saveshape(self, step: int) -> str:
         return str(self.dir / f"ema-step{step}.pt")
@@ -41,7 +41,7 @@ class ema:
         try:
             import torch
 
-            torch.save(self._shadow, path)
+            torch.save(self.shadow, path)
         except Exception:  # noqa: BLE001
             pass
 
@@ -49,9 +49,9 @@ class ema:
         try:
             import torch
 
-            self._shadow = torch.load(path)
+            self.shadow = torch.load(path)
         except Exception:  # noqa: BLE001
-            self._shadow = {}
+            self.shadow = {}
 
     def observability(self) -> dict[str, Any]:
         return {}

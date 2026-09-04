@@ -37,41 +37,41 @@ class faissivfstore:
         self.nprobe = min(nprobe, self.nlist)
         self.numitems = self.embeddings.shape[0]
         self.dim = self.embeddings.shape[1]
-        self._faiss: Any | None = None
+        self.faiss: Any | None = None
         try:
             import faiss  # noqa: F401 — imported lazily
 
-            self._faiss = faiss
+            self.faiss = faiss
         except Exception:  # noqa: BLE001
-            self._faiss = None
-        self._index: Any | None = None
-        self._build()
+            self.faiss = None
+        self.index: Any | None = None
+        self.build()
 
-    def _build(self) -> None:
-        if self._faiss is None or self.embeddings.shape[0] == 0:
+    def build(self) -> None:
+        if self.faiss is None or self.embeddings.shape[0] == 0:
             return
         try:
-            quantizer = self._faiss.IndexFlatIP(self.dim)
-            self._index = self._faiss.IndexIVFFlat(quantizer, self.dim, self.nlist)
-            self._index.train(self.embeddings)
-            self._index.add(self.embeddings)
-            self._index.nprobe = self.nprobe
+            quantizer = self.faiss.IndexFlatIP(self.dim)
+            self.index = self.faiss.IndexIVFFlat(quantizer, self.dim, self.nlist)
+            self.index.train(self.embeddings)
+            self.index.add(self.embeddings)
+            self.index.nprobe = self.nprobe
         except Exception:  # noqa: BLE001
-            self._index = None
+            self.index = None
 
     def score(self, userrepr: np.ndarray, ids: np.ndarray | None = None, topk: int | None = None) -> np.ndarray:
         """Return scores. With ``ids`` returns the full slice; otherwise topk."""
-        if self._index is None:
+        if self.index is None:
             matrix = self.embeddings
             if ids is not None:
                 matrix = matrix[ids]
             return userrepr @ matrix.T
-        scores, indices = self._index.search(userrepr.astype(np.float32), topk or self.numitems)
+        scores, indices = self.index.search(userrepr.astype(np.float32), topk or self.numitems)
         return scores
 
     def warmup(self) -> None:
-        if self._index is not None:
-            _ = self._index.search(self.embeddings[:1], 1)
+        if self.index is not None:
+            _ = self.index.search(self.embeddings[:1], 1)
 
     def shardrank(self) -> int:
         return 0

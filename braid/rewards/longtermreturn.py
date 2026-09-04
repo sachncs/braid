@@ -34,10 +34,10 @@ class longtermreturn:
         """
         self.horizon = horizon
         self.weights = weights
-        self._model: Any | None = None
-        self._tryload()
+        self.model: Any | None = None
+        self.tryload()
 
-    def _tryload(self) -> None:
+    def tryload(self) -> None:
         try:
             import torch
             import torch.nn as nn
@@ -50,14 +50,14 @@ class longtermreturn:
                 def forward(self, x):
                     return self.fc(x).squeeze(-1)
 
-            self._model = net()
+            self.model = net()
             if self.weights:
-                self._model.load_state_dict(torch.load(self.weights))
-            self._model.eval()
+                self.model.load_state_dict(torch.load(self.weights))
+            self.model.eval()
         except Exception:  # noqa: BLE001
-            self._model = None
+            self.model = None
 
-    def _features(self, event: dict[str, Any], ctx: dict[str, Any] | None) -> Any:
+    def features(self, event: dict[str, Any], ctx: dict[str, Any] | None) -> Any:
         try:
             import torch
         except ImportError:
@@ -79,11 +79,11 @@ class longtermreturn:
 
     def score(self, event: dict[str, Any], ctx: dict[str, Any] | None = None) -> float:
         """Return a long-term reward score in ``[0, 1]``."""
-        if self._model is None:
+        if self.model is None:
             return min(1.0, float(event.get("duration", 0)) / 3600.0)
         with __import__("torch").no_grad():
-            v = self._features(event, ctx)
-            out = float(self._model(v).sigmoid())
+            v = self.features(event, ctx)
+            out = float(self.model(v).sigmoid())
         return out
 
     def idempotencykey(self, *args: Any, **kwargs: Any) -> str:

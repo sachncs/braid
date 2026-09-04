@@ -19,14 +19,14 @@ class fstring:
     capabilities: frozenset[str] = frozenset({"idempotent", "observable"})
 
     def __init__(self, template: str) -> None:
-        self._template = template
+        self.template = template
 
     def render(self, **kwargs: Any) -> str:
         """Render the template."""
-        return self._template.format_map(kwargs)
+        return self.template.format_map(kwargs)
 
     def idempotencykey(self, *args: Any, **kwargs: Any) -> str:
-        return f"template:fstring:{self._template}"
+        return f"template:fstring:{self.template}"
 
     def observability(self) -> dict[str, Any]:
         return {}

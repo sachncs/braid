@@ -21,16 +21,16 @@ class pagehinkley:
         self.delta = delta
         self.threshold = threshold
         self.alpha = alpha
-        self._mean = 0.0
-        self._sum = 0.0
-        self._count = 0
+        self.mean = 0.0
+        self.sum = 0.0
+        self.count = 0
 
     def update(self, value: float) -> dict[str, Any]:
         """Update the detector with one value; report any change-point."""
-        self._count += 1
-        self._mean = self._mean + (value - self._mean) / self._count
-        self._sum = self._sum + (value - self._mean - self.delta)
-        score = self._sum - min(0.0, self._sum)
+        self.count += 1
+        self.mean = self.mean + (value - self.mean) / self.count
+        self.sum = self.sum + (value - self.mean - self.delta)
+        score = self.sum - min(0.0, self.sum)
         return {"score": float(score), "drifted": abs(score) > self.threshold}
 
     def observability(self) -> dict[str, Any]:

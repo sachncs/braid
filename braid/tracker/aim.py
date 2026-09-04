@@ -18,22 +18,22 @@ class aim:
     def __init__(self, dir: str = "./artifacts/aim", run: str | None = None) -> None:
         self.dir = dir
         self.run = run or "default"
-        self._run: Any | None = None
+        self.run: Any | None = None
 
     def init(self) -> None:
         try:
             from aim import Run
 
-            self._run = Run(repo=self.dir, experiment=self.run)
+            self.run = Run(repo=self.dir, experiment=self.run)
         except Exception:  # noqa: BLE001 — degraded mode
-            self._run = None
+            self.run = None
 
     def log(self, key: str, value: float, step: int | None = None) -> None:
-        if self._run is None:
+        if self.run is None:
             self.init()
-        if self._run is not None:
+        if self.run is not None:
             try:
-                self._run.track(value, name=key, step=step or 0)
+                self.run.track(value, name=key, step=step or 0)
             except Exception:  # noqa: BLE001
                 pass
 

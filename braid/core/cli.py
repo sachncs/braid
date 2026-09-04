@@ -106,7 +106,7 @@ def dryruncmd(args: argparse.Namespace) -> int:
     return 0
 
 
-def _flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
+def flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
     if isinstance(node, dict):
         for k, v in node.items():
             path = f"{prefix}.{k}" if prefix else k
@@ -199,7 +199,7 @@ def buildparser() -> argparse.ArgumentParser:
     return parser
 
 
-def _runpipeline(args: argparse.Namespace, phase: str) -> int:
+def runpipeline(args: argparse.Namespace, phase: str) -> int:
     """Stub pipeline runner — concrete pipelines live under ``braid.<phase>``.
 
     Args:

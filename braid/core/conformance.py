@@ -33,7 +33,7 @@ class contractfail:
     detail: str
 
 
-def _sampledefault(name: str) -> Any:
+def sampledefault(name: str) -> Any:
     """Return a small default value for conformance probing."""
     n = name.lower()
     if "url" in n:
@@ -77,7 +77,7 @@ def _sampledefault(name: str) -> Any:
     return "test"
 
 
-def _trycreate(klass: type) -> tuple[Any | None, str | None]:
+def trycreate(klass: type) -> tuple[Any | None, str | None]:
     """Try to construct ``klass`` with safe defaults.
 
     Returns (instance, errormessage). Either instance != None or errormessage is set.
@@ -116,11 +116,11 @@ def verifyone(category: str, name: str, *, traits: bool = True, lifecycle: bool 
         klass = registry.resolve(category, name)
     except Exception as exc:  # noqa: BLE001
         return conformancecheck(category=category, name=name, passed=False, failures=[f"resolve failed: {exc}"])
-    obj, err = _trycreate(klass)
+    obj, err = trycreate(klass)
     if obj is None:
         return conformancecheck(category=category, name=name, passed=True, failures=[f"skipped: {err}"])
     failures: list[str] = []
-    if observability and not _hasmethod(obj, "metrics"):
+    if observability and not hasmethod(obj, "metrics"):
         failures.append("missing metrics() declaration")
     return conformancecheck(
         category=category,
@@ -147,15 +147,15 @@ def verifyall(*, categories: list[str] | None = None) -> list[conformancecheck]:
     return results
 
 
-def _hasmethod(obj: Any, name: str) -> bool:
+def hasmethod(obj: Any, name: str) -> bool:
     return callable(getattr(obj, name, None))
 
 
-def _hasasyncmethod(obj: Any, name: str) -> bool:
+def hasasyncmethod(obj: Any, name: str) -> bool:
     method = getattr(obj, name, None)
     if method is None:
         return False
-    return inspect.iscoroutinefunction(method) or _hasmethod(obj, name)
+    return inspect.iscoroutinefunction(method) or hasmethod(obj, name)
 
 
 def assertconformant(category: str, name: str) -> None:

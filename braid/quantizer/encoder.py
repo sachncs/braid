@@ -20,16 +20,16 @@ class encoder:
     def __init__(self, inputdim: int = 64, hiddendim: int = 128) -> None:
         self.inputdim = inputdim
         self.hiddendim = hiddendim
-        self._w: np.ndarray | None = None
+        self.w: np.ndarray | None = None
 
     def fit(self, x: np.ndarray) -> None:
         rng = np.random.default_rng(0)
-        self._w = rng.standard_normal((self.inputdim, self.hiddendim)).astype(np.float32) * 0.05
+        self.w = rng.standard_normal((self.inputdim, self.hiddendim)).astype(np.float32) * 0.05
 
     def encode(self, x: np.ndarray) -> np.ndarray:
-        if self._w is None:
+        if self.w is None:
             self.fit(np.zeros((1, self.inputdim), dtype=np.float32))
-        return np.maximum(0, x @ self._w) if x.ndim > 1 else np.maximum(0, x @ self._w)
+        return np.maximum(0, x @ self.w) if x.ndim > 1 else np.maximum(0, x @ self.w)
 
     def observability(self) -> dict[str, Any]:
         return {}

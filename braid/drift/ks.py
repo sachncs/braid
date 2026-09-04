@@ -19,16 +19,16 @@ class ks:
 
     def __init__(self, threshold: float = 0.05) -> None:
         self.threshold = threshold
-        self._reference: np.ndarray | None = None
+        self.reference: np.ndarray | None = None
 
     def setreference(self, ref: np.ndarray) -> None:
-        self._reference = np.asarray(ref, dtype=np.float64)
+        self.reference = np.asarray(ref, dtype=np.float64)
 
     def update(self, dist: np.ndarray) -> dict[str, Any]:
         """Compute KS statistic and 2-sample p-value (chi^2 surrogate)."""
-        if self._reference is None:
+        if self.reference is None:
             return {"score": 0.0, "drifted": False}
-        a = np.sort(self._reference)
+        a = np.sort(self.reference)
         b = np.sort(np.asarray(dist, dtype=np.float64))
         cdf_a = np.arange(1, len(a) + 1) / len(a)
         allpoints = np.concatenate([a, b])

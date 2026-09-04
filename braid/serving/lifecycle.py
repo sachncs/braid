@@ -13,23 +13,23 @@ class lifecycleserver:
 
     def __init__(self, server: Any) -> None:
         self.server = server
-        self._stop = False
-        self._log = getlogger("braid.serving.lifecycle")
+        self.stop = False
+        self.log = getlogger("braid.serving.lifecycle")
 
     def installsignals(self) -> None:
         """Trap SIGTERM/SIGINT for graceful shutdown."""
-        signal.signal(signal.SIGTERM, lambda *_: self._requeststop())
-        signal.signal(signal.SIGINT, lambda *_: self._requeststop())
+        signal.signal(signal.SIGTERM, lambda *_: self.requeststop())
+        signal.signal(signal.SIGINT, lambda *_: self.requeststop())
 
-    def _requeststop(self) -> None:
-        self._stop = True
+    def requeststop(self) -> None:
+        self.stop = True
         try:
             self.server.shutdown()
         except Exception:  # noqa: BLE001
             pass
-        self._log.info("server.shutdown.requested")
+        self.log.info("server.shutdown.requested")
 
     def wait(self) -> None:
         """Block until stop is requested."""
-        while not self._stop:
+        while not self.stop:
             signal.pause()

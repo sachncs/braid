@@ -32,7 +32,7 @@ class braidedloss:
             terms: list of ``(name, weight)`` tuples; instantiated lazily.
         """
         self.terms: list[tuple[str, float]] = list(terms or [("rankingce", 1.0)])
-        self._cache: dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
     def add(self, name: str, weight: float = 1.0) -> None:
         """Add a new term."""
@@ -64,8 +64,8 @@ class braidedloss:
         # If we have a base loss, start there; otherwise zero.
         loss = torch.tensor(0.0, requires_grad=True)
         for name, w in self.terms:
-            term = self._cache.get(name) or registry.create("loss", name)
-            self._cache[name] = term
+            term = self.cache.get(name) or registry.create("loss", name)
+            self.cache[name] = term
             try:
                 if name == "lmax":
                     contribution = term.compute(outputs.get("lmLogits", outputs.get("logits")), batch.get("inputids"), w)

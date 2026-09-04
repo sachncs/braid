@@ -30,30 +30,30 @@ class vllm:
         self.host = host
         self.port = port
         self.maxmodel_len = maxmodel_len
-        self._engine: Any | None = None
+        self.engine: Any | None = None
 
     def warmup(self) -> None:
         """Load the vLLM engine."""
         try:
             from vllm import LLM
 
-            self._engine = LLM(
+            self.engine = LLM(
                 model=self.model,
                 max_model_len=self.maxmodel_len,
                 enforce_eager=False,
                 gpu_memory_utilization=0.85,
             )
         except Exception:  # noqa: BLE001 — degraded mode
-            self._engine = None
+            self.engine = None
 
     def rank(self, prompt: str, catalogscoresfn: Any, topk: int = 50) -> dict[str, Any]:
         """Run prefill-only ranking; return top-k item ids and scores."""
-        if self._engine is None:
+        if self.engine is None:
             self.warmup()
-        if self._engine is None:
+        if self.engine is None:
             return {"ids": [], "scores": [], "fallback": True}
         try:
-            outputs = self._engine.generate([prompt], sampling_params=None, use_tqdm=False, prompt_logprobs=0)
+            outputs = self.engine.generate([prompt], sampling_params=None, use_tqdm=False, prompt_logprobs=0)
         except Exception:  # noqa: BLE001
             return {"ids": [], "scores": [], "fallback": True}
         lastembed = outputs[0].outputs[0].embedding if hasattr(outputs[0].outputs[0], "embedding") else None
@@ -62,7 +62,7 @@ class vllm:
         return {"ids": ids, "scores": scores[0][:topk].tolist() if hasattr(scores, "tolist") else []}
 
     def shutdown(self) -> None:
-        self._engine = None
+        self.engine = None
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.server.vllm.qps", "type": "counter"}]}

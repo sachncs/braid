@@ -22,10 +22,10 @@ class csvmetadata:
             path: path to a CSV with an ``itemid`` column.
         """
         self.path = Path(path)
-        self._by_id: dict = {}
-        self._load()
+        self.by_id: dict = {}
+        self.load()
 
-    def _load(self) -> None:
+    def load(self) -> None:
         if not self.path.exists():
             return
         import csv
@@ -39,20 +39,20 @@ class csvmetadata:
                     key = int(row["itemid"])
                 except ValueError:
                     key = row["itemid"]
-                self._by_id[key] = row
+                self.by_id[key] = row
 
     def get(self, itemid: int | str) -> dict:
         """Return metadata for ``itemid`` or empty dict."""
-        return self._by_id.get(itemid, {})
+        return self.by_id.get(itemid, {})
 
     def cacheget(self, key: int | str) -> dict | None:
-        return self._by_id.get(key)
+        return self.by_id.get(key)
 
     def cacheput(self, key: int | str, value: dict) -> None:
-        self._by_id[key] = value
+        self.by_id[key] = value
 
     def cacheinvalidate(self, key: int | str) -> None:
-        self._by_id.pop(key, None)
+        self.by_id.pop(key, None)
 
     def persist(self, path: str) -> None:
         """No-op: metadata is read-only."""
@@ -60,8 +60,8 @@ class csvmetadata:
 
     def restore(self, path: str) -> None:
         self.path = Path(path)
-        self._by_id = {}
-        self._load()
+        self.by_id = {}
+        self.load()
 
     def observability(self) -> dict[str, Any]:
         return {}

@@ -30,38 +30,38 @@ class minicpm5:
         self.size = size
         self.dtype = dtype
         self.gradientcheckpointing = gradientcheckpointing
-        self._model: Any | None = None
-        self._tok: Any | None = None
+        self.model: Any | None = None
+        self.tok: Any | None = None
 
-    def _load(self) -> None:
+    def load(self) -> None:
         try:
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer
 
             repo = "openbmb/MiniCPM5-1B" if self.size == "1B" else "openbmb/MiniCPM5-2B"
-            self._tok = AutoTokenizer.from_pretrained(repo)
+            self.tok = AutoTokenizer.from_pretrained(repo)
             dtype = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[self.dtype]
-            self._model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=dtype)
+            self.model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=dtype)
             if self.gradientcheckpointing:
                 try:
-                    self._model.gradient_checkpointing_enable()
+                    self.model.gradient_checkpointing_enable()
                 except Exception:  # noqa: BLE001
                     pass
         except Exception:  # noqa: BLE001
-            self._model = None
-            self._tok = None
+            self.model = None
+            self.tok = None
 
     def encode(self, inputids: Any, attentionmask: Any | None = None) -> Any:
         """Run the backbone; return hidden states and pooled vector."""
-        if self._model is None:
-            self._load()
-        if self._model is None:
+        if self.model is None:
+            self.load()
+        if self.model is None:
             import torch
 
             torch.manual_seed(0)
             out = {"hiddens": torch.randn(1, inputids.shape[1], 64), "pooled": torch.randn(1, 64)}
             return out
-        out = self._model(
+        out = self.model(
             input_ids=inputids,
             attention_mask=attentionmask,
             output_hidden_states=True,
@@ -77,16 +77,16 @@ class minicpm5:
 
     def tok(self, text: str) -> Any:
         """Tokenize a string via the bundled tokenizer."""
-        if self._tok is None:
-            self._load()
-        if self._tok is None:
+        if self.tok is None:
+            self.load()
+        if self.tok is None:
             return None
-        return self._tok(text, return_tensors="pt")
+        return self.tok(text, return_tensors="pt")
 
     @property
     def hiddendim(self) -> int:
         try:
-            return int(self._model.config.hidden_size) if self._model is not None else 64
+            return int(self.model.config.hidden_size) if self.model is not None else 64
         except Exception:  # noqa: BLE001
             return 64
 

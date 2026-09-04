@@ -20,29 +20,29 @@ class embedded:
     capabilities: frozenset[str] = frozenset({"cachable", "persistable", "observable"})
 
     def __init__(self, table: dict[int | str, dict] | None = None) -> None:
-        self._table: dict = dict(table or {})
+        self.table: dict = dict(table or {})
 
     def get(self, itemid: int | str) -> dict:
-        return self._table.get(itemid, {})
+        return self.table.get(itemid, {})
 
     def put(self, itemid: int | str, meta: dict) -> None:
-        self._table[itemid] = meta
+        self.table[itemid] = meta
 
     def cacheget(self, key: int | str) -> dict | None:
-        return self._table.get(key)
+        return self.table.get(key)
 
     def cacheput(self, key: int | str, value: dict) -> None:
-        self._table[key] = value
+        self.table[key] = value
 
     def cacheinvalidate(self, key: int | str) -> None:
-        self._table.pop(key, None)
+        self.table.pop(key, None)
 
     def persist(self, path: str) -> None:
         """Write as JSON."""
         import json
         from pathlib import Path
 
-        Path(path).write_text(json.dumps(self._table, default=str))
+        Path(path).write_text(json.dumps(self.table, default=str))
 
     def restore(self, path: str) -> None:
         import json
@@ -51,7 +51,7 @@ class embedded:
         if not Path(path).exists():
             return
         raw = json.loads(Path(path).read_text())
-        self._table = {int(k) if k.isdigit() else k: v for k, v in raw.items()}
+        self.table = {int(k) if k.isdigit() else k: v for k, v in raw.items()}
 
     def observability(self) -> dict[str, Any]:
         return {}

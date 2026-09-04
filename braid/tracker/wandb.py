@@ -18,22 +18,22 @@ class wandb:
     def __init__(self, project: str = "braid", run: str = "default") -> None:
         self.project = project
         self.runname = run
-        self._run: Any | None = None
+        self.run: Any | None = None
 
     def init(self) -> None:
         try:
             import wandb
 
-            self._run = wandb.init(project=self.project, name=self.runname, reinit=True)
+            self.run = wandb.init(project=self.project, name=self.runname, reinit=True)
         except Exception:  # noqa: BLE001
-            self._run = None
+            self.run = None
 
     def log(self, key: str, value: float, step: int | None = None) -> None:
-        if self._run is None:
+        if self.run is None:
             self.init()
-        if self._run is not None:
+        if self.run is not None:
             try:
-                self._run.log({key: value}, step=step)
+                self.run.log({key: value}, step=step)
             except Exception:  # noqa: BLE001
                 pass
 

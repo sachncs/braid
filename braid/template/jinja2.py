@@ -22,16 +22,16 @@ class jinja2:
             from braid.core.error import ioerror
 
             raise ioerror("jinja2 required for template:jinja2") from exc
-        self._env = _j.Environment(autoescape=False)
-        self._tpl = self._env.from_string(template)
-        self._template_source = template
+        self.env = _j.Environment(autoescape=False)
+        self.tpl = self.env.from_string(template)
+        self.template_source = template
 
     def render(self, **kwargs: Any) -> str:
         """Render the template with keyword arguments."""
-        return self._tpl.render(**kwargs)
+        return self.tpl.render(**kwargs)
 
     def cacheget(self, key: str) -> str | None:
-        return self._template_source if key == self._template_source else None
+        return self.template_source if key == self.template_source else None
 
     def cacheput(self, key: str, value: str) -> None:
         return None
@@ -40,7 +40,7 @@ class jinja2:
         return None
 
     def idempotencykey(self, *args: Any, **kwargs: Any) -> str:
-        return f"template:jinja2:{self._template_source}"
+        return f"template:jinja2:{self.template_source}"
 
     def observability(self) -> dict[str, Any]:
         return {}

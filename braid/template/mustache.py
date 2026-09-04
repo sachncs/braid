@@ -22,15 +22,15 @@ class mustache:
             from braid.core.error import ioerror
 
             raise ioerror("pystache required for template:mustache") from exc
-        self._template = template
-        self._renderer = pystache.Renderer()
+        self.template = template
+        self.renderer = pystache.Renderer()
 
     def render(self, **kwargs: Any) -> str:
         """Render the template via Mustache."""
-        return self._renderer.render(self._template, kwargs)
+        return self.renderer.render(self.template, kwargs)
 
     def idempotencykey(self, *args: Any, **kwargs: Any) -> str:
-        return f"template:mustache:{self._template}"
+        return f"template:mustache:{self.template}"
 
     def observability(self) -> dict[str, Any]:
         return {}

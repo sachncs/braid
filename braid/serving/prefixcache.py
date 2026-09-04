@@ -9,13 +9,13 @@ class prefixcache:
     """In-process prefix cache for shared system prompts."""
 
     def __init__(self) -> None:
-        self._cache: dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
     def get(self, key: str) -> Any | None:
-        return self._cache.get(key)
+        return self.cache.get(key)
 
     def put(self, key: str, value: Any) -> None:
-        self._cache[key] = value
+        self.cache[key] = value
 
     def invalidate(self, key: str) -> None:
-        self._cache.pop(key, None)
+        self.cache.pop(key, None)

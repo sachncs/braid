@@ -9,7 +9,7 @@ from braid.drift.jsd import jsd
 from braid.drift.pagehinkley import pagehinkley
 from braid.driftresponse.alert import alert
 from braid.driftresponse.retraintrigger import retraintrigger
-from braid.driftresponse.fallbackbaseline import fallbackbaseline
+from braid.driftresponse.fallback import fallback
 from braid.tracing.otlp import otlp as otlptracing
 from braid.tracing.jaeger import jaeger
 from braid.tracing.console import console
@@ -30,7 +30,7 @@ __all__ = [
     "pagehinkley",
     "alert",
     "retraintrigger",
-    "fallbackbaseline",
+    "fallback",
     "otlptracing",
     "jaeger",
     "console",

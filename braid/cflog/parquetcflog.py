@@ -23,26 +23,26 @@ class parquetcflog:
         self.dir = Path(dir)
         self.dir.mkdir(parents=True, exist_ok=True)
         self.maxperfile = maxperfile
-        self._rows: list[dict[str, Any]] = []
-        self._filecount = 0
+        self.rows: list[dict[str, Any]] = []
+        self.filecount = 0
 
     def log(self, entry: dict[str, Any]) -> None:
         """Append a log entry; rotate when full."""
-        self._rows.append(entry)
-        if len(self._rows) >= self.maxperfile:
-            self._flush()
-
-    def _flush(self) -> None:
-        if not self._rows:
-            return
-        self._filecount += 1
-        path = self.dir / f"cf-{self._filecount:08d}.parquet"
-        tbl = pa.Table.from_pylist(self._rows)
-        pq.write_table(tbl, str(path))
-        self._rows = []
+        self.rows.append(entry)
+        if len(self.rows) >= self.maxperfile:
+            self.flush()
 
     def flush(self) -> None:
-        self._flush()
+        if not self.rows:
+            return
+        self.filecount += 1
+        path = self.dir / f"cf-{self.filecount:08d}.parquet"
+        tbl = pa.Table.from_pylist(self.rows)
+        pq.write_table(tbl, str(path))
+        self.rows = []
+
+    def flush(self) -> None:
+        self.flush()
 
     def observability(self) -> dict[str, Any]:
         return {}

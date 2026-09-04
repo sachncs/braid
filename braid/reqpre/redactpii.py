@@ -20,7 +20,7 @@ class redactpii:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable", })
 
-    def _redact(self, value: str) -> str:
+    def redact(self, value: str) -> str:
         return EMAIL.sub("[email]", PHONE.sub("[phone]", value))
 
     def process(self, request: dict[str, Any]) -> dict[str, Any]:
@@ -28,11 +28,11 @@ class redactpii:
         out: dict[str, Any] = {}
         for k, v in request.items():
             if isinstance(v, str):
-                out[k] = self._redact(v)
+                out[k] = self.redact(v)
             elif isinstance(v, dict):
                 out[k] = self.process(v)
             elif isinstance(v, list):
-                out[k] = [self.process(x) if isinstance(x, dict) else (self._redact(x) if isinstance(x, str) else x) for x in v]
+                out[k] = [self.process(x) if isinstance(x, dict) else (self.redact(x) if isinstance(x, str) else x) for x in v]
             else:
                 out[k] = v
         return out

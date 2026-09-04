@@ -42,7 +42,7 @@ class matmulint4awq:
         self.numitems = self.embeddings.shape[0]
         self.dim = self.embeddings.shape[1]
 
-    def _dequantized(self, ids: np.ndarray | None) -> np.ndarray:
+    def dequantized(self, ids: np.ndarray | None) -> np.ndarray:
         idx = ids if ids is not None else np.arange(self.numitems)
         codes = self.embeddings[idx].astype(np.float32)
         if self.scales is not None:
@@ -53,7 +53,7 @@ class matmulint4awq:
         return codes
 
     def score(self, userrepr: np.ndarray, ids: np.ndarray | None = None) -> np.ndarray:
-        matrix = self._dequantized(ids)
+        matrix = self.dequantized(ids)
         return userrepr @ matrix.T
 
     def warmup(self) -> None:
@@ -67,7 +67,7 @@ class matmulint4awq:
 
     def cacheget(self, key: int) -> np.ndarray | None:
         if 0 <= key < self.numitems:
-            return self._dequantized(np.asarray([key]))[0]
+            return self.dequantized(np.asarray([key]))[0]
         return None
 
     def cacheput(self, key: int, value: np.ndarray) -> None:

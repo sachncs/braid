@@ -20,19 +20,19 @@ class hflocal:
     def __init__(self, model: str = "openbmb/MiniCPM5-1B", dtype: str = "bf16") -> None:
         self.modelname = model
         self.dtype = dtype
-        self._model: Any | None = None
+        self.model: Any | None = None
 
     def warmup(self) -> None:
         try:
             from transformers import AutoModel
 
-            self._model = AutoModel.from_pretrained(self.modelname)
+            self.model = AutoModel.from_pretrained(self.modelname)
         except Exception:  # noqa: BLE001
-            self._model = None
+            self.model = None
 
     def rank(self, prompt: str, catalogscoresfn: Any, topk: int = 50) -> dict[str, Any]:
         """Encode the prompt and run a catalog score fn."""
-        if self._model is None:
+        if self.model is None:
             self.warmup()
         try:
             import torch
@@ -47,7 +47,7 @@ class hflocal:
         return {"ids": ids, "scores": scores[0][:topk].tolist() if hasattr(scores, "tolist") else []}
 
     def shutdown(self) -> None:
-        self._model = None
+        self.model = None
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.server.hflocal.qps", "type": "counter"}]}

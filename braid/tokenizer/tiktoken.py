@@ -21,23 +21,23 @@ class tiktoken:
 
     def __init__(self, encoding: str = "cl100k_base") -> None:
         self.encoding = encoding
-        self._enc: Any | None = None
+        self.enc: Any | None = None
         try:
             import tiktoken
 
-            self._enc = tiktoken.get_encoding(encoding)
+            self.enc = tiktoken.get_encoding(encoding)
         except Exception:  # noqa: BLE001 — degraded mode
-            self._enc = None
+            self.enc = None
 
     def encode(self, text: str) -> list[int]:
-        if self._enc is None:
+        if self.enc is None:
             return [ord(c) for c in text]
-        return list(self._enc.encode(text))
+        return list(self.enc.encode(text))
 
     def decode(self, ids: Iterable[int]) -> str:
-        if self._enc is None:
+        if self.enc is None:
             return "".join(chr(int(i)) for i in ids)
-        return self._enc.decode(list(ids))
+        return self.enc.decode(list(ids))
 
     def count(self, text: str) -> int:
         return len(self.encode(text))

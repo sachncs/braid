@@ -18,11 +18,11 @@ class alert:
 
     def __init__(self, channel: str = "braid.drift") -> None:
         self.channel = channel
-        self._log = getlogger(channel)
+        self.log = getlogger(channel)
 
     def respond(self, signal: dict[str, Any]) -> None:
         """Emit an alert for a drift signal."""
-        self._log.warning("drift.detected", score=signal.get("score"), detector=signal.get("detector"))
+        self.log.warning("drift.detected", score=signal.get("score"), detector=signal.get("detector"))
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.driftresponse.alerts", "type": "counter"}]}

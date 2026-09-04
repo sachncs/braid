@@ -17,20 +17,20 @@ class mlflow:
 
     def __init__(self, runname: str = "default") -> None:
         self.runname = runname
-        self._run: Any | None = None
+        self.run: Any | None = None
 
     def init(self) -> None:
         try:
             import mlflow
 
-            self._run = mlflow.start_run(run_name=self.runname)
+            self.run = mlflow.start_run(run_name=self.runname)
         except Exception:  # noqa: BLE001
-            self._run = None
+            self.run = None
 
     def log(self, key: str, value: float, step: int | None = None) -> None:
-        if self._run is None:
+        if self.run is None:
             self.init()
-        if self._run is not None:
+        if self.run is not None:
             try:
                 import mlflow
 

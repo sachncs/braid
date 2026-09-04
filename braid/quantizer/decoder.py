@@ -20,16 +20,16 @@ class decoder:
     def __init__(self, hiddendim: int = 128, outputdim: int = 64) -> None:
         self.hiddendim = hiddendim
         self.outputdim = outputdim
-        self._w: np.ndarray | None = None
+        self.w: np.ndarray | None = None
 
     def fit(self, x: np.ndarray) -> None:
         rng = np.random.default_rng(0)
-        self._w = rng.standard_normal((self.hiddendim, self.outputdim)).astype(np.float32) * 0.05
+        self.w = rng.standard_normal((self.hiddendim, self.outputdim)).astype(np.float32) * 0.05
 
     def decode(self, z: np.ndarray) -> np.ndarray:
-        if self._w is None:
+        if self.w is None:
             self.fit(np.zeros((1, self.hiddendim), dtype=np.float32))
-        return z @ self._w
+        return z @ self.w
 
     def observability(self) -> dict[str, Any]:
         return {}
