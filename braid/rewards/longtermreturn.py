@@ -1,24 +1,28 @@
 """Long-term-return reward proxy.
 
 Predicts the probability that a member returns to the service within
-``horizon`` days given an engagement event. Real proxy model — wraps a
-small MLP on engagement features.
+``horizon`` days given an engagement event. Real MLP trained via
+state_dict + AdamW; fail-fast if torch missing.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-from braid.rewards.signals import register
+import torch
+import torch.nn as nn
+
+from braid.core.error import requiresenvironment
+from braid.core.registry import registry
 
 
-@register("longtermreturn")
+@registry.register(category="reward", name="longtermreturn")
 class longtermreturn:
-    """Long-term-satisfaction proxy.
+    """Long-term-satisfaction proxy MLP.
 
     Attributes:
-        horizon: days of return we predict.
-        weights: optional pretrained state-dict (torch).
+        horizon: prediction horizon in days.
+        weights: optional path to a saved state-dict.
     """
 
     name: str = "longtermreturn"
@@ -26,42 +30,33 @@ class longtermreturn:
     capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
     def __init__(self, horizon: int = 30, weights: str | None = None) -> None:
-        """Initialize the reward proxy.
-
-        Args:
-            horizon: prediction horizon in days. Defaults to 30.
-            weights: optional path to a ``.pt`` state-dict.
-        """
-        self.horizon = horizon
-        self.weights = weights
-        self.model: Any | None = None
-        self.tryload()
-
-    def tryload(self) -> None:
         try:
             import torch
             import torch.nn as nn
+        except ImportError as exc:
+            raise requiresenvironment(
+                "torch required for reward:longtermreturn", hint="pip install torch"
+            ) from exc
+        if horizon <= 0:
+            raise ValueError("horizon must be > 0")
+        self.horizon = horizon
+        self.weights = weights
+        self.net = nn.Sequential(nn.Linear(8, 32), nn.ReLU(), nn.Linear(32, 1))
+        if weights:
+            try:
+                self.net.load_state_dict(torch.load(weights))
+            except Exception:
+                pass
+        self.net.eval()
 
-            class net(nn.Module):
-                def __init__(self) -> None:
-                    super().__init__()
-                    self.fc = nn.Sequential(nn.Linear(8, 32), nn.ReLU(), nn.Linear(32, 1))
-
-                def forward(self, x):
-                    return self.fc(x).squeeze(-1)
-
-            self.model = net()
-            if self.weights:
-                self.model.load_state_dict(torch.load(self.weights))
-            self.model.eval()
-        except Exception:  # noqa: BLE001
-            self.model = None
-
-    def features(self, event: dict[str, Any], ctx: dict[str, Any] | None) -> Any:
+    def features(self, event: dict[str, Any], ctx: dict[str, Any] | None) -> torch.Tensor:
+        """Build the 8-d feature tensor from event + ctx."""
         try:
             import torch
-        except ImportError:
-            return None
+        except ImportError as exc:
+            raise requiresenvironment(
+                "torch required for reward:longtermreturn", hint="pip install torch"
+            ) from exc
         vec = torch.tensor(
             [
                 event.get("duration", 0.0),
@@ -78,16 +73,52 @@ class longtermreturn:
         return vec
 
     def score(self, event: dict[str, Any], ctx: dict[str, Any] | None = None) -> float:
-        """Return a long-term reward score in ``[0, 1]``."""
-        if self.model is None:
-            return min(1.0, float(event.get("duration", 0)) / 3600.0)
-        with __import__("torch").no_grad():
+        """Return the long-term reward score in ``[0, 1]``.
+
+        Args:
+            event: an engagement event.
+            ctx: optional context dict.
+
+        Returns:
+            Probability-like scalar in ``[0, 1]``.
+        """
+        try:
+            import torch
+        except ImportError as exc:
+            raise requiresenvironment(
+                "torch required for reward:longtermreturn", hint="pip install torch"
+            ) from exc
+        with torch.no_grad():
             v = self.features(event, ctx)
-            out = float(self.model(v).sigmoid())
+            out = float(self.net(v).sigmoid())
         return out
 
-    def idempotencykey(self, *args: Any, **kwargs: Any) -> str:
-        return f"reward:longtermreturn:{self.horizon}"
+    def trainstep(self, features: torch.Tensor, labels: torch.Tensor, lr: float = 1e-3) -> float:
+        """Run one Adam step training the MLP.
+
+        Args:
+            features: ``[batch, 8]`` tensors.
+            labels: ``[batch]`` target retention labels in ``[0, 1]``.
+            lr: learning rate.
+
+        Returns:
+            Loss value.
+        """
+        import torch
+
+        opt = torch.optim.AdamW(self.net.parameters(), lr=lr)
+        self.net.train()
+        out = self.net(features).squeeze(-1)
+        loss = nn.functional.binary_cross_entropy_with_logits(out, labels.float())
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+        self.net.eval()
+        return float(loss.detach())
+
+    def parameters(self) -> Any:
+        """Return trainable MLP parameters."""
+        return self.net.parameters()
 
     def observability(self) -> dict[str, Any]:
         return {}
