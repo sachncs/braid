@@ -9,9 +9,11 @@ from __future__ import annotations
 import inspect
 from typing import Any
 
+from braid.core.error import requiresenvironment, requiresresource
 from braid.core.registry import registry
 
 
+@registry.register(category="reward", name="composite")
 class compositereward:
     """Weighted sum of registered reward concretes.
 
@@ -37,10 +39,29 @@ class compositereward:
         self.members.append((name, weight))
 
     def resolve(self, name: str) -> Any:
-        """Instantiate a reward concrete by registry name."""
-        if name not in self.instances:
-            self.instances[name] = registry.create("reward", name)
-        return self.instances[name]
+        """Instantiate a reward concrete by registry name.
+
+        Args:
+            name: registered reward name.
+
+        Returns:
+            An instantiated concrete.
+
+        Raises:
+            requiresenvironment: if the reward is not registered.
+        """
+        if name in self.instances:
+            return self.instances[name]
+        try:
+            inst = registry.create("reward", name)
+        except Exception as exc:
+            raise requiresenvironment(
+                f"reward '{name}' not registered",
+                hint="register the reward concrete via @registry.register('reward', name=...)",
+                cause=str(exc),
+            ) from exc
+        self.instances[name] = inst
+        return inst
 
     def score(self, event: dict[str, Any], ctx: dict[str, Any] | None = None) -> float:
         """Return the weighted sum of component scores.
@@ -54,24 +75,46 @@ class compositereward:
 
         Returns:
             Float in ``[0, 1]``.
+
+        Raises:
+            requiresresource: if all components fail and there is nothing to combine.
         """
+        try:
+            import torch
+        except ImportError:
+            torch = None  # noqa: F841 — torch is optional for some rewards
         total = 0.0
         wsum = 0.0
+        failures: dict[str, str] = {}
         for name, w in self.members:
-            comp = self.resolve(name)
             try:
+                comp = self.resolve(name)
                 sig = inspect.signature(comp.score)
                 kwargs: dict[str, Any] = {}
                 if "history" in sig.parameters and ctx is not None:
                     kwargs["history"] = ctx.get("history", ctx if isinstance(ctx, list) else [])
-                total += w * comp.score(event, **kwargs)
-            except Exception:
-                continue
-            wsum += abs(w)
-        return total / wsum if wsum else 0.0
+                val = comp.score(event, **kwargs)
+                if torch is not None and isinstance(val, torch.Tensor):
+                    val = float(val.detach().item())
+                total += w * float(val)
+                wsum += abs(w)
+            except Exception as exc:  # noqa: BLE001
+                failures[name] = str(exc)
+        if wsum == 0:
+            raise requiresresource(
+                "no rewards produced a score",
+                hint="check registered reward signatures",
+                cause=str(failures),
+            )
+        self.lastfailures = failures
+        return total / wsum
 
     def observability(self) -> dict[str, Any]:
-        return {}
+        return {
+            "metrics": [
+                {"name": "braid.reward.composite.score", "type": "gauge"},
+            ]
+        }
 
     def metrics(self) -> list[Any]:
         return []
