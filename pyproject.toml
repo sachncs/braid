@@ -50,34 +50,6 @@ dev = [
   "pytest-cov>=5.0",
   "pre-commit>=3.7",
 ]
-vllm = ["vllm>=0.4"]
-triton = ["tritonclient>=2.40"]
-redis = ["redis>=5.0"]
-memcached = ["pymemcache>=4.0"]
-kafka = ["aiokafka>=0.10", "kafka-python>=2.0"]
-postgres = ["asyncpg>=0.29", "psycopg[binary]>=3.1"]
-s3 = ["aiobotocore>=2.7", "s3fs>=2024.3"]
-opentelemetry = ["opentelemetry-api>=1.24", "opentelemetry-sdk>=1.24", "opentelemetry-exporter-otlp>=1.24"]
-jaeger = ["opentelemetry-exporter-jaeger-thrift>=1.24"]
-metrics = ["prometheus-client>=0.20", "statsd>=4.0"]
-tracking = ["aim>=3.19", "mlflow>=2.13", "wandb>=0.17", "tensorboard>=2.16"]
-quantization = ["bitsandbytes>=0.42", "awq>=0.0.5"]
-secrets = ["hvac>=2.1", "kubernetes>=29.0"]
-rqvae = ["einops>=0.7"]
-all = [
-  "vllm>=0.4",
-  "tritonclient>=2.40",
-  "redis>=5.0",
-  "pymemcache>=4.0",
-  "aiokafka>=0.10",
-  "asyncpg>=0.29",
-  "s3fs>=2024.3",
-  "opentelemetry-api>=1.24",
-  "prometheus-client>=0.20",
-  "aim>=3.19",
-  "bitsandbytes>=0.42",
-  "einops>=0.7",
-]
 
 [project.entry-points."braid.backbone"]
 minicpm5 = "braid.backbone.minicpm5:minicpm5"
