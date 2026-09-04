@@ -14,6 +14,7 @@ class tiktoken:
 
     Attributes:
         encoding: encoding name (``"cl100k_base"`` etc.).
+        enc: the underlying tiktoken encoding.
     """
 
     name: str = "tiktoken"
@@ -24,18 +25,19 @@ class tiktoken:
         try:
             import tiktoken
 
-            self._enc = tiktoken.get_encoding(encoding)
+            self.enc = tiktoken.get_encoding(encoding)
         except ImportError as exc:
             raise requiresenvironment(
                 "tiktoken is required for tokenizer:tiktoken",
                 hint="pip install tiktoken",
             ) from exc
+        self.encoding = encoding
 
     def encode(self, text: str) -> list[int]:
-        return list(self._enc.encode(text))
+        return list(self.enc.encode(text))
 
     def decode(self, ids: Iterable[int]) -> str:
-        return self._enc.decode(list(ids))
+        return self.enc.decode(list(ids))
 
     def count(self, text: str) -> int:
         return len(self.encode(text))
