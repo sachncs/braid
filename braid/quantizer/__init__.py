@@ -3,14 +3,14 @@
 from braid.quantizer.quantizer import quantizer
 from braid.quantizer.encoder import encoder
 from braid.quantizer.decoder import decoder
-from braid.quantizer.index import index
+from braid.quantizer.semanticindex import semanticindex
 from braid.quantizer.phase import rqvaephase
 
 __all__ = [
     "quantizer",
     "encoder",
     "decoder",
-    "index",
+    "semanticindex",
     "rqvaephase",
 ]
 
