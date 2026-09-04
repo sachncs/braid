@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -13,7 +14,10 @@ class hf:
 
     Attributes:
         name: model name or path.
-        token: optional HF token.
+        token: optional HF token for gated models.
+
+    Raises:
+        requiresenvironment: if ``transformers`` is not installed.
     """
 
     name: str = "hf"
@@ -26,32 +30,33 @@ class hf:
         Args:
             name: HF tokenizer name (e.g., ``openbmb/MiniCPM5-1B``).
             token: optional HF token for gated models.
+
+        Raises:
+            requiresenvironment: if ``transformers`` is unavailable.
         """
-        self.name = name
-        self.token = token
-        self.tok: Any | None = None
         try:
             from transformers import AutoTokenizer
-
-            self.tok = AutoTokenizer.from_pretrained(name, token=token)
-        except Exception:  # noqa: BLE001 — degraded mode
-            self.tok = None
+            self._tok: Any = AutoTokenizer.from_pretrained(name, token=token)
+        except ImportError as exc:
+            raise requiresenvironment(
+                "transformers is required for tokenizer:hf",
+                hint="pip install transformers",
+            ) from exc
 
     def encode(self, text: str) -> list[int]:
-        if self.tok is None:
-            return [ord(c) for c in text]
-        return list(self.tok.encode(text))
+        """Encode ``text`` to a list of token ids."""
+        return list(self._tok.encode(text))
 
     def decode(self, ids: Iterable[int]) -> str:
-        if self.tok is None:
-            return "".join(chr(int(i)) for i in ids)
-        return self.tok.decode(list(ids))
+        """Decode ``ids`` back to text."""
+        return self._tok.decode(list(ids))
 
     def count(self, text: str) -> int:
+        """Return the token count for ``text``."""
         return len(self.encode(text))
 
     def cacheget(self, key: str) -> Any | None:
-        return self.tok if key == self.name else None
+        return self._tok if key == self.name else None
 
     def cacheput(self, key: str, value: Any) -> None:
         return None
