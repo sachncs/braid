@@ -41,9 +41,6 @@ class parquetcflog:
         pq.write_table(tbl, str(path))
         self.rows = []
 
-    def flush(self) -> None:
-        self.flush()
-
     def observability(self) -> dict[str, Any]:
         return {}
 
