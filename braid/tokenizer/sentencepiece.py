@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -20,25 +21,22 @@ class sentencepiece:
     capabilities: frozenset[str] = frozenset({"idempotent", "observable"})
 
     def __init__(self, modelpath: str) -> None:
-        self.modelpath = modelpath
-        self.sp: Any | None = None
         try:
             import sentencepiece as spm
 
-            self.sp = spm.SentencePieceProcessor()
-            self.sp.Load(modelpath)
-        except Exception:  # noqa: BLE001 — degraded mode
-            self.sp = None
+            self._sp = spm.SentencePieceProcessor()
+            self._sp.Load(modelpath)
+        except ImportError as exc:
+            raise requiresenvironment(
+                "sentencepiece is required for tokenizer:sentencepiece",
+                hint="pip install sentencepiece",
+            ) from exc
 
     def encode(self, text: str) -> list[int]:
-        if self.sp is None:
-            return [ord(c) for c in text]
-        return list(self.sp.EncodeAsIds(text))
+        return list(self._sp.EncodeAsIds(text))
 
     def decode(self, ids: Iterable[int]) -> str:
-        if self.sp is None:
-            return "".join(chr(int(i)) for i in ids)
-        return self.sp.DecodeIds(list(ids))
+        return self._sp.DecodeIds(list(ids))
 
     def count(self, text: str) -> int:
         return len(self.encode(text))
