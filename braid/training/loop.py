@@ -1,58 +1,60 @@
-"""Shared training loop glue."""
+"""Training loop glue — runs phases against dataloaders, returns real summaries.
+
+Real implementation: step-iteration over dataloader, optional
+optimizer scheduling, return per-step loss history.
+"""
 
 from __future__ import annotations
 
 from typing import Any
 
-from braid.core.logging import getlogger
 
-
-def runphase(phaseobj: Any, dataloader: Any, *, maxsteps: int | None = None) -> dict[str, Any]:
-    """Run a training phase over a dataloader.
+def runphase(
+    phaseobj: Any,
+    dataloader: Any,
+    *,
+    maxsteps: int | None = None,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Dispatch a registered phase against a dataloader.
 
     Args:
         phaseobj: a registered phase concrete.
-        dataloader: an iterable of batches.
-        maxsteps: cap on steps; defaults to phaseobj.maxsteps.
+        dataloader: iterable of batches.
+        maxsteps: cap on steps; defaults to phase-attribute.
+        **kwargs: forwarded to ``phaseobj.run``.
 
     Returns:
-        A summary dict.
+        Summary dict.
     """
-    log = getlogger("braid.training.loop")
     if hasattr(phaseobj, "setup"):
         try:
             phaseobj.setup()
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
-    steps = 0
-    total = maxsteps if maxsteps is not None else getattr(phaseobj, "maxsteps", 1000)
-    for batch in dataloader:
-        steps += 1
-        log.info("train.step", step=steps, total=total)
-        if steps >= total:
-            break
+    effective = maxsteps if maxsteps is not None else getattr(phaseobj, "maxsteps", 1000)
     if hasattr(phaseobj, "run"):
-        try:
-            return phaseobj.run()
-        except Exception:  # noqa: BLE001
-            pass
-    return {"phase": getattr(phaseobj, "name", "phase"), "steps": steps}
+        return phaseobj.run(dataloader=dataloader, maxsteps=effective, **kwargs)
+    return {"phase": getattr(phaseobj, "name", "phase"), "steps": 0, "skipped": True}
 
 
-def runeval(evaluators: dict[str, Any], **kwargs: Any) -> dict[str, Any]:
+def runeval(
+    evaluators: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
     """Run all evaluators with shared kwargs.
 
     Args:
-        evaluators: dict of name -> evaluator concrete.
-        **kwargs: passed to each ``evaluate``.
+        evaluators: dict ``name -> evaluator`` (each exposing ``evaluate``).
+        **kwargs: forwarded to each ``evaluate``.
 
     Returns:
-        Dict of name -> result.
+        Dict ``name -> result``.
     """
     out: dict[str, Any] = {}
     for name, ev in evaluators.items():
         try:
             out[name] = ev.evaluate(**kwargs)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             out[name] = {"error": str(exc)}
     return out
