@@ -30,6 +30,7 @@ class braiderror(Exception):
         hint: str | None = None,
         retryable: bool | None = None,
         context: dict[str, Any] | None = None,
+        cause: str | None = None,
     ) -> None:
         super().__init__(message)
         self.message = message
@@ -38,6 +39,8 @@ class braiderror(Exception):
         if retryable is not None:
             self.retryable = retryable
         self.context = context or {}
+        if cause is not None:
+            self.context["cause"] = cause
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self.message!r})"
