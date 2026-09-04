@@ -15,9 +15,7 @@ class hf:
     Attributes:
         name: model name or path.
         token: optional HF token for gated models.
-
-    Raises:
-        requiresenvironment: if ``transformers`` is not installed.
+        tok: the loaded tokenizer (public).
     """
 
     name: str = "hf"
@@ -25,38 +23,29 @@ class hf:
     capabilities: frozenset[str] = frozenset({"cachable", "idempotent", "observable"})
 
     def __init__(self, name: str, token: str | None = None) -> None:
-        """Initialize.
-
-        Args:
-            name: HF tokenizer name (e.g., ``openbmb/MiniCPM5-1B``).
-            token: optional HF token for gated models.
-
-        Raises:
-            requiresenvironment: if ``transformers`` is unavailable.
-        """
         try:
             from transformers import AutoTokenizer
-            self._tok: Any = AutoTokenizer.from_pretrained(name, token=token)
+
+            self.name = name
+            self.token = token
+            self.tok: Any = AutoTokenizer.from_pretrained(name, token=token)
         except ImportError as exc:
             raise requiresenvironment(
-                "transformers is required for tokenizer:hf",
+                "transformers required for tokenizer:hf",
                 hint="pip install transformers",
             ) from exc
 
     def encode(self, text: str) -> list[int]:
-        """Encode ``text`` to a list of token ids."""
-        return list(self._tok.encode(text))
+        return list(self.tok.encode(text))
 
     def decode(self, ids: Iterable[int]) -> str:
-        """Decode ``ids`` back to text."""
-        return self._tok.decode(list(ids))
+        return self.tok.decode(list(ids))
 
     def count(self, text: str) -> int:
-        """Return the token count for ``text``."""
         return len(self.encode(text))
 
     def cacheget(self, key: str) -> Any | None:
-        return self._tok if key == self.name else None
+        return self.tok if key == self.name else None
 
     def cacheput(self, key: str, value: Any) -> None:
         return None
