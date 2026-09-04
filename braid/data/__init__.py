@@ -1,6 +1,6 @@
 """Data subsystem."""
 
-from braid.datasource import localparquet, s3parquet, kafka, postgres
+from braid.datasource import localparquet
 from braid.datasink import parquetsink, arrowsink, postgres
 from braid.sessionizer import gapsessionizer, countsessionizer, timewindowsessionizer
 from braid.splitter import chronologicalsplitter, leaveoneoutsplitter, timestratifiedsplitter
