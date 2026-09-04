@@ -1,4 +1,4 @@
-phase: phase1pretrain
+phase: pretrain
 backbone:
   type: minicpm5
 data:
