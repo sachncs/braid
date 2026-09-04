@@ -7,6 +7,10 @@ from __future__ import annotations
 
 from typing import Any
 
+import torch
+import torch.nn.functional as F
+
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -16,17 +20,26 @@ class diversityentropy:
 
     name: str = "diversityentropy"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
-    def compute(self, scores: Any, weight: float = 1.0) -> Any:
-        """Negative entropy of softmax(scores)."""
+    def __init__(self) -> None:
         try:
             import torch
-            import torch.nn.functional as F
         except ImportError as exc:
-            from braid.core.error import ioerror
+            raise requiresenvironment(
+                "torch is required for loss:diversityentropy", hint="pip install torch"
+            ) from exc
 
-            raise ioerror("pytorch required for diversityentropy") from exc
+    def compute(self, scores: Any, weight: float = 1.0) -> Any:
+        """Return negative entropy of softmax(scores).
+
+        Args:
+            scores: ``[batch, numitems]`` logits.
+            weight: scalar multiplier.
+
+        Returns:
+            Scalar tensor.
+        """
         probs = F.softmax(scores, dim=-1)
         entropy = -(probs * (probs + 1e-8).log()).sum(dim=-1).mean()
         return weight * (-entropy)
