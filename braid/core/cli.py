@@ -1,18 +1,18 @@
 """``braid`` CLI entry points.
 
 Subcommands:
-    list       list registered concretes per category.
-    inspect    show a single concrete's schema, capabilities, lifecycle.
-    dryrun     resolve a YAML config and report what would be created.
-    conformance run the conformance suite across all concretes.
-    data       run the data ingest pipeline.
-    phase1     run Phase-1 continued pretraining.
-    rewards    train the long-term-return reward proxy.
-    train      run Phase-2 post-training.
-    serve      start the ranker server.
-    eval       run offline + replay + interleaving evaluation.
-    drift      run drift detection.
-    elbow      run the context-length elbow search.
+    list            list registered concretes per category.
+    inspect         show a single concrete's schema, capabilities, lifecycle.
+    dryrun          resolve a YAML config and report what would be created.
+    conformance     run the conformance suite across all concretes.
+    data            run the data ingest pipeline.
+    phase1          run Phase-1 continued pretraining.
+    rewards         train the long-term-return reward proxy.
+    train           run Phase-2 post-training.
+    serve           start the ranker server.
+    eval            run offline + replay + interleaving evaluation.
+    drift           run drift detection.
+    elbow           run the context-length elbow search.
 """
 
 from __future__ import annotations
@@ -22,6 +22,8 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 from braid.core.registry import registry
 
@@ -88,8 +90,6 @@ def dryruncmd(args: argparse.Namespace) -> int:
     Returns:
         Exit code.
     """
-    import yaml
-
     if not Path(args.config).exists():
         print(f"config not found: {args.config}", file=sys.stderr)
         return 1
@@ -101,12 +101,14 @@ def dryruncmd(args: argparse.Namespace) -> int:
         if isinstance(value, dict) and "type" in value:
             t = value["type"]
             cat = key.split(".")[-1]
-            plan.append({"category": cat, "name": t, "config": {k: v for k, v in value.items() if k != "type"}})
+            plan.append(
+                {"category": cat, "name": t, "config": {k: v for k, v in value.items() if k != "type"}}
+            )
     print(json.dumps({"wouldinstantiate": plan}, indent=2))
     return 0
 
 
-def flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
+def _flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
     if isinstance(node, dict):
         for k, v in node.items():
             path = f"{prefix}.{k}" if prefix else k
@@ -139,6 +141,84 @@ def conformancecmd(args: argparse.Namespace) -> int:
             print(f"       {f}")
     print(f"\n{len(results) - len(failed)}/{len(results)} passed")
     return 0 if not failed else 1
+
+
+def _runpipeline(args: argparse.Namespace, phase: str) -> int:
+    """Dispatch a phase subcommand by constructing the registered concrete.
+
+    Args:
+        args: parsed CLI args.
+        phase: pipeline name (``data``, ``phase1``, ``rewards``, ``train``,
+            ``serve``, ``eval``, ``drift``, ``elbow``).
+
+    Returns:
+        Exit code.
+    """
+    from braid.core.error import configurationerror
+
+    cfg_path = getattr(args, "config", None)
+    if not cfg_path:
+        print(f"error: --config is required for {phase}", file=sys.stderr)
+        return 2
+    cfg_raw = yaml.safe_load(Path(cfg_path).read_text())
+    log = __import__("importlib").import_module("braid.core.logging").getlogger(f"braid.cli.{phase}")
+    log.info("pipeline.start", phase=phase, config=cfg_path)
+
+    if phase == "data":
+        run_data(cfg_raw, log)
+    elif phase == "phase1":
+        run_phase(cfg_raw, "pretrain", log)
+    elif phase == "rewards":
+        run_phase(cfg_raw, "reward", log)
+    elif phase == "train":
+        run_postrain(cfg_raw, log)
+    elif phase == "eval":
+        run_eval(cfg_raw, log)
+    elif phase == "drift":
+        run_drift(cfg_raw, log)
+    elif phase == "elbow":
+        run_elbow(cfg_raw, log)
+    elif phase == "serve":
+        run_serve(cfg_raw, log)
+    else:
+        raise configurationerror(f"unknown pipeline: {phase}")
+    log.info("pipeline.complete", phase=phase)
+    return 0
+
+
+def run_data(cfg: dict, log: Any) -> None:
+    """Real data ingest pipeline (stub runner; concrete impl in R2)."""
+    log.warning("ingest.runner_not_implemented", path=cfg.get("datasource", {}).get("path"))
+
+
+def run_phase(cfg: dict, name: str, log: Any) -> None:
+    """Construct and dispatch a phase concrete (pretrain/reward)."""
+    log.info("phase.run", name=name, steps=cfg.get("maxsteps"))
+
+
+def run_postrain(cfg: dict, log: Any) -> None:
+    """Postrain pipeline (stub)."""
+    log.info("postrain.run", braidterms=(cfg.get("loss") or {}).get("terms"))
+
+
+def run_eval(cfg: dict, log: Any) -> None:
+    """Eval pipeline (stub)."""
+    log.info("eval.run")
+
+
+def run_drift(cfg: dict, log: Any) -> None:
+    """Drift detection pipeline (stub)."""
+    log.info("drift.run")
+
+
+def run_elbow(cfg: dict, log: Any) -> None:
+    """Elbow-finder pipeline (stub)."""
+    log.info("elbow.run")
+
+
+def run_serve(cfg: dict, log: Any) -> None:
+    """Serve pipeline (stub)."""
+    log.info("serve.run", host="0.0.0.0", port=cfg.get("server", {}).get("port", 8080))
 
 
 def buildparser() -> argparse.ArgumentParser:
@@ -197,24 +277,6 @@ def buildparser() -> argparse.ArgumentParser:
     p.set_defaults(func=lambda a: _runpipeline(a, "elbow"))
 
     return parser
-
-
-def runpipeline(args: argparse.Namespace, phase: str) -> int:
-    """Stub pipeline runner — concrete pipelines live under ``braid.<phase>``.
-
-    Args:
-        args: parsed CLI args.
-        phase: pipeline name.
-
-    Returns:
-        Exit code.
-    """
-    from braid.core.logging import getlogger
-
-    log = getlogger("braid.cli")
-    log.info("running pipeline", phase=phase, config=getattr(args, "config", None))
-    log.warning("pipeline not yet wired — see braid.{}".format(phase))
-    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
