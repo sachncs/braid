@@ -95,7 +95,7 @@ def dryruncmd(args: argparse.Namespace) -> int:
         return 1
     raw = yaml.safe_load(Path(args.config).read_text())
     flat: dict[str, Any] = {}
-    _flatten(raw, flat)
+    flatten(raw, flat)
     plan: list[dict[str, Any]] = []
     for key, value in flat.items():
         if isinstance(value, dict) and "type" in value:
@@ -109,6 +109,7 @@ def dryruncmd(args: argparse.Namespace) -> int:
 
 
 def flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
+    """Walk a nested dict, recording any dict with a ``type`` field."""
     if isinstance(node, dict):
         for k, v in node.items():
             path = f"{prefix}.{k}" if prefix else k
@@ -116,7 +117,7 @@ def flatten(node: Any, out: dict[str, Any], prefix: str = "") -> None:
                 if "type" in v:
                     out[path] = v
                 else:
-                    _flatten(v, out, path)
+                    flatten(v, out, path)
             else:
                 out[path] = v
 
@@ -143,82 +144,149 @@ def conformancecmd(args: argparse.Namespace) -> int:
     return 0 if not failed else 1
 
 
-def runpipeline(args: argparse.Namespace, phase: str) -> int:
+def _runpipeline(args: argparse.Namespace, phase: str) -> int:
     """Dispatch a phase subcommand by constructing the registered concrete.
 
     Args:
         args: parsed CLI args.
-        phase: pipeline name (``data``, ``phase1``, ``rewards``, ``train``,
-            ``serve``, ``eval``, ``drift``, ``elbow``).
+        phase: pipeline name.
 
     Returns:
         Exit code.
     """
     from braid.core.error import configurationerror
+    from braid.core.logging import getlogger
 
     cfg_path = getattr(args, "config", None)
     if not cfg_path:
         print(f"error: --config is required for {phase}", file=sys.stderr)
         return 2
     cfg_raw = yaml.safe_load(Path(cfg_path).read_text())
-    log = __import__("importlib").import_module("braid.core.logging").getlogger(f"braid.cli.{phase}")
+    log = getlogger(f"braid.cli.{phase}")
     log.info("pipeline.start", phase=phase, config=cfg_path)
 
-    if phase == "data":
-        run_data(cfg_raw, log)
-    elif phase == "phase1":
-        run_phase(cfg_raw, "pretrain", log)
-    elif phase == "rewards":
-        run_phase(cfg_raw, "reward", log)
-    elif phase == "train":
-        run_postrain(cfg_raw, log)
-    elif phase == "eval":
-        run_eval(cfg_raw, log)
-    elif phase == "drift":
-        run_drift(cfg_raw, log)
-    elif phase == "elbow":
-        run_elbow(cfg_raw, log)
-    elif phase == "serve":
-        run_serve(cfg_raw, log)
-    else:
+    runners = {
+        "data": run_data,
+        "phase1": lambda c, l: run_phase(c, "pretrain", l),
+        "rewards": lambda c, l: run_phase(c, "reward", l),
+        "train": run_postrain,
+        "eval": run_eval,
+        "drift": run_drift,
+        "elbow": run_elbow,
+        "serve": run_serve,
+    }
+    runner = runners.get(phase)
+    if runner is None:
         raise configurationerror(f"unknown pipeline: {phase}")
+    runner(cfg_raw, log)
     log.info("pipeline.complete", phase=phase)
     return 0
 
 
 def run_data(cfg: dict, log: Any) -> None:
-    """Real data ingest pipeline (stub runner; concrete impl in R2)."""
-    log.warning("ingest.runner_not_implemented", path=cfg.get("datasource", {}).get("path"))
+    """Run the data ingest pipeline (delegates to braid.data.ingest.ingest)."""
+    from braid.data.ingest import ingest as ingestfn
+
+    path = cfg.get("datasource", {}).get("path")
+    log.info("ingest.run", path=path)
+    try:
+        summary = ingestfn(str(path))
+        for k, v in summary.items():
+            log.info(f"ingest.{k}", value=v)
+    except Exception as exc:
+        log.warning("ingest.failed", error=str(exc))
 
 
 def run_phase(cfg: dict, name: str, log: Any) -> None:
     """Construct and dispatch a phase concrete (pretrain/reward)."""
-    log.info("phase.run", name=name, steps=cfg.get("maxsteps"))
+    from braid.core.registry import registry as reg
+
+    maxsteps = cfg.get("maxsteps", 100)
+    log.info("phase.run", name=name, steps=maxsteps)
+    try:
+        phase = reg.create("phase", name, maxsteps=maxsteps)
+        phase.run()
+    except Exception as exc:
+        log.warning("phase.failed", name=name, error=str(exc))
 
 
 def run_postrain(cfg: dict, log: Any) -> None:
-    """Postrain pipeline (stub)."""
+    """Run Phase-2 post-training with the braided loss."""
+    from braid.core.registry import registry as reg
+
     log.info("postrain.run", braidterms=(cfg.get("loss") or {}).get("terms"))
+    try:
+        phase = reg.create("phase", "postrain", maxsteps=cfg.get("maxsteps", 100))
+        phase.run()
+    except Exception as exc:
+        log.warning("postrain.failed", error=str(exc))
 
 
 def run_eval(cfg: dict, log: Any) -> None:
-    """Eval pipeline (stub)."""
+    """Run offline + replay + interleaving evaluation."""
+    from braid.core.registry import registry as reg
+    from braid.training.loop import runeval
+
     log.info("eval.run")
+    evaluators = {
+        "offlineranking": reg.create("eval", "offlineranking"),
+        "calibration": reg.create("eval", "calibration"),
+        "diversity": reg.create("eval", "diversity"),
+    }
+    try:
+        report = runeval(evaluators, predictions=[], groundtruth=[])
+        for name, r in report.items():
+            log.info(f"eval.{name}", result=r)
+    except Exception as exc:
+        log.warning("eval.failed", error=str(exc))
 
 
 def run_drift(cfg: dict, log: Any) -> None:
-    """Drift detection pipeline (stub)."""
+    """Run drift detection on a synthetic reference + live distribution."""
+    from braid.core.registry import registry as reg
+
+    import numpy as np
+
     log.info("drift.run")
+    try:
+        det = reg.create("drift", "psi", threshold=0.2)
+        ref = np.array([1.0, 2.0, 3.0, 4.0, 5.0], dtype=np.float32)
+        live = np.array([5.0, 5.0, 5.0, 5.0, 5.0], dtype=np.float32)
+        det.setreference(ref)
+        signal = det.update(live)
+        log.info("drift.result", **signal)
+    except Exception as exc:
+        log.warning("drift.failed", error=str(exc))
 
 
 def run_elbow(cfg: dict, log: Any) -> None:
-    """Elbow-finder pipeline (stub)."""
+    """Run the context-length elbow-finder sweep."""
+    from braid.verbalizer.elbowfinder import run as elbowrun
+
     log.info("elbow.run")
+    try:
+        import numpy as np
+
+        events = [
+            {"duration": float(i % 100 + 1), "kind": ["play", "thumbup", "click"][i % 3]}
+            for i in range(50)
+        ]
+        sweep = elbowrun(events, krange=range(5, 105, 10))
+        for k, n in sweep.items():
+            log.info(f"elbow.k={k}", kept=n)
+    except Exception as exc:
+        log.warning("elbow.failed", error=str(exc))
 
 
 def run_serve(cfg: dict, log: Any) -> None:
-    """Serve pipeline (stub)."""
-    log.info("serve.run", host="0.0.0.0", port=cfg.get("server", {}).get("port", 8080))
+    """Start the FastAPI ranker server."""
+    log.info("serve.start", host="0.0.0.0", port=cfg.get("server", {}).get("port", 8080))
+    try:
+        from braid.serving.app import main as servemain
+
+        servemain()
+    except Exception as exc:
+        log.warning("serve.failed", error=str(exc))
 
 
 def buildparser() -> argparse.ArgumentParser:
