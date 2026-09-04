@@ -33,8 +33,7 @@ def configure(
     timestamper = structlog.processors.TimeStamper(fmt="iso", utc=True)
     shared: list[Any] = [
         structlog.contextvars.merge_contextvars,
-        structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
+        structlog.processors.add_log_level,
         timestamper,
     ]
     if formatname == "json":
@@ -56,14 +55,18 @@ def configure(
     configure._configured = True  # type: ignore[attr-defined]
 
 
-def getlogger(name: str | None = None) -> structlog.stdlib.BoundLogger:
+def getlogger(name: str | None = None) -> Any:
     """Return a configured logger.
 
     Args:
-        name: logger name.
+        name: logger name; bound into the event dict automatically.
 
     Returns:
-        A structlog bound logger.
+        A structlog bound logger with name ``name``.
     """
     configure()
-    return structlog.get_logger(name) if name else structlog.get_logger()
+    base = structlog.get_logger(name) if name else structlog.get_logger()
+    if name is None:
+        return base
+    base = base.bind(logger=name)
+    return base
