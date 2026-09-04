@@ -1,8 +1,8 @@
 """Batch strategies."""
 
-from braid.batcher.paddedbatcher import paddedbatcher
-from braid.batcher.packedbatcher import packedbatcher
-from braid.batcher.lengthbucketedbatcher import lengthbucketedbatcher
-from braid.batcher.sortedpaddedbatcher import sortedpaddedbatcher
+from braid.batcher.padded import padded
+from braid.batcher.packed import packed
+from braid.batcher.bucket import bucket
+from braid.batcher.sorted import sorted
 
-__all__ = ["paddedbatcher", "packedbatcher", "lengthbucketedbatcher", "sortedpaddedbatcher"]
+__all__ = ["padded", "packed", "bucket", "sorted"]
