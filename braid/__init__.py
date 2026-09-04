@@ -50,7 +50,7 @@ from braid import (  # noqa: F401
     cflog,
     bandit,
     rankaggregator,
-    rqvae,
+    quantizer,
     serving,
     training,
     monitoring,

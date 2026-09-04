@@ -24,7 +24,7 @@ class rqvaephase:
     def run(self) -> dict[str, Any]:
         from braid.core.logging import getlogger
 
-        getlogger("braid.rqvae.phase").info("rqvae.run", numcodes=self.numcodes, steps=self.maxsteps)
+        getlogger("braid.quantizer.phase").info("rqvae.run", numcodes=self.numcodes, steps=self.maxsteps)
         return {"phase": "rqvae", "artifact": "rqvae.pt"}
 
     def observability(self) -> dict[str, Any]:
