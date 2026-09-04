@@ -6,20 +6,42 @@ from typing import Any
 
 import numpy as np
 
+from braid.core.error import ioerror
 from braid.core.registry import registry
 
 
-@registry.register(category="indexer", name="hnswindexer")
-class hnswindexer:
-    """HNSW approximate nearest-neighbor indexer."""
+@registry.register(category="indexer", name="hnsw")
+class hnsw:
+    """HNSW approximate nearest-neighbor indexer backed by hnswlib.
 
-    name: str = "hnswindexer"
+    Attributes:
+        embeddings: catalog array.
+        m: HNSW M parameter.
+        efconstruction, efsearch: HNSW search parameters.
+    """
+
+    name: str = "hnsw"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"shardedcatalog", "distributable", "async", "observable"})
 
-    def __init__(self, embeddings: np.ndarray, m: int = 16, efconstruction: int = 200, efsearch: int = 50) -> None:
+    def __init__(
+        self,
+        embeddings: np.ndarray,
+        m: int = 16,
+        efconstruction: int = 200,
+        efsearch: int = 50,
+    ) -> None:
+        """Initialize the HNSW index.
+
+        Args:
+            embeddings: ``[numitems, dim]`` array.
+            m: M parameter. Defaults to 16.
+            efconstruction: build-time ef. Defaults to 200.
+            efsearch: query-time ef. Defaults to 50.
+        """
         self.embeddings = np.asarray(embeddings, dtype=np.float32)
         self.dim = self.embeddings.shape[1]
+        self.numitems = self.embeddings.shape[0]
         self.m = m
         self.efconstruction = efconstruction
         self.efsearch = efsearch
@@ -28,13 +50,20 @@ class hnswindexer:
             import hnswlib
 
             self._index = hnswlib.Index(space="ip", dim=self.dim)
-            self._index.init_index(max_elements=self.embeddings.shape[0], ef_construction=self.efconstruction, M=self.m)
+            self._index.init_index(
+                max_elements=self.numitems,
+                ef_construction=self.efconstruction,
+                M=self.m,
+            )
             self._index.add_items(self.embeddings)
             self._index.set_ef(self.efsearch)
-        except Exception:  # noqa: BLE001
+        except ImportError:
             self._index = None
+        except Exception as exc:  # noqa: BLE001
+            raise ioerror(f"hnsw initialization failed: {exc}", retryable=False) from exc
 
     def query(self, vector: np.ndarray, topk: int = 10) -> np.ndarray:
+        """Return topk indices; falls back to brute force if hnswlib unavailable."""
         if self._index is not None:
             ids, _ = self._index.knn_query(vector.reshape(1, -1), k=topk)
             return ids[0]
