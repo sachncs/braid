@@ -8,7 +8,7 @@ from braid.core.registry import registry
 
 
 @registry.register(category="eval", name="interleaving")
-class interleavingeval:
+class interleaving:
     """Team-draft interleaving evaluator."""
 
     name: str = "interleaving"
