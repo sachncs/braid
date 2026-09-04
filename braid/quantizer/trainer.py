@@ -1,15 +1,19 @@
-"""RQ-VAE training phase module."""
+"""Quantizer training runner."""
 
 from typing import Any
 
 from braid.core.registry import registry
 
 
-@registry.register(category="rqvae", name="phase")
-class rqvaephase:
-    """RQ-VAE phase wrapper."""
+@registry.register(category="quantizer", name="trainer")
+class trainer:
+    """Real quantizer training runner.
 
-    name: str = "rqvaephase"
+    Currently exposes run/setup contract. Real implementation will be
+    delivered in M4 (encoder/decoder/quantizer training loop).
+    """
+
+    name: str = "trainer"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"async", "observable"})
 
@@ -24,7 +28,7 @@ class rqvaephase:
     def run(self) -> dict[str, Any]:
         from braid.core.logging import getlogger
 
-        getlogger("braid.quantizer.phase").info("rqvae.run", numcodes=self.numcodes, steps=self.maxsteps)
+        getlogger("braid.quantizer.trainer").info("rqvae.run", numcodes=self.numcodes, steps=self.maxsteps)
         return {"phase": "rqvae", "artifact": "rqvae.pt"}
 
     def observability(self) -> dict[str, Any]:

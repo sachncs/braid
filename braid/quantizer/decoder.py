@@ -9,7 +9,7 @@ import numpy as np
 from braid.core.registry import registry
 
 
-@registry.register(category="rqvae", name="decoder")
+@registry.register(category="quantizer", name="decoder")
 class decoder:
     """Tiny decoder stub."""
 
