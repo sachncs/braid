@@ -1,35 +1,55 @@
-"""RQ-VAE encoder."""
+"""Quantizer encoder — trainable MLP projecting to the latent."""
 
 from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
+import torch
+import torch.nn as nn
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
 @registry.register(category="quantizer", name="encoder")
 class encoder:
-    """Tiny encoder stub. Real impl: a small conv/MLP."""
+    """Trainable MLP encoder.
+
+    Projects ``[batch, inputdim]`` → ``[batch, hiddendim]``.
+    """
 
     name: str = "encoder"
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable"})
 
     def __init__(self, inputdim: int = 64, hiddendim: int = 128) -> None:
+        try:
+            import torch
+            import torch.nn as nn
+        except ImportError as exc:
+            raise requiresenvironment(
+                "torch required for quantizer:encoder", hint="pip install torch"
+            ) from exc
+        if inputdim <= 0 or hiddendim <= 0:
+            raise ValueError("dims must be > 0")
         self.inputdim = inputdim
         self.hiddendim = hiddendim
-        self.w: np.ndarray | None = None
+        self.net = nn.Sequential(nn.Linear(inputdim, hiddendim), nn.ReLU())
 
-    def fit(self, x: np.ndarray) -> None:
-        rng = np.random.default_rng(0)
-        self.w = rng.standard_normal((self.inputdim, self.hiddendim)).astype(np.float32) * 0.05
+    def encode(self, x: torch.Tensor) -> torch.Tensor:
+        """Encode ``x`` to the hidden representation.
 
-    def encode(self, x: np.ndarray) -> np.ndarray:
-        if self.w is None:
-            self.fit(np.zeros((1, self.inputdim), dtype=np.float32))
-        return np.maximum(0, x @ self.w) if x.ndim > 1 else np.maximum(0, x @ self.w)
+        Args:
+            x: ``[batch, inputdim]`` tensor.
+
+        Returns:
+            ``[batch, hiddendim]`` tensor.
+        """
+        return torch.relu(self.net[0](x))
+
+    def parameters(self) -> Any:
+        """Return trainable parameters."""
+        return self.net.parameters()
 
     def observability(self) -> dict[str, Any]:
         return {}
