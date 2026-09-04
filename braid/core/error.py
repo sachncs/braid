@@ -97,6 +97,27 @@ class resourceerror(braiderror):
     retryable = True
 
 
+class requiresenvironment(braiderror):
+    """Raised when a concrete needs an external resource that is missing.
+
+    Use this for unavailable services / packages / drivers. The error
+    message should describe the missing dependency and how to install it.
+    """
+
+    category = "environment"
+    retryable = False
+
+
+class requiresresource(braiderror):
+    """Raised when a concrete needs a runtime resource that's unavailable.
+
+    Examples: a model weight file, a config file, a network endpoint.
+    """
+
+    category = "resource-missing"
+    retryable = False
+
+
 class retrystrategy:
     """Polymorphic retry policy.
 
