@@ -1,4 +1,4 @@
-phase: phase2postrain
+phase: postrain
 backbone:
   type: minicpm5
   checkpoint: artifacts/phase1/minicpm5-1b.safetensors
