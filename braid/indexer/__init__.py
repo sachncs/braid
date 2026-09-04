@@ -1,8 +1,8 @@
 """Catalog indexers."""
 
-from braid.indexer.hashindexer import hashindexer
-from braid.indexer.faissindexer import faissindexer
-from braid.indexer.exactindexer import exactindexer
-from braid.indexer.hnswindexer import hnswindexer
+from braid.indexer.hash import hash
+from braid.indexer.faiss import faiss
+from braid.indexer.exact import exact
+from braid.indexer.hnsw import hnsw
 
-__all__ = ["hashindexer", "faissindexer", "exactindexer", "hnswindexer"]
+__all__ = ["hash", "faiss", "exact", "hnsw"]
