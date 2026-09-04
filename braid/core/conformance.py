@@ -83,13 +83,20 @@ def trycreate(klass: type) -> tuple[Any | None, str | None]:
     Returns (instance, errormessage). Either instance != None or errormessage is set.
     """
     try:
+        # C-level slot wrappers (no __init__) have no __code__; fall back to no-arg construction.
+        try:
+            has_code = hasattr(klass.__init__, "__code__")
+        except (TypeError, AttributeError):
+            has_code = False
+        if not has_code:
+            return klass(), None
         sig = inspect.signature(klass.__init__)
         kwargs: dict[str, Any] = {}
         for pname, param in sig.parameters.items():
             if pname == "self":
                 continue
             if param.default is inspect.Parameter.empty:
-                kwargs[pname] = _sampledefault(pname)
+                kwargs[pname] = sampledefault(pname)
         return klass(**kwargs), None
     except Exception as exc:  # noqa: BLE001
         return None, f"construction failed: {type(exc).__name__}: {exc}"

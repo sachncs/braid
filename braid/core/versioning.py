@@ -66,6 +66,12 @@ class noopmigrator:
         """
         return raw
 
+    def observability(self) -> dict[str, Any]:
+        return {"migrator": "noop"}
+
+    def metrics(self) -> list[Any]:
+        return []
+
 
 def applymigrations(
     raw: dict[str, Any],
