@@ -1,15 +1,9 @@
 """Curriculum schedulers."""
 
-from braid.curriculum.linearcurriculum import linearcurriculum
-from braid.curriculum.cosinecurriculum import cosinecurriculum
-from braid.curriculum.stepcurriculum import stepcurriculum
-from braid.curriculum.adaptivecurriculum import adaptivecurriculum
-from braid.curriculum.twostagecurriculum import twostagecurriculum
+from braid.curriculum.linear import linear
+from braid.curriculum.cosine import cosine
+from braid.curriculum.step import step
+from braid.curriculum.adaptive import adaptive
+from braid.curriculum.twostage import twostage
 
-__all__ = [
-    "linearcurriculum",
-    "cosinecurriculum",
-    "stepcurriculum",
-    "adaptivecurriculum",
-    "twostagecurriculum",
-]
+__all__ = ["linear", "cosine", "step", "adaptive", "twostage"]
