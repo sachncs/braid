@@ -1,4 +1,4 @@
-"""FAISS indexer."""
+"""FAISS IVF indexer."""
 
 from __future__ import annotations
 
@@ -6,39 +6,68 @@ from typing import Any
 
 import numpy as np
 
+from braid.core.error import ioerror
 from braid.core.registry import registry
 
 
-@registry.register(category="indexer", name="faissindexer")
-class faissindexer:
-    """FAISS-backed indexer (graceful fallback to numpy)."""
+@registry.register(category="indexer", name="faiss")
+class faiss:
+    """FAISS-backed IVF indexer.
 
-    name: str = "faissindexer"
+    Falls back to numpy arg-sort when faiss is unavailable; raises
+    typed ``ioerror`` if the user requested GPU-backed faiss.
+
+    Attributes:
+        embeddings: catalog array.
+        nlist: number of Voronoi cells.
+        nprobe: cells probed per query.
+    """
+
+    name: str = "faiss"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"shardedcatalog", "distributable", "observable", "async"})
+    capabilities: frozenset[str] = frozenset({"shardedcatalog", "distributable", "async", "observable"})
 
-    def __init__(self, embeddings: np.ndarray, nlist: int = 100) -> None:
+    def __init__(self, embeddings: np.ndarray, nlist: int = 100, nprobe: int = 8) -> None:
+        """Initialize the faiss index.
+
+        Args:
+            embeddings: ``[numitems, dim]`` float array.
+            nlist: number of cells. Defaults to 100.
+            nprobe: cells probed. Defaults to 8.
+        """
         self.embeddings = np.asarray(embeddings, dtype=np.float32)
-        self.dim = self.embeddings.shape[1]
         self.nlist = max(1, min(nlist, self.embeddings.shape[0]))
-        self._faiss: Any | None = None
-        try:
-            import faiss
-
-            self._faiss = faiss
-        except Exception:  # noqa: BLE001
-            self._faiss = None
+        self.nprobe = min(nprobe, self.nlist)
+        self.dim = self.embeddings.shape[1]
+        self.numitems = self.embeddings.shape[0]
+        self._faissmod: Any | None = None
         self._index: Any | None = None
-        if self._faiss is not None:
+        try:
+            import faiss  # noqa: F401
+
+            self._faissmod = faiss
+        except ImportError as exc:
+            self._faissmod = None
+        if self._faissmod is not None and self.embeddings.shape[0] > 0:
             try:
-                quantizer = self._faiss.IndexFlatIP(self.dim)
-                self._index = self._faiss.IndexIVFFlat(quantizer, self.dim, self.nlist)
+                quantizer = self._faissmod.IndexFlatIP(self.dim)
+                self._index = self._faissmod.IndexIVFFlat(quantizer, self.dim, self.nlist)
                 self._index.train(self.embeddings)
                 self._index.add(self.embeddings)
-            except Exception:  # noqa: BLE001
+                self._index.nprobe = self.nprobe
+            except Exception:
                 self._index = None
 
     def query(self, vector: np.ndarray, topk: int = 10) -> np.ndarray:
+        """Return topk indices.
+
+        Args:
+            vector: query ``[dim]`` vector.
+            topk: number of neighbors.
+
+        Returns:
+            ``[topk]`` int array.
+        """
         if self._index is not None:
             _, ids = self._index.search(vector.astype(np.float32).reshape(1, -1), topk)
             return ids[0]
