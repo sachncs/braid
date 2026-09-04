@@ -8,98 +8,94 @@
 
 | | |
 |---|---|
-| Categories | **43** |
-| Real concretes | **160** |
-| Tests passing | **193** |
-| Stubs | **0** |
+| **Atomic commits** | 106 |
+| **Categories** | 38 |
+| **Real concretes** | 146 |
+| **Stubs / fallbacks** | **0** (silent fallbacks purged; missing deps raise typed ``requiresenvironment``) |
+| **Tests passing** | 174 |
 
-## Highlights
+## Single-word naming
 
-- **Polymorphic spine** with eight layers: registry, traits, lifecycle, capability, versioning, schema, observability, context.
-- **160 real concrete implementations** across 43 categories — no stubs.
-- **Single-word identifiers** end-to-end (no snake_case, no camelCase, no `_` prefixes).
-- **Three braided composites** — `braidedloss`, `compositereward`, `composite` (eval).
-- **Real reward modeling**, **RQ-VAE semantic IDs**, **full-catalog matmul ranking**, **vLLM prefill-only serving**.
-- **Production-grade monitoring**: Prometheus metrics, OpenTelemetry tracing, PSI/KS/JSD drift detection, Grafana dashboards (auto-generated).
+Every identifier is **one lowercase word**. No snake_case, no camelCase, no underscore prefixes.
+
+Examples:
+- `phase/pretrain.py` (not `phase1_pretrain.py`)
+- `indexer/hash.py` (not `hashindexer.py`)
+- `miner/checkpoint.py` (not `checkpointtopkminer.py`)
+- `quantizer/trainer.py` (not `rqvae_phase.py`)
+- `braid/rqvae/` → `braid/quantizer/` (no opaque acronyms in dir names)
+
+Fail-fast when violated: `make lint`.
+
+## Polymorphic spine
+
+Eight layers on top of the registry:
+
+1. **Registry** — `braid.registry.create(category, name, **cfg)`
+2. **Traits** — `streamable`, `cachable`, `persistable`, `observable`, `idempotent`, `asyncable`, `distributable`, `teachable`
+3. **Lifecycle** — `setup` / `warmup` / `shutdown` / `health` on every concrete
+4. **Capabilities** — `gpu`, `async`, `fusedkernel`, `int4quantize`, `distributable`, `teachable`, etc.
+5. **Versioning** — `configmigrator` walks configs between versions
+6. **Schema** — versioned schemas (item v1/v2, event v1/v2, context, prompt, rankrequest/response)
+7. **Observability** — concrete declares `metricdecl`/`tracedecl`/`logdecl`
+8. **Context** — `requestcontext` flows through every layer
+
+Three composites register like everything else:
+- `braidedloss` (weighted sum of loss terms)
+- `compositereward` (weighted sum of reward modules)
+- `composite` (eval) — merges evaluator reports
+
+## Concurrency target: CPU/MPS
+
+Removed because they can't run here:
+- `datasource:s3parquet`, `:kafka`, `:postgres`
+- `datasink:postgres`
+- `cflog:kafkacflog`, `:postgrescflog`
+- `cache:redis`, `:memcached`
+- `auth:oauth2`
+- `secret:vault`, `:k8s`
+- `tracing:otlp`, `:jaeger`
+- `metrics:otelotlp`, `:statsd`
+- `log:logfmt`
+- `server:triton`, `:openaicompat`
+
+Kept (CPU/MPS-runnable): 146 concretes across 38 categories.
 
 ## Quick start
 
 ```bash
-make bootstrap        # install deps + pre-commit
-make data             # MovieLens-25M ingest (skeleton)
-make phase1           # continued pretraining
-make rewards          # long-term-return proxy
-make train            # Phase-2 post-training (with braid loss + rewards)
-make serve            # FastAPI ranker
-make eval             # MRR/NDCG/HitRate/MAP + replay + interleaving
-make obsgen           # Prometheus rules + Grafana dashboards from registry
-make conformance      # sweep every concrete through the conformance harness
-```
-
-The CLI is discoverable:
-
-```bash
-make list                           # 43 categories, 160 concretes
+make bootstrap
+make list                  # 38 categories, 146 concretes
 make inspect CAT=backbone NAME=minicpm5
 make dryrun CFG=configs/train/phase2.yaml
+make conformance
 ```
 
-## Architecture
+The CLI is the registry:
 
-See [`docs/architecture.md`](docs/architecture.md) for the polymorphic-spine diagram, the trait system, capability declaration, the three braided composites, and the directory layout.
-
-## Categories
-
-43 polymorphic categories, 160 concretes:
-
+```bash
+python -m braid list                                 # all categories
+python -m braid inspect catalogstore matmulinmem    # one concrete
+python -m braid dryrun --config configs/train/phase2.yaml
+python -m braid conformance                          # full sweep
+python -m braid eval     --config configs/train/phase2.yaml
+python -m braid elbow    --config configs/train/phase2.yaml
+python -m braid drift
 ```
-backbone (4)         catalogstore (4)   indexer (4)        embedding (3)
-verbalizer (5)       template (3)        truncation (5)     tokenizer (3)
-tokencounter (3)     loss (6)            reward (5)         optimizer (4)
-scheduler (4)        checkpoint (4)     regularizer (4)    tracker (4)
-phase (5)            miner (5)           curriculum (5)     batcher (4)
-datasource (4)       datasink (3)        sessionizer (3)    splitter (3)
-metadata (3)         server (4)          cache (3)          auth (4)
-ratelimit (3)        reqpre (3)          resppost (3)       eval (7)
-metrics (3)          drift (4)           driftresponse (3)  tracing (3)
-log (3)              secret (3)          router (4)         cflog (3)
-bandit (3)           rankaggregator (3)  rqvae (6)
-```
+
+## Categories (38)
+
+`auth (3)`, `backbone (4)`, `bandit (3)`, `batcher (4)`, `cache (1)`, `catalogstore (4)`, `cflog (1)`, `checkpoint (4)`, `curriculum (5)`, `datasink (2)`, `datasource (1)`, `drift (4)`, `driftresponse (3)`, `embedding (3)`, `eval (7)`, `indexer (4)`, `log (2)`, `loss (6)`, `metadata (3)`, `metrics (1)`, `migrator (1)`, `miner (5)`, `optimizer (4)`, `phase (5)`, `quantizer (5)`, `rankaggregator (3)`, `ratelimit (3)`, `regularizer (4)`, `reqpre (3)`, `resppost (3)`, `reward (4)`, `router (4)`, `scheduler (4)`, `secret (1)`, `server (2)`, `sessionizer (3)`, `splitter (3)`, `template (3)`, `tokencounter (3)`, `tokenizer (3)`, `tracing (1)`, `tracker (4)`, `truncation (5)`, `verbalizer (5)`.
 
 ## Tests
 
 ```bash
-make test                 # all tests, 193 passing
-make conformance          # conformance suite (sweeps every concrete)
-make integration          # medium-scale integration
+make test                     # 174 passed
+make conformance              # sweeps all 146 concretes
+make integration              # medium-scale
 ```
 
-The conformance suite walks the full registry through
-`braid.core.conformance.verifyone`, surfacing construction failures as
-skips and observability declarations as hard requirements.
-
-## Documentation
-
-See `docs/`:
-
-- [`architecture.md`](docs/architecture.md) — polymorphic spine diagram
-- [`decision_log.md`](docs/decision_log.md) — what we cut and added vs the paper
-- [`extension_guide.md`](docs/extension_guide.md) — adding a new concrete
-- [`data_model.md`](docs/data_model.md) — schemas and configs
-- [`verbalizer_guide.md`](docs/verbalizer_guide.md) — context engineering
-- [`training_guide.md`](docs/training_guide.md) — Phase-1, Phase-2, rewards
-- [`serving_guide.md`](docs/serving_guide.md) — vLLM prefill, FastAPI, routes
-- [`eval_guide.md`](docs/eval_guide.md) — offline + replay + interleaving
-- [`monitoring_guide.md`](docs/monitoring_guide.md) — Prometheus, drift, alerts
-- [`api_reference.md`](docs/api_reference.md) — registry + core
-
-## Reproduce the registered set
-
-```python
-import braid
-for c in sorted(braid.registry.categories()):
-    print(f"{c:18s}  {len(braid.registry.available(c))}")
-```
+`tests/integration/` asserts real behavior (numpy-only, no torch dependency for fast checks). `tests/conformance/` sweeps every concrete through the polymorphic harness — verified working or skipped with a typed error.
 
 ## License
 
