@@ -1,0 +1,23 @@
+datasource:
+  type: localparquet
+  path: data/processed/movielens
+sessionizer:
+  type: gap
+  gapseconds: 1800
+splitter:
+  type: chronological
+  trainratio: 0.8
+  valratio: 0.1
+metadata:
+  type: csvmetadata
+  path: data/raw/movielens/movies.csv
+tokenizer:
+  type: hf
+  name: openbmb/MiniCPM5-1B
+datasink:
+  type: parquet
+  path: data/processed/movielens
+schema:
+  item: item@v2
+  event: event@v2
+  context: context@v1

@@ -1,0 +1,25 @@
+services:
+  braid:
+    build: .
+    image: braid:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgres://braid:braid@postgres:5432/braid
+      - JAEGER_HOST=jaeger
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+    depends_on:
+      - postgres
+      - redis
+      - prometheus
+      - jaeger
+    volumes:
+      - ./configs:/app/configs:ro
+      - ./artifacts:/app/artifacts
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+

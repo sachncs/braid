@@ -1,0 +1,98 @@
+groups:
+  - name: braid
+    rules:
+      - alert: braid_braid_auth_apikey_failures_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.auth.apikey.failures[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_backbone_minicpm5_fwdlatency_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.backbone.minicpm5.fwdlatency[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_cache_lru_hits_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.cache.lru.hits[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_drift_pagehinkley_score_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.drift.pagehinkley.score[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_drift_psi_score_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.drift.psi.score[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_driftresponse_alerts_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.driftresponse.alerts[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_eval_offlineranking_mrr_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.eval.offlineranking.mrr[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_loss_braided_total_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.loss.braided.total[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_loss_calibration_ece_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.loss.calibration.ece[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_loss_lmax_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.loss.lmax[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_loss_rankingce_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.loss.rankingce[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_phase_phase1_step_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.phase.phase1.step[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_phase_phase2_step_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.phase.phase2.step[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_ratelimit_denied_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.ratelimit.denied[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_reqpre_redactions_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.reqpre.redactions[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_server_hflocal_qps_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.server.hflocal.qps[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_server_openaicompat_qps_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.server.openaicompat.qps[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_server_triton_qps_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.server.triton.qps[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning
+      - alert: braid_braid_server_vllm_qps_p95_high
+        expr: histogram_quantile(0.95, sum(rate(braid.server.vllm.qps[5m])) by (le)) > 200
+        for: 5m
+        labels:
+          severity: warning

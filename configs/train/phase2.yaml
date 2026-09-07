@@ -1,0 +1,34 @@
+phase: postrain
+backbone:
+  type: minicpm5
+  checkpoint: artifacts/phase1/minicpm5-1b.safetensors
+catalogstore:
+  type: matmulinmem
+datasource:
+  type: localparquet
+  path: data/processed/movielens
+loss:
+  type: braidedloss
+  terms:
+    - type: rankingce
+      weight: 1.0
+    - type: lmax
+      weight: 0.1
+    - type: diversityentropy
+      weight: 0.05
+    - type: rewardweighted
+      weight: 0.5
+rewards:
+  type: compositereward
+  members:
+    - type: longtermreturn
+      weight: 1.0
+    - type: diversitybonus
+      weight: 0.3
+curriculum:
+  type: cosine
+  maxdifficulty: 1.0
+miner:
+  type: checkpointtopkminer
+  k: 64
+maxsteps: 8000

@@ -1,0 +1,25 @@
+phase: pretrain
+backbone:
+  type: minicpm5
+data:
+  type: localparquet
+  path: data/processed/movielens
+optimizer:
+  type: adamw
+  lr: 0.0001
+scheduler:
+  type: linearwarmupcosine
+  warmupsteps: 200
+checkpoint:
+  type: ema
+  decay: 0.999
+tracker:
+  type: aim
+  dir: ./artifacts/aim
+regularizer:
+  type: dropout
+  p: 0.1
+batchstrategy:
+  type: packed
+  maxtokens: 8192
+maxsteps: 5000

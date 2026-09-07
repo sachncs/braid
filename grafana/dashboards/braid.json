@@ -1,0 +1,293 @@
+{
+  "title": "braid ranker observability",
+  "panels": [
+    {
+      "title": "auth.apikey.braid.auth.apikey.failures",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.auth.apikey.failures"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "backbone.minicpm5.braid.backbone.minicpm5.fwdlatency",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.backbone.minicpm5.fwdlatency"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "cache.lru.braid.cache.lru.hits",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.cache.lru.hits"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "drift.pagehinkley.braid.drift.pagehinkley.score",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.drift.pagehinkley.score"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "drift.psi.braid.drift.psi.score",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.drift.psi.score"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "driftresponse.alert.braid.driftresponse.alerts",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.driftresponse.alerts"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "eval.offlineranking.braid.eval.offlineranking.mrr",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.eval.offlineranking.mrr"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "loss.braidedloss.braid.loss.braided.total",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.loss.braided.total"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "loss.calibrationloss.braid.loss.calibration.ece",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.loss.calibration.ece"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "loss.lmax.braid.loss.lmax",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.loss.lmax"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "loss.rankingce.braid.loss.rankingce",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.loss.rankingce"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "phase.phase1pretrain.braid.phase.phase1.step",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.phase.phase1.step"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "phase.phase2postrain.braid.phase.phase2.step",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.phase.phase2.step"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "ratelimit.tokenbucket.braid.ratelimit.denied",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.ratelimit.denied"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "reqpre.redactpii.braid.reqpre.redactions",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.reqpre.redactions"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "server.hflocal.braid.server.hflocal.qps",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.server.hflocal.qps"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "server.openaicompat.braid.server.openaicompat.qps",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.server.openaicompat.qps"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "title": "server.triton.braid.server.triton.qps",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.server.triton.qps"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "title": "server.vllm.braid.server.vllm.qps",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "braid.server.vllm.qps"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s"
+}
