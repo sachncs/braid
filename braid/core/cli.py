@@ -129,19 +129,26 @@ def conformancecmd(args: argparse.Namespace) -> int:
         args: parsed CLI args.
 
     Returns:
-        Exit code (0 if all pass).
+        Exit code (0 if all pass or skipped; 1 if any hard contract failure).
     """
     from braid.core.conformance import verifyall
 
     results = verifyall()
-    failed = [r for r in results if not r.passed]
+    hardfail = [r for r in results if not r.passed and not r.skipped]
+    realpass = [r for r in results if r.passed]
+    skipped = [r for r in results if r.skipped]
     for r in results:
-        status = "PASS" if r.passed else "FAIL"
+        if r.skipped:
+            status = "SKIP"
+        elif r.passed:
+            status = "PASS"
+        else:
+            status = "FAIL"
         print(f"{status}  {r.category}.{r.name}")
         for f in r.failures:
             print(f"       {f}")
-    print(f"\n{len(results) - len(failed)}/{len(results)} passed")
-    return 0 if not failed else 1
+    print(f"\n{len(realpass)}/{len(results) - len(skipped)} real-pass | {len(skipped)} skipped | {len(hardfail)} failed")
+    return 1 if hardfail else 0
 
 
 _NOCONFIGPHASES = {"drift"}
