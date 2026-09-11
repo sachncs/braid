@@ -82,6 +82,10 @@ e2e:
 coverage:
 	$(PYTEST) -q --cov=braid --cov-report=term-missing --cov-report=xml
 
+.PHONY: status
+status:
+	$(PYTHON) scripts/status.py
+
 .PHONY: list
 list:
 	$(PYTHON) -m braid list
