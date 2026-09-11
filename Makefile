@@ -11,12 +11,14 @@ help:
 	@echo "  bootstrap      install deps + pre-commit hooks"
 	@echo "  lint           run ruff"
 	@echo "  format         run ruff format"
+	@echo "  fmt-check      check ruff formatting without rewriting"
 	@echo "  type           run mypy"
 	@echo "  docstyle       run pydocstyle"
 	@echo "  test           run all tests"
 	@echo "  conformance    run conformance suite"
 	@echo "  integration    run integration tests"
 	@echo "  e2e            run end-to-end tests"
+	@echo "  coverage       run tests with coverage report"
 	@echo "  list           list registered components"
 	@echo "  inspect        inspect a single component"
 	@echo "  dryrun         validate a config without executing"
@@ -33,6 +35,7 @@ help:
 	@echo "  docker-up      start docker compose"
 	@echo "  docker-down    stop docker compose"
 	@echo "  clean          remove build artifacts"
+	@echo "  clean-all      clean plus artifacts, data and build dirs"
 
 .PHONY: bootstrap
 bootstrap:
@@ -46,6 +49,10 @@ lint:
 .PHONY: format
 format:
 	$(RUFF) format braid tests
+
+.PHONY: fmt-check
+fmt-check:
+	$(RUFF) format --check braid tests
 
 .PHONY: type
 type:
@@ -70,6 +77,10 @@ integration:
 .PHONY: e2e
 e2e:
 	$(PYTEST) -q -m e2e
+
+.PHONY: coverage
+coverage:
+	$(PYTEST) -q --cov=braid --cov-report=term-missing --cov-report=xml
 
 .PHONY: list
 list:
@@ -136,3 +147,7 @@ docker-down:
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache .coverage build dist
 	find . -type d -name __pycache__ -exec rm -rf {} +
+
+.PHONY: clean-all
+clean-all: clean
+	rm -rf artifacts data *.egg-info htmlcov coverage.xml
