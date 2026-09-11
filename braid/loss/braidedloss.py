@@ -92,12 +92,6 @@ class braidedloss:
                 contribution = term.compute(outputs["scores"], batch["labels"], w)
             elif name == "diversityentropy":
                 contribution = term.compute(outputs["scores"], w)
-            elif name == "lmax":
-                contribution = term.compute(
-                    outputs.get("lmLogits", outputs.get("logits")),
-                    batch.get("inputids"),
-                    w,
-                )
             else:
                 if "scores" not in outputs:
                     raise requiresresource(
