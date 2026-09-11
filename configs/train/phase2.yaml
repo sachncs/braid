@@ -19,7 +19,7 @@ loss:
     - type: rewardweighted
       weight: 0.5
 rewards:
-  type: compositereward
+  type: composite
   members:
     - type: longtermreturn
       weight: 1.0
@@ -29,6 +29,6 @@ curriculum:
   type: cosine
   maxdifficulty: 1.0
 miner:
-  type: checkpointtopkminer
+  type: checkpoint
   k: 64
 maxsteps: 8000
