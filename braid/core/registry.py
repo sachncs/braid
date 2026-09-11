@@ -82,6 +82,38 @@ class registry:
         return factory
 
     @classmethod
+    def loadentrypoints(cls, groupprefix: str = "braid.") -> int:
+        """Discover and register every concrete declared as a ``braid.*`` entry point.
+
+        Third-party packages may declare additional concretes under
+        ``[project.entry-points."braid.<category>"]`` in their ``pyproject.toml``.
+        Eager imports run first, so this method either augments the existing
+        registration or overrides it with the entry-point class.
+
+        Args:
+            groupprefix: only groups starting with this prefix are loaded.
+
+        Returns:
+            The number of entry points that were registered.
+        """
+        from importlib.metadata import entry_points
+
+        loaded = 0
+        for ep in entry_points():
+            if not ep.group.startswith(groupprefix):
+                continue
+            category = ep.group[len(groupprefix):]
+            try:
+                klass = ep.load()
+            except Exception:
+                continue
+            cls._items[category][ep.name] = klass
+            klass._registry_category = category  # type: ignore[attr-defined]
+            klass._registry_name = ep.name  # type: ignore[attr-defined]
+            loaded += 1
+        return loaded
+
+    @classmethod
     def create(cls, category: str, name: str, /, **kwargs: Any) -> Any:
         """Resolve a concrete by category+name and instantiate it.
 
