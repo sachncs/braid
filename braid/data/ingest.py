@@ -210,10 +210,7 @@ def ingest(configpath: str) -> dict[str, Any]:
         for sub, items in [("train", train), ("val", val), ("test", test)]:
             target = sinkpath / sub
             target.mkdir(parents=True, exist_ok=True)
-            try:
-                sink.write(target, items)
-            except Exception:
-                target.joinpath("rows.csv").write_text("\n".join(",".join(str(c) for c in r.values()) for r in items))
+            sink.write(target, items)
     except Exception as exc:
         raise requiresenvironment(
             "datasink could not run",

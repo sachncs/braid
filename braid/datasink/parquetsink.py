@@ -16,7 +16,7 @@ class parquetsink:
     """Writes a stream of dicts to a Parquet file.
 
     Attributes:
-        path: output file path.
+        path: directory under which ``rows.parquet`` is written.
         schema: optional pyarrow schema.
     """
 
@@ -29,7 +29,10 @@ class parquetsink:
         self.schema = schema
 
     def write(self, rows: Iterable[dict[str, Any]]) -> int:
-        """Write ``rows`` and return count.
+        """Write ``rows`` to ``path/rows.parquet`` and return count.
+
+        ``path`` is treated as a directory so callers (notably ``ingest``)
+        can pass one sink per split and avoid per-call file naming.
 
         Args:
             rows: any iterable of dicts.
@@ -37,12 +40,13 @@ class parquetsink:
         Returns:
             Number of rows written.
         """
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.mkdir(parents=True, exist_ok=True)
         data = list(rows)
         if not data:
             return 0
         tbl = pa.Table.from_pylist(data, schema=self.schema)
-        pq.write_table(tbl, str(self.path))
+        outfile = self.path / "rows.parquet"
+        pq.write_table(tbl, str(outfile))
         return len(data)
 
     async def awrite(self, rows: Iterable[dict[str, Any]]) -> int:
