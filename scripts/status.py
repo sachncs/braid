@@ -7,7 +7,6 @@ Used by the README and the audit sweep. Run with ``python scripts/status.py``.
 from __future__ import annotations
 
 import subprocess
-import sys
 
 import braid
 from braid.core.conformance import verifyall
@@ -27,8 +26,9 @@ def main() -> int:
             timeout=300,
             check=False,
         )
+        lines = reversed(out.stdout.splitlines())
         summary = next(
-            (line for line in reversed(out.stdout.splitlines()) if "passed" in line or "failed" in line),
+            (line for line in lines if "passed" in line or "failed" in line),
             "(no summary)",
         )
         last = summary.strip()
