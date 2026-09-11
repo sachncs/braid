@@ -144,6 +144,9 @@ def conformancecmd(args: argparse.Namespace) -> int:
     return 0 if not failed else 1
 
 
+_NOCONFIGPHASES = {"drift"}
+
+
 def _runpipeline(args: argparse.Namespace, phase: str) -> int:
     """Dispatch a phase subcommand by constructing the registered concrete.
 
@@ -158,10 +161,10 @@ def _runpipeline(args: argparse.Namespace, phase: str) -> int:
     from braid.core.logging import getlogger
 
     cfg_path = getattr(args, "config", None)
-    if not cfg_path:
+    if not cfg_path and phase not in _NOCONFIGPHASES:
         print(f"error: --config is required for {phase}", file=sys.stderr)
         return 2
-    cfg_raw = yaml.safe_load(Path(cfg_path).read_text())
+    cfg_raw = yaml.safe_load(Path(cfg_path).read_text()) if cfg_path else {}
     log = getlogger(f"braid.cli.{phase}")
     log.info("pipeline.start", phase=phase, config=cfg_path)
 
