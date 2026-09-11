@@ -58,3 +58,6 @@ from braid import (  # noqa: F401
     testing,
     obsgen,
 )
+
+# Augment / override with any third-party concretes registered as entry points.
+registry.loadentrypoints()
