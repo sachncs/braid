@@ -29,7 +29,9 @@ def test_categories_are_sorted_lists() -> None:
 
 def test_registry_create_round_trip() -> None:
     """create() returns an instance and resolve() returns a class."""
-    store = braid.registry.create("catalogstore", "matmulinmem", embeddings=[[1.0, 2.0], [3.0, 4.0]])
+    store = braid.registry.create(
+        "catalogstore", "matmulinmem", embeddings=[[1.0, 2.0], [3.0, 4.0]]
+    )
     assert hasattr(store, "score")
     klass = braid.registry.resolve("catalogstore", "matmulinmem")
     assert klass.__name__ == "matmulinmem"

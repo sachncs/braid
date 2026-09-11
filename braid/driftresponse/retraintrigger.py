@@ -24,7 +24,9 @@ class retraintrigger:
         """Write a trigger file."""
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(f"drift={signal.get('score')}\n")
-        getlogger("braid.driftresponse.retraintrigger").warning("retrain.triggered", path=str(self.path))
+        getlogger("braid.driftresponse.retraintrigger").warning(
+            "retrain.triggered", path=str(self.path)
+        )
 
     def observability(self) -> dict[str, Any]:
         return {}

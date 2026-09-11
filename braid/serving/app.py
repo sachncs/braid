@@ -87,7 +87,11 @@ def createapp(
             log.warning("server.none")
             response = {"ids": list(range(topk)), "scores": [0.0] * topk, "fallback": True}
         else:
-            result = server.rank(prompt, lambda h: catalogstore.score(h) if catalogstore is not None else [0.0] * topk, topk=topk)
+            result = server.rank(
+                prompt,
+                lambda h: catalogstore.score(h) if catalogstore is not None else [0.0] * topk,
+                topk=topk,
+            )
             response = result
 
         for proc in respposts or []:

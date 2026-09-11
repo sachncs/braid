@@ -16,7 +16,9 @@ class pagehinkley:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable"})
 
-    def __init__(self, delta: float = 0.005, threshold: float = 50.0, alpha: float = 1 - 1e-4) -> None:
+    def __init__(
+        self, delta: float = 0.005, threshold: float = 50.0, alpha: float = 1 - 1e-4
+    ) -> None:
         self.delta = delta
         self.threshold = threshold
         self.alpha = alpha

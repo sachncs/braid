@@ -16,7 +16,6 @@ def extractpooled(hiddenstates: Any, attentionmask: Any | None = None) -> Any:
         ``[batch, dim]`` pooled tensor.
     """
     try:
-
         if attentionmask is None:
             return hiddenstates[:, -1, :]
         mask = attentionmask.unsqueeze(-1).float()

@@ -65,7 +65,9 @@ class hflocal:
                 outputs = self.model(input_ids=ids, output_hidden_states=True, return_dict=True)
                 last = outputs.hidden_states[-1]
                 mask = torch.ones_like(ids)
-                userrepr = (last * mask.unsqueeze(-1).float()).sum(dim=1) / mask.sum(dim=1).clamp(min=1)
+                userrepr = (last * mask.unsqueeze(-1).float()).sum(dim=1) / mask.sum(dim=1).clamp(
+                    min=1
+                )
             except Exception as exc:
                 raise requiresresource(f"HF forward failed: {exc}") from exc
         scores = catalogscoresfn(userrepr.cpu().numpy())

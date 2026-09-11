@@ -77,6 +77,3 @@ def test_retraintrigger_writes_file(tmp_path) -> None:
     resp = retraintrigger(path=str(tmp_path / "rt.trigger"))
     resp.respond({"score": 0.9})
     assert (tmp_path / "rt.trigger").exists()
-
-
-

@@ -4,7 +4,6 @@ These run real components wired through their registry entries. They
 use minimal CPU/MPS inputs so a developer can run them on a laptop.
 """
 
-
 import pytest
 
 
@@ -67,6 +66,7 @@ def test_e2e_tracker_aim_creates() -> None:
         assert t is not None
     except Exception as exc:
         from braid.core.error import requiresenvironment
+
         assert isinstance(exc, requiresenvironment), f"unexpected: {type(exc).__name__}: {exc}"
 
 

@@ -13,7 +13,11 @@ class labelsmoothing:
 
     name: str = "labelsmoothing"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def __init__(self, epsilon: float = 0.1) -> None:
         if not 0 <= epsilon < 1:
@@ -26,7 +30,9 @@ class labelsmoothing:
             import torch.nn.functional as F
         except ImportError:
             return labels
-        return F.one_hot(labels, numclasses).float() * (1 - self.epsilon) + self.epsilon / numclasses
+        return (
+            F.one_hot(labels, numclasses).float() * (1 - self.epsilon) + self.epsilon / numclasses
+        )
 
     def observability(self) -> dict[str, Any]:
         return {}

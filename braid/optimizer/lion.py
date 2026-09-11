@@ -16,7 +16,9 @@ class lion:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
-    def __init__(self, lr: float = 1e-4, betas: tuple = (0.9, 0.99), weightdecay: float = 0.01) -> None:
+    def __init__(
+        self, lr: float = 1e-4, betas: tuple = (0.9, 0.99), weightdecay: float = 0.01
+    ) -> None:
         self.lr = lr
         self.betas = betas
         self.weightdecay = weightdecay

@@ -51,14 +51,20 @@ class composite:
             self.cache[name] = ev
             try:
                 if name == "diversity":
-                    rep = ev.evaluate(predictions, embeddings=kwargs.get("embeddings"), universe=kwargs.get("universe"))
+                    rep = ev.evaluate(
+                        predictions,
+                        embeddings=kwargs.get("embeddings"),
+                        universe=kwargs.get("universe"),
+                    )
                 elif name in {"calibration", "offlineranking"}:
                     rep = ev.evaluate(predictions, groundtruth)
                 elif name == "replay":
                     rep = ev.evaluate(kwargs.get("ranker"), predictions)
                 elif name == "interleaving":
                     rep = ev.evaluate(
-                        kwargs.get("lista", []), kwargs.get("listb", []), kwargs.get("engagements", [])
+                        kwargs.get("lista", []),
+                        kwargs.get("listb", []),
+                        kwargs.get("engagements", []),
                     )
                 elif name == "baseline":
                     rep = ev.evaluate(predictions, groundtruth, **kwargs)

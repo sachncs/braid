@@ -1,7 +1,6 @@
 """Real assertion tests for the longterm-return reward proxy."""
 
 
-
 def test_longtermreturn_returns_zero_on_empty_history() -> None:
     from braid.rewards.longtermreturn import longtermreturn
 
@@ -14,7 +13,9 @@ def test_longtermreturn_history_with_positive_only() -> None:
     from braid.rewards.longtermreturn import longtermreturn
 
     rw = longtermreturn(horizon=30)
-    val = float(rw.score({"rating": 5.0, "kind": "thumbup"}, ctx={"usertenure": 365, "recentactivity": 7}))
+    val = float(
+        rw.score({"rating": 5.0, "kind": "thumbup"}, ctx={"usertenure": 365, "recentactivity": 7})
+    )
     assert 0.0 <= val <= 1.0
 
 
@@ -22,7 +23,9 @@ def test_longtermreturn_history_with_negative_only() -> None:
     from braid.rewards.longtermreturn import longtermreturn
 
     rw = longtermreturn(horizon=30)
-    val = float(rw.score({"rating": 0.5, "kind": "play"}, ctx={"usertenure": 1, "recentactivity": 0}))
+    val = float(
+        rw.score({"rating": 0.5, "kind": "play"}, ctx={"usertenure": 1, "recentactivity": 0})
+    )
     assert 0.0 <= val <= 1.0
 
 

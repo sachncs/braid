@@ -14,7 +14,11 @@ class condorcet:
 
     name: str = "condorcet"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def aggregate(self, rankings: list[list[int]]) -> list[int]:
         """Aggregate via pairwise majority."""

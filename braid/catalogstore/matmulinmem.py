@@ -19,7 +19,9 @@ class matmulinmem:
 
     name: str = "matmulinmem"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"gpu", "fusedkernel", "distributable", "shardedcatalog", "observable", "cachable", "async"})
+    capabilities: frozenset[str] = frozenset(
+        {"gpu", "fusedkernel", "distributable", "shardedcatalog", "observable", "cachable", "async"}
+    )
 
     def __init__(self, embeddings: np.ndarray | list[list[float]]) -> None:
         """Initialize with catalog embeddings.
@@ -74,8 +76,16 @@ class matmulinmem:
     def observability(self) -> dict[str, Any]:
         return {
             "metrics": [
-                {"name": "braid.catalogstore.score.duration", "type": "histogram", "labels": ("numitems",)},
-                {"name": "braid.catalogstore.score.calls", "type": "counter", "labels": ("numitems",)},
+                {
+                    "name": "braid.catalogstore.score.duration",
+                    "type": "histogram",
+                    "labels": ("numitems",),
+                },
+                {
+                    "name": "braid.catalogstore.score.calls",
+                    "type": "counter",
+                    "labels": ("numitems",),
+                },
             ]
         }
 

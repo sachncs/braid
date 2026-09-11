@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 
-
 class gradaccum:
     """Accumulates gradients over ``steps`` micro-batches."""
 

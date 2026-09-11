@@ -61,6 +61,7 @@ def test_miner_inbatch_returns_positives() -> None:
     m = inbatch()
     try:
         import torch
+
         positives = torch.tensor([[0, 1, 2]])
         out = m.mine(positives=positives, scoresfn=lambda x: x)
         assert out is not None
@@ -75,6 +76,7 @@ def test_miner_random_deterministic_seed() -> None:
     m2 = randomminer(numitems=10, k=5, seed=42)
     try:
         import torch as t
+
         pos = t.tensor([[0, 1, 2]])
         a = m1.mine(positives=pos)
         b = m2.mine(positives=pos)

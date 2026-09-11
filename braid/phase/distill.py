@@ -20,7 +20,9 @@ class distill:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"async", "observable"})
 
-    def __init__(self, teacher: str = "minicpm5", student: str = "pythia1", temperature: float = 2.0) -> None:
+    def __init__(
+        self, teacher: str = "minicpm5", student: str = "pythia1", temperature: float = 2.0
+    ) -> None:
         if not 0 < temperature:
             raise ValueError("temperature must be > 0")
         self.teacher = teacher

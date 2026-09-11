@@ -29,7 +29,9 @@ class quantizer:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
-    def __init__(self, numcodes: int = 256, dim: int = 64, numstages: int = 4, seed: int = 0) -> None:
+    def __init__(
+        self, numcodes: int = 256, dim: int = 64, numstages: int = 4, seed: int = 0
+    ) -> None:
         """Initialize the residual quantizer.
 
         Args:
@@ -48,7 +50,9 @@ class quantizer:
         self.dim = dim
         self.numstages = numstages
         rng = np.random.default_rng(seed)
-        self.codebooks: list[np.ndarray] = [rng.standard_normal((numcodes, dim)).astype(np.float32) for _ in range(numstages)]
+        self.codebooks: list[np.ndarray] = [
+            rng.standard_normal((numcodes, dim)).astype(np.float32) for _ in range(numstages)
+        ]
 
     def quantize(self, vector: np.ndarray) -> list[int]:
         """Map a single vector to a list of code indices (one per stage).

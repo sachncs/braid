@@ -23,9 +23,7 @@ class semanticsummary:
 
     def __init__(self) -> None:
         self.truncator = divtrunc(budget=15)
-        self.template = fstring(
-            "taste summary for {user}: {tastes}; rank from {candidates}."
-        )
+        self.template = fstring("taste summary for {user}: {tastes}; rank from {candidates}.")
 
     def render(self, context: dict[str, Any]) -> str:
         kept = self.truncator.fit(context.get("history", []))

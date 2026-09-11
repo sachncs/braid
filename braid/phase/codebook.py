@@ -56,7 +56,9 @@ class codebook:
             maxsteps=self.maxsteps,
         )
         result = trainer.run(dataloader)
-        getlogger("braid.phase.codebook").info("codebook.train.complete", steps=result.get("steps", 0))
+        getlogger("braid.phase.codebook").info(
+            "codebook.train.complete", steps=result.get("steps", 0)
+        )
         return result
 
     def observability(self) -> dict[str, Any]:

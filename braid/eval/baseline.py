@@ -55,8 +55,7 @@ class baseline:
         rng = np.random.default_rng(seed)
         k = len(predictions[0]) if predictions else 10
         randompreds = [
-            rng.choice(numitems, size=min(k, numitems), replace=False).tolist()
-            for _ in predictions
+            rng.choice(numitems, size=min(k, numitems), replace=False).tolist() for _ in predictions
         ]
         rand = offlineranking().evaluate(randompreds, groundtruth)
         pop: dict[str, float] = {}

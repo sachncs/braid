@@ -20,6 +20,4 @@ def _allconcretes():
 def test_conformance(category: str, name: str) -> None:
     """Every concrete either passes its declared contracts or is skipped."""
     result = verifyone(category, name)
-    assert result.passed or result.skipped, (
-        f"{category}.{name} failed: {result.failures}"
-    )
+    assert result.passed or result.skipped, f"{category}.{name} failed: {result.failures}"

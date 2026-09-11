@@ -81,6 +81,7 @@ def test_optimizer_adafactor_create() -> None:
         assert opt is not None
     except Exception as exc:
         from braid.core.error import requiresenvironment
+
         if isinstance(exc, requiresenvironment):
             pytest.skip("adafactor missing")
 
@@ -99,6 +100,7 @@ def test_optimizer_schedulefree_create() -> None:
         assert opt is not None
     except Exception as exc:
         from braid.core.error import requiresenvironment
+
         if isinstance(exc, requiresenvironment):
             pytest.skip("schedulefree missing")
 

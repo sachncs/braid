@@ -1,5 +1,6 @@
 """Serving tests."""
 
+
 def test_lru_cache() -> None:
     """LRU cache puts and gets."""
     import braid

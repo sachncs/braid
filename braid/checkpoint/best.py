@@ -14,7 +14,12 @@ class best:
 
     name: str = "best"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"persistable", "observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "persistable",
+            "observable",
+        }
+    )
 
     def __init__(self, dir: str) -> None:
         self.dir = Path(dir)

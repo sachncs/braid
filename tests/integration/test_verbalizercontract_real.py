@@ -26,7 +26,15 @@ def test_truncation_head_lossless_for_short() -> None:
 def test_truncation_diversity_round_robin() -> None:
     from braid.truncation.diversity import diversity
 
-    items = [{"kind": "x0"}, {"kind": "y0"}, {"kind": "x1"}, {"kind": "y1"}, {"kind": "x2"}, {"kind": "y2"}, {"kind": "x3"}]
+    items = [
+        {"kind": "x0"},
+        {"kind": "y0"},
+        {"kind": "x1"},
+        {"kind": "y1"},
+        {"kind": "x2"},
+        {"kind": "y2"},
+        {"kind": "x3"},
+    ]
     out = diversity(budget=4).fit(items)
     assert len(out) >= 1
 

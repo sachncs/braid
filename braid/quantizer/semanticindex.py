@@ -35,7 +35,9 @@ class semanticindex:
             dim: latent dimension. Defaults to 64.
             numstages: number of stages. Defaults to 4.
         """
-        self.q: quantizerconcrete = quantizerconcrete(numcodes=numcodes, dim=dim, numstages=numstages)
+        self.q: quantizerconcrete = quantizerconcrete(
+            numcodes=numcodes, dim=dim, numstages=numstages
+        )
         self.tocluster: dict[tuple[int, ...], list[int]] = {}
 
     def add(self, itemid: int, codes: list[int]) -> None:

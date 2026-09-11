@@ -17,7 +17,9 @@ class qwen25:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"gpu", "fusedkernel", "async", "teachable"})
 
-    def __init__(self, size: str = "1.5B", dtype: str = "bf16", gradientcheckpointing: bool = True) -> None:
+    def __init__(
+        self, size: str = "1.5B", dtype: str = "bf16", gradientcheckpointing: bool = True
+    ) -> None:
         try:
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer

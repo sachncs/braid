@@ -72,7 +72,15 @@ class interleaving:
         if len(lista) != len(listb) or len(lista) != len(engagements):
             raise ValueError("lista, listb, engagements must have equal length")
         if not lista:
-            return {"winsA": 0.0, "winsB": 0.0, "ties": 0.0, "winsAratio": 0.0, "winsBratio": 0.0, "ci95low": 0.0, "ci95high": 0.0}
+            return {
+                "winsA": 0.0,
+                "winsB": 0.0,
+                "ties": 0.0,
+                "winsAratio": 0.0,
+                "winsBratio": 0.0,
+                "ci95low": 0.0,
+                "ci95high": 0.0,
+            }
         winsa = winsb = ties = 0.0
         deltas: list[int] = []
         for a, b, eng in zip(lista, listb, engagements):

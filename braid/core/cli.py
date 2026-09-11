@@ -102,7 +102,11 @@ def dryruncmd(args: argparse.Namespace) -> int:
             t = value["type"]
             cat = key.split(".")[-1]
             plan.append(
-                {"category": cat, "name": t, "config": {k: v for k, v in value.items() if k != "type"}}
+                {
+                    "category": cat,
+                    "name": t,
+                    "config": {k: v for k, v in value.items() if k != "type"},
+                }
             )
     print(json.dumps({"wouldinstantiate": plan}, indent=2))
     return 0
@@ -147,7 +151,9 @@ def conformancecmd(args: argparse.Namespace) -> int:
         print(f"{status}  {r.category}.{r.name}")
         for f in r.failures:
             print(f"       {f}")
-    print(f"\n{len(realpass)}/{len(results) - len(skipped)} real-pass | {len(skipped)} skipped | {len(hardfail)} failed")
+    print(
+        f"\n{len(realpass)}/{len(results) - len(skipped)} real-pass | {len(skipped)} skipped | {len(hardfail)} failed"
+    )
     return 1 if hardfail else 0
 
 
@@ -276,7 +282,6 @@ def run_elbow(cfg: dict, log: Any) -> None:
 
     log.info("elbow.run")
     try:
-
         events = [
             {"duration": float(i % 100 + 1), "kind": ["play", "thumbup", "click"][i % 3]}
             for i in range(50)

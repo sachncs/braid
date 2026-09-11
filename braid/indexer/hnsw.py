@@ -22,7 +22,9 @@ class hnsw:
 
     name: str = "hnsw"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"shardedcatalog", "distributable", "async", "observable"})
+    capabilities: frozenset[str] = frozenset(
+        {"shardedcatalog", "distributable", "async", "observable"}
+    )
 
     def __init__(
         self,

@@ -67,7 +67,9 @@ def _aggregatorules(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         * name contains ``lag`` → ``> 5`` for 1m
         * else → ``< 0`` for 1m (gauge sanity)
     """
-    rules: dict[str, dict[str, Any]] = defaultdict(lambda: {"expr": "", "for": "1m", "summary": "", "severity": "warning"})
+    rules: dict[str, dict[str, Any]] = defaultdict(
+        lambda: {"expr": "", "for": "1m", "summary": "", "severity": "warning"}
+    )
     by_metric: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for r in rows:
         by_metric[r["metric"]].append(r)
@@ -75,16 +77,16 @@ def _aggregatorules(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         rule = rules[metric]
         m = metric.lower()
         if "error" in m:
-            rule["expr"] = f"sum(rate({metric}{{category!=\"\"}}[1m])) > 0"
+            rule["expr"] = f'sum(rate({metric}{{category!=""}}[1m])) > 0'
             rule["severity"] = "critical"
         elif "drift" in m:
-            rule["expr"] = f"avg_over_time({metric}{{category!=\"\"}}[5m]) > 0.2"
+            rule["expr"] = f'avg_over_time({metric}{{category!=""}}[5m]) > 0.2'
             rule["severity"] = "warning"
         elif "lag" in m:
-            rule["expr"] = f"avg_over_time({metric}{{category!=\"\"}}[1m]) > 5"
+            rule["expr"] = f'avg_over_time({metric}{{category!=""}}[1m]) > 5'
             rule["severity"] = "warning"
         else:
-            rule["expr"] = f"avg_over_time({metric}{{category!=\"\"}}[1m]) < 0"
+            rule["expr"] = f'avg_over_time({metric}{{category!=""}}[1m]) < 0'
             rule["severity"] = "info"
         rule["summary"] = f"alert on {metric} (declared by {len(examples)} concretes)"
     return [dict(name=k, **v) for k, v in sorted(rules.items())]
@@ -109,7 +111,10 @@ def _panelfor(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "fieldConfig": {
                     "defaults": {
                         "unit": "short",
-                        "thresholds": {"mode": "absolute", "steps": [{"color": "green"}, {"color": "red", "value": 0.5}]},
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [{"color": "green"}, {"color": "red", "value": 0.5}],
+                        },
                     }
                 },
                 "gridPos": {"h": 4, "w": 6, "x": (i % 4) * 6, "y": (i // 4) * 4},

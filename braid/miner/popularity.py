@@ -27,7 +27,9 @@ class popularity:
     version: str = "1.0.0"
     capabilities: frozenset[str] = frozenset({"observable"})
 
-    def __init__(self, popularity: np.ndarray, k: int = 64, alpha: float = 0.5, seed: int = 0) -> None:
+    def __init__(
+        self, popularity: np.ndarray, k: int = 64, alpha: float = 0.5, seed: int = 0
+    ) -> None:
         if k <= 0:
             raise ValueError("k must be > 0")
         pop = np.asarray(popularity, dtype=np.float64)
