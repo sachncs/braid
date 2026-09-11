@@ -32,7 +32,6 @@ def test_registry_capabilities_intersection() -> None:
 
 
 def test_registry_create_unknown_raises_typed() -> None:
-    from braid.core.error import requiresenvironment
     from braid.core.registry import registry
 
     with pytest.raises(Exception):

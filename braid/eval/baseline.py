@@ -67,7 +67,7 @@ class baseline:
             pop = offlineranking().evaluate(popularitypreds, groundtruth)
         tfidf: dict[str, float] = {}
         if tags is not None:
-            query_tags = [tags[t] for t in groundtruth if 0 <= t < len(tags)]
+            [tags[t] for t in groundtruth if 0 <= t < len(tags)]
             score = _tfidfscorer(tags)
             queries = [[w for w in (tags[t] if 0 <= t < len(tags) else [])] for t in groundtruth]
             tfidf_preds: list[list[int]] = []

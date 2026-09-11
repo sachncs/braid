@@ -1,10 +1,6 @@
 """Real assertion tests for metadata, regularizer, datasource/sink, loss, optimizer, cflog."""
 
-import json
-import tempfile
-from pathlib import Path
 
-import numpy as np
 import pytest
 
 pytestmark = pytest.mark.integration

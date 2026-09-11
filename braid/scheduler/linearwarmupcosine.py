@@ -29,7 +29,7 @@ class linearwarmupcosine:
 
             raise ioerror("pytorch required") from exc
 
-        baselr = optimizer.defaults["lr"]
+        optimizer.defaults["lr"]
 
         def lrlambda(step: int) -> float:
             if step < self.warmupsteps:

@@ -11,7 +11,6 @@ from typing import Any
 import torch
 import torch.nn.functional as F
 
-from braid.core.error import requiresenvironment
 from braid.core.logging import getlogger
 from braid.core.registry import registry
 from braid.quantizer.encoder import encoder as encoderconcrete
@@ -50,12 +49,6 @@ class trainer:
         inputdim: int = 64,
         hiddendim: int = 128,
     ) -> None:
-        try:
-            import torch
-        except ImportError as exc:
-            raise requiresenvironment(
-                "torch required for quantizer:trainer", hint="pip install torch"
-            ) from exc
         if numcodes <= 0 or dim <= 0 or numstages <= 0 or maxsteps <= 0:
             raise ValueError("config values must be > 0")
         self.numcodes = numcodes
@@ -76,7 +69,6 @@ class trainer:
         self.encoder = encoderconcrete(self.inputdim, self.hiddendim)
         self.qzr = quantizerconcrete(numcodes=self.numcodes, dim=self.hiddendim, numstages=self.numstages)
         self.decoder = decoderconcrete(self.hiddendim, self.inputdim)
-        import torch
 
         params = list(self.encoder.parameters()) + list(self.decoder.parameters())
         self.opt = torch.optim.AdamW(params, lr=self.lr)
@@ -93,7 +85,6 @@ class trainer:
             Training summary dict.
         """
         self.setup()
-        import torch
 
         log = getlogger("braid.quantizer.trainer")
         if dataloader is None:

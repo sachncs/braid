@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from braid.core.error import requiresenvironment, requiresresource
+from braid.core.error import requiresresource
 from braid.core.logging import getlogger
 from braid.core.registry import registry
 
@@ -44,12 +44,6 @@ class reward:
             requiresenvironment: torch missing.
             requiresresource: dataloader missing.
         """
-        try:
-            import torch
-        except ImportError as exc:
-            raise requiresenvironment(
-                "torch required for phase:reward", hint="pip install torch"
-            ) from exc
         if dataloader is None:
             raise requiresresource("phase:reward requires a dataloader")
         proxy = registry.create("reward", "longtermreturn", horizon=self.horizon)

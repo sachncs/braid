@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Any, Callable
+from typing import Any
 
 from braid.core.registry import registry
 

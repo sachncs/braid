@@ -18,7 +18,7 @@ class rerank:
     def process(self, response: dict[str, Any], scorer: Any | None = None) -> dict[str, Any]:
         """Rerank ``response`` using ``scorer`` if provided; else identity."""
         ids = response.get("ids", [])
-        scores = response.get("scores", [])
+        response.get("scores", [])
         if scorer is None or not ids:
             return response
         custom = [scorer(int(i)) for i in ids]

@@ -6,7 +6,6 @@ from typing import Any
 
 import numpy as np
 
-from braid.core.error import ioerror
 from braid.core.registry import registry
 
 
@@ -46,7 +45,7 @@ class faiss:
             import faiss  # noqa: F401
 
             self.faissmod = faiss
-        except ImportError as exc:
+        except ImportError:
             self.faissmod = None
         if self.faissmod is not None and self.embeddings.shape[0] > 0:
             try:

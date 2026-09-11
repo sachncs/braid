@@ -31,7 +31,6 @@ class dropout:
             The dropout-masked tensor.
         """
         try:
-            import torch
             import torch.nn.functional as F
         except ImportError as exc:
             raise requiresenvironment(

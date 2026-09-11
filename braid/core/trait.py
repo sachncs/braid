@@ -6,7 +6,7 @@ against the trait contracts by the conformance harness.
 
 from __future__ import annotations
 
-from typing import Any, AsyncIterator, Iterator, Protocol, TypeVar, runtime_checkable
+from typing import Any, Iterator, Protocol, TypeVar, runtime_checkable
 
 T = TypeVar("T")
 K = TypeVar("K")

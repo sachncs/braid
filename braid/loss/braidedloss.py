@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from braid.core.error import ioerror, requiresenvironment, requiresresource
+from braid.core.error import requiresenvironment, requiresresource
 from braid.core.registry import registry
 
 

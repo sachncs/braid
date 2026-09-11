@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
-from pydantic import BaseModel
 
 from braid.core.context import requestcontext
 from braid.core.logging import getlogger

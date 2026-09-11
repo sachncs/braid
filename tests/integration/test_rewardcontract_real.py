@@ -1,6 +1,5 @@
 """Real assertion tests for the longterm-return reward proxy."""
 
-import numpy as np
 
 
 def test_longtermreturn_returns_zero_on_empty_history() -> None:

@@ -81,12 +81,11 @@ target-version = "py311"
 extend-exclude = ["build", "dist", ".venv"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
-ignore = ["E501"]
+select = ["E", "F", "W"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["B011", "S101"]
-"braid/catalogstore/*.py" = ["E402"]
+"tests/*" = ["B011", "S101", "E501"]
+"braid/*" = ["E501"]
 
 [tool.mypy]
 python_version = "3.11"

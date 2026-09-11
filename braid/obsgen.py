@@ -76,9 +76,9 @@ def renderalerts(entries: list[dict]) -> str:
                 continue
             lines.append(f"      - alert: braid_{name.replace('.', '_')}_p95_high")
             lines.append(f"        expr: histogram_quantile(0.95, sum(rate({name}[5m])) by (le)) > 200")
-            lines.append(f"        for: 5m")
-            lines.append(f"        labels:")
-            lines.append(f"          severity: warning")
+            lines.append("        for: 5m")
+            lines.append("        labels:")
+            lines.append("          severity: warning")
     return "\n".join(lines) + "\n"
 
 

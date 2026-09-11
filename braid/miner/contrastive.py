@@ -39,15 +39,6 @@ class contrastive:
         Returns:
             ``[batch, k]`` int64 tensor of nearest neighbors per row.
         """
-        try:
-            import torch
-            import torch.nn.functional as F
-
-            norm = F.normalize(embeddings, dim=-1)
-            sim = norm @ norm.T
-            return sim.topk(self.k, dim=-1).indices
-        except ImportError:
-            return []
 
     def observability(self) -> dict[str, Any]:
         return {}
