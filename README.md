@@ -4,17 +4,24 @@
 
 `braid` is an end-to-end library for **verbalized, multi-reward, catalog-aware recommendation ranking** built on a polymorphic spine. Every primitive — backbones, catalog stores, verbalizers, rewards, losses, evaluators, monitoring — is registry-dispatched and configurable from a single Pydantic config.
 
+[![CI](https://github.com/sachncs/braid/actions/workflows/ci.yml/badge.svg)](https://github.com/sachncs/braid/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+
 ## Status
 
 | | |
 |---|---|
-| **Atomic commits** | **126** |
-| **Categories** | 38 |
+| **Categories** | 44 |
 | **Real concretes** | 147 |
-| **Stubs / fallbacks** | **0** (silent fallbacks purged; missing deps raise typed ``requiresenvironment``) |
-| **Self._ underscore violations** | **0** (semi-private naming banned) |
-| **Tests passing** | **215** |
-| **Single-word naming** | enforced repo-wide |
+| **Conformance (real-pass)** | 131 / 147 |
+| **Tests passing** | 277 passed + 1 skipped |
+| **Lint** | ruff (E, F, W) clean |
+| **Silent fallbacks** | none — typed `requiresenvironment` raised |
+
+The numbers above are reproducible from the registry and the test
+suite; regenerate any time with `make status` (see below) or
+`pytest -q`.
 
 ## Single-word naming
 
@@ -44,7 +51,7 @@ Eight layers on top of the registry:
 4. **Capabilities** — `gpu`, `async`, `fusedkernel`, `int4quantize`, `distributable`, `teachable`, etc.
 5. **Versioning** — `configmigrator` walks configs between versions
 6. **Schema** — versioned schemas (item, event, context, prompt, rankrequest/response)
-7. **Observability** — concrete declares `observability()` and `metrics()`; `braid obsgen` walks the registry and emits Prometheus rules + Grafana JSON + a metric catalogue (47 metrics, 47 alert rules, 47 panels)
+7. **Observability** — concrete declares `observability()` and `metrics()`; `braid obsgen` walks the registry and emits Prometheus rules + Grafana JSON + a metric catalogue
 8. **Context** — `requestcontext` flows through every layer
 
 ## Fail-fast
@@ -55,7 +62,7 @@ Missing dependencies or resources raise typed errors:
 - `configurationerror` — malformed config
 - `ioerror` — file/network problems
 
-There are no silent fallbacks. The conformance suite (`make conformance`) reports `146/146 passing`, which is `True` for both real-pass and skip-with-typed-cause cases.
+There are no silent fallbacks. The conformance suite (`make conformance`) reports `131/147` real-pass plus `16` skipped (concretes that could not be constructed in the offline sandbox). See `braid.core.conformance.verifyall()` for the live count.
 
 ## Concurrency target: CPU/MPS
 
@@ -71,17 +78,67 @@ Removed because they require Kubernetes / live network / commercial inference en
 - `log:logfmt`
 - `server:triton`, `:openaicompat`
 
-Kept (CPU/MPS-runnable): 147 concretes across 38 categories.
+Kept (CPU/MPS-runnable): 147 concretes across 44 categories.
+
+## What this looks like in practice
+
+```bash
+$ python -m braid list
+[auth] (3)
+  apikey   caps: distributable,observable
+  jwt      caps: distributable,observable
+  none     caps: observable
+[backbone] (4)
+  llama32      caps: distributable,gpu,observable,teachable
+  minicpm5     caps: distributable,gpu,observable,teachable
+  pythia1      caps: distributable,gpu,observable,teachable
+  qwen25       caps: distributable,gpu,observable,teachable
+[batcher] (4)
+  bucket   caps: observable
+  padded   caps: observable
+  packed   caps: observable
+  sorted   caps: observable
+... (44 categories, 147 concretes)
+
+$ python -m braid inspect catalogstore matmulinmem
+name       matmulinmem
+category   catalogstore
+version    1.0.0
+module     braid.catalogstore.matmulinmem
+capabilities   distributable,observable
+methods:
+  build
+  metrics
+  numshards
+  observability
+  score
+  shardrank
+  warmup
+
+$ python -m braid dryrun --config configs/train/phase2.yaml
+{
+  "wouldinstantiate": [
+    {"category": "backbone", "name": "minicpm5", "config": {"checkpoint": "..."}},
+    {"category": "catalogstore", "name": "matmulinmem", "config": {}},
+    ...
+    {"category": "rewards", "name": "composite", "config": {"members": [...]}},
+    {"category": "miner", "name": "checkpoint", "config": {"k": 64}}
+  ]
+}
+```
+
+The braided loss is a weighted sum of registered loss terms:
+`Σ wᵢ · lossᵢ(scores, labels, …)` — see `braid/loss/braidedloss.py`.
 
 ## Quick start
 
 ```bash
-make bootstrap                          # install deps
-make list                               # 38 categories × 147 concretes
+make bootstrap                          # install deps + pre-commit hooks
+make list                               # 44 categories × 147 concretes
 make inspect CAT=backbone NAME=minicpm5
 make dryrun CFG=configs/train/phase2.yaml
-make conformance                        # 146/146
-make test                               # 215 tests
+make conformance                        # 131/147 real-pass + 16 skipped
+make test                               # 277 passed + 1 skipped
 make obsgen                             # Prometheus + Grafana + catalogue
 ```
 
@@ -98,26 +155,18 @@ python -m braid drift
 python -m braid obsgen --out artifacts/obsgen        # Prometheus rules + Grafana
 ```
 
-## Categories (38)
+## Categories (44)
 
 `auth (3)`, `backbone (4)`, `bandit (3)`, `batcher (4)`, `cache (1)`, `catalogstore (4)`, `cflog (1)`, `checkpoint (4)`, `curriculum (5)`, `datasink (2)`, `datasource (1)`, `drift (4)`, `driftresponse (3)`, `embedding (3)`, `eval (7)`, `indexer (4)`, `log (2)`, `loss (6)`, `metadata (3)`, `metrics (1)`, `migrator (1)`, `miner (5)`, `optimizer (4)`, `phase (5)`, `quantizer (5)`, `rankaggregator (3)`, `ratelimit (3)`, `regularizer (4)`, `reqpre (3)`, `resppost (3)`, `reward (5)`, `router (4)`, `scheduler (4)`, `secret (1)`, `server (2)`, `sessionizer (3)`, `splitter (3)`, `template (3)`, `tokencounter (3)`, `tokenizer (3)`, `tracing (1)`, `tracker (4)`, `truncation (5)`, `verbalizer (5)`.
 
 ## Tests
 
 ```bash
-make test                     # 215 passed
+make test                     # full suite (all markers)
 make conformance              # sweeps all 147 concretes
-make integration              # medium-scale
+make integration              # registry / phase / loss / reward / e2e contracts
+make e2e                      # CLI / pipeline smoke tests
 ```
-
-`tests/integration/`:
-- existing `*contract*` baseline smoke tests (174 → 175)
-- new `*contract_real` real-assertion tests (40):
-  - `evalcontract_real` — hand-verified MRR / NDCG@K / HitRate@K / MAP@K / Brier / NLL / Gini / coverage / intra (13)
-  - `rewardcontract_real` — typed requiresresource on bad members, MLP reward finite-bounded, novelty inverse-monotone (7)
-  - `driftcontract_real` — PSI well-calibrated vs shifted, Page-Hinkley below threshold, KS returns score, response toggles (7)
-  - `registrycontract_real` — dedup, capabilities intersection, resolve, applymigrations, categories covering core (7)
-  - `verbalizercontract_real` — elbow finder finds a kink, head/diversity fit, fstring renders, pipeline assembles (6)
 
 ## License
 
