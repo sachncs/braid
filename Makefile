@@ -36,7 +36,7 @@ help:
 
 .PHONY: bootstrap
 bootstrap:
-	$(PYTHON) -m pip install -e ".[dev,all]"
+	$(PYTHON) -m pip install -e ".[dev,serve]"
 	$(PYTHON) -m pre_commit install
 
 .PHONY: lint
