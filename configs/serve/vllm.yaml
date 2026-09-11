@@ -22,6 +22,6 @@ metrics:
   type: prometheus
   port: 9090
 tracing:
-  type: otlp
+  type: console
 log:
   type: structlogjson
