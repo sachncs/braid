@@ -3,6 +3,8 @@
 import numpy as np
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_indexer_hash_roundtrip() -> None:
     """Hash indexer stores embeddings and queries nearest neighbours."""

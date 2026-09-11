@@ -2,6 +2,8 @@
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_rankingce_smoke() -> None:
     """Cross-entropy smoke test."""

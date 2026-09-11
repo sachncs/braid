@@ -5,6 +5,9 @@ import pytest
 import braid
 
 
+pytestmark = pytest.mark.conformance
+
+
 def test_registry_categories_populated() -> None:
     """Verify every category has at least one registered concrete."""
     cats = braid.registry.categories()

@@ -97,14 +97,12 @@ plugins = ["pydantic.mypy"]
 files = ["braid", "tests"]
 
 [tool.pytest.ini_options]
-python_files = ["*contract*.py", "*spec*.py", "conftest.py"]
 testpaths = ["braid", "tests"]
 addopts = "-q --strict-markers"
 markers = [
   "conformance: protocol contract suite",
   "integration: medium-scale tests",
   "e2e: end-to-end tests",
-  "unit: unit tests",
   "slow: long-running tests",
 ]
 

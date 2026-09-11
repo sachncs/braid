@@ -6,6 +6,9 @@ import braid
 from braid.core.conformance import verifyone
 
 
+pytestmark = pytest.mark.conformance
+
+
 def _allconcretes():
     """Yield (category, name) pairs across the registry."""
     for c in braid.registry.categories():

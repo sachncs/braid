@@ -2,6 +2,8 @@
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_reqpre_normalize_lowercases() -> None:
     """Normalize request lowercases text fields and strips whitespace."""

@@ -7,6 +7,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_metadata_embedded_put_get() -> None:
     from braid.metadata.embedded import embedded

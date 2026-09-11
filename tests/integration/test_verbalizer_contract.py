@@ -2,6 +2,8 @@
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_eventsignal_render() -> None:
     """The eventsignal verbalizer produces non-empty text."""
