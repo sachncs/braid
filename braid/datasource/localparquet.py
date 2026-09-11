@@ -8,6 +8,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Iterator
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -47,9 +48,11 @@ class localparquet:
     def load(self) -> None:
         try:
             import pyarrow.parquet as pq
-        except ImportError:
-            self.rows = []
-            return
+        except ImportError as exc:
+            raise requiresenvironment(
+                "pyarrow required for datasource:localparquet",
+                hint="pip install pyarrow",
+            ) from exc
         rows: list[dict[str, Any]] = []
         for f in sorted(self.path.glob("*.parquet")):
             try:
