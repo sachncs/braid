@@ -13,7 +13,7 @@ WORKDIR /app
 RUN python3.11 -m pip install --upgrade pip hatchling
 COPY pyproject.toml README.md ./
 COPY braid ./braid
-RUN python3.11 -m pip install --no-build-isolation ".[all]"
+RUN python3.11 -m pip install --no-build-isolation ".[serve]"
 
 
 FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04 AS runtime

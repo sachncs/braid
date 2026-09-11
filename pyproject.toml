@@ -50,6 +50,11 @@ dev = [
   "pytest-cov>=5.0",
   "pre-commit>=3.7",
 ]
+serve = [
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  "prometheus-client>=0.20",
+]
 
 [project.entry-points."braid.backbone"]
 minicpm5 = "braid.backbone.minicpm5:minicpm5"
