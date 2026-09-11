@@ -25,6 +25,7 @@ class hierarchicalsummary:
 
     def fit(self, events: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Keep last ``hotk`` + signal-weighted top; summarize rest."""
+
         def score(ev: dict[str, Any]) -> float:
             return float(ev.get("duration", 0.0)) + float(ev.get("rating", 0.0))
 

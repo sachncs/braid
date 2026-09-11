@@ -24,7 +24,9 @@ class faiss:
 
     name: str = "faiss"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"shardedcatalog", "distributable", "async", "observable"})
+    capabilities: frozenset[str] = frozenset(
+        {"shardedcatalog", "distributable", "async", "observable"}
+    )
 
     def __init__(self, embeddings: np.ndarray, nlist: int = 100, nprobe: int = 8) -> None:
         """Initialize the faiss index.

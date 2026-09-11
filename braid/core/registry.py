@@ -102,7 +102,7 @@ class registry:
         for ep in entry_points():
             if not ep.group.startswith(groupprefix):
                 continue
-            category = ep.group[len(groupprefix):]
+            category = ep.group[len(groupprefix) :]
             try:
                 klass = ep.load()
             except Exception:

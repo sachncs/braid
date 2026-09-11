@@ -22,7 +22,9 @@ class alert:
 
     def respond(self, signal: dict[str, Any]) -> None:
         """Emit an alert for a drift signal."""
-        self.log.warning("drift.detected", score=signal.get("score"), detector=signal.get("detector"))
+        self.log.warning(
+            "drift.detected", score=signal.get("score"), detector=signal.get("detector")
+        )
 
     def observability(self) -> dict[str, Any]:
         return {"metrics": [{"name": "braid.driftresponse.alerts", "type": "counter"}]}

@@ -13,7 +13,11 @@ class cosine:
 
     name: str = "cosine"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def __init__(self, maxsteps: int, minratio: float = 0.0) -> None:
         self.maxsteps = maxsteps
@@ -26,7 +30,9 @@ class cosine:
             from braid.core.error import ioerror
 
             raise ioerror("pytorch required for cosine scheduler") from exc
-        return torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.maxsteps, eta_min=self.minratio * optimizer.defaults["lr"])
+        return torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=self.maxsteps, eta_min=self.minratio * optimizer.defaults["lr"]
+        )
 
     def observability(self) -> dict[str, Any]:
         return {}

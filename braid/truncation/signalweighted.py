@@ -20,6 +20,7 @@ class signalweighted:
 
     def fit(self, events: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Score by signal; keep top ``budget`` events."""
+
         def score(ev: dict[str, Any]) -> float:
             dur = float(ev.get("duration", 0.0))
             rating = float(ev.get("rating", 0.0))

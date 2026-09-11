@@ -18,7 +18,9 @@ class matmulint4awq:
 
     name: str = "matmulint4awq"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"int4quantize", "quantizedcatalog", "gpu", "observable", "cachable", "distributable"})
+    capabilities: frozenset[str] = frozenset(
+        {"int4quantize", "quantizedcatalog", "gpu", "observable", "cachable", "distributable"}
+    )
 
     def __init__(
         self,

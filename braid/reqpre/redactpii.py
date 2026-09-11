@@ -18,7 +18,11 @@ class redactpii:
 
     name: str = "redactpii"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def redact(self, value: str) -> str:
         return EMAIL.sub("[email]", PHONE.sub("[phone]", value))
@@ -32,7 +36,12 @@ class redactpii:
             elif isinstance(v, dict):
                 out[k] = self.process(v)
             elif isinstance(v, list):
-                out[k] = [self.process(x) if isinstance(x, dict) else (self.redact(x) if isinstance(x, str) else x) for x in v]
+                out[k] = [
+                    self.process(x)
+                    if isinstance(x, dict)
+                    else (self.redact(x) if isinstance(x, str) else x)
+                    for x in v
+                ]
             else:
                 out[k] = v
         return out

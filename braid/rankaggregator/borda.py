@@ -14,7 +14,11 @@ class borda:
 
     name: str = "borda"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def aggregate(self, rankings: list[list[int]]) -> list[int]:
         """Aggregate rankings via Borda count."""

@@ -22,7 +22,9 @@ class diversity:
             raise ValueError("lam must be in [0, 1]")
         self.lam = lam
 
-    def process(self, response: dict[str, Any], embeddings: np.ndarray | None = None) -> dict[str, Any]:
+    def process(
+        self, response: dict[str, Any], embeddings: np.ndarray | None = None
+    ) -> dict[str, Any]:
         """Apply MMR-style diversity on the top-k."""
         ids = response.get("ids", [])
         scores = response.get("scores", [])

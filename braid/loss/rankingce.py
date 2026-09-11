@@ -19,7 +19,11 @@ class rankingce:
 
     name: str = "rankingce"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def __init__(self, labelSmoothing: float = 0.0) -> None:
         self.labelSmoothing = labelSmoothing

@@ -86,7 +86,9 @@ class pretrain:
             logits = out["hiddens"]
             shift_logits = logits[..., :-1, :].contiguous()
             shift_labels = (
-                labels[..., 1:].contiguous() if labels is not None else inputids[..., 1:].contiguous()
+                labels[..., 1:].contiguous()
+                if labels is not None
+                else inputids[..., 1:].contiguous()
             )
             try:
                 import torch.nn.functional as F

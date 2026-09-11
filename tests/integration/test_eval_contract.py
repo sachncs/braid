@@ -1,5 +1,6 @@
 """Evaluator tests."""
 
+
 def test_offlineranking_metrics() -> None:
     """offlineranking returns mrr/ndcg/etc."""
     import braid
@@ -29,6 +30,8 @@ def test_baseline_compare() -> None:
     import braid
 
     ev = braid.registry.create("eval", "baseline")
-    rep = ev.evaluate([[1, 2, 3], [2, 3, 4]], [1, 2], numitems=10, popularity=np.array([1] * 10, dtype=np.float32))
+    rep = ev.evaluate(
+        [[1, 2, 3], [2, 3, 4]], [1, 2], numitems=10, popularity=np.array([1] * 10, dtype=np.float32)
+    )
     assert "ours" in rep
     assert "random" in rep

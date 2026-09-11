@@ -10,7 +10,9 @@ def test_compositereward_runs() -> None:
     import braid
 
     composite = braid.rewards.compositereward([("diversitybonus", 0.5)])
-    val = composite.score({"itemid": 1, "duration": 60.0}, {"recent": [{"itemid": 2}, {"itemid": 3}]})
+    val = composite.score(
+        {"itemid": 1, "duration": 60.0}, {"recent": [{"itemid": 2}, {"itemid": 3}]}
+    )
     assert 0 <= val <= 1
 
 

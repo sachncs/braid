@@ -99,7 +99,11 @@ class braidedloss:
                     )
                 contribution = term.compute(outputs["scores"], batch["labels"], w)
             loss = loss + contribution
-            perterm[name] = float(contribution.detach().item()) if hasattr(contribution, "detach") else float(contribution)
+            perterm[name] = (
+                float(contribution.detach().item())
+                if hasattr(contribution, "detach")
+                else float(contribution)
+            )
         self.lastreport = perterm
         return loss
 

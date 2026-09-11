@@ -23,7 +23,9 @@ class faissivfstore:
 
     name: str = "faissivfstore"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"shardedcatalog", "distributable", "async", "observable"})
+    capabilities: frozenset[str] = frozenset(
+        {"shardedcatalog", "distributable", "async", "observable"}
+    )
 
     def __init__(self, embeddings: np.ndarray, nlist: int = 100, nprobe: int = 8) -> None:
         """Initialize the IVF index.
@@ -65,7 +67,9 @@ class faissivfstore:
         except Exception:  # noqa: BLE001
             self.index = None
 
-    def score(self, userrepr: np.ndarray, ids: np.ndarray | None = None, topk: int | None = None) -> np.ndarray:
+    def score(
+        self, userrepr: np.ndarray, ids: np.ndarray | None = None, topk: int | None = None
+    ) -> np.ndarray:
         """Return scores. With ``ids`` returns the full slice; otherwise topk."""
         if self.index is None:
             matrix = self.embeddings

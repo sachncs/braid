@@ -13,7 +13,11 @@ class wsd:
 
     name: str = "wsd"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def __init__(self, warmupsteps: int, totalsteps: int, decayfrac: float = 0.2) -> None:
         self.warmupsteps = warmupsteps

@@ -21,7 +21,9 @@ class vllm:
 
     name: str = "vllm"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"prefixcache", "gpu", "speculative", "lowlatency", "async", "observable"})
+    capabilities: frozenset[str] = frozenset(
+        {"prefixcache", "gpu", "speculative", "lowlatency", "async", "observable"}
+    )
 
     def __init__(
         self,
@@ -66,7 +68,10 @@ class vllm:
             return {"ids": list(range(topk)), "scores": [0.0] * topk, "fallback": True}
         scores = catalogscoresfn(np.asarray(lastembed))
         ids = list(range(len(scores[0])))[:topk]
-        return {"ids": ids, "scores": scores[0][:topk].tolist() if hasattr(scores, "tolist") else []}
+        return {
+            "ids": ids,
+            "scores": scores[0][:topk].tolist() if hasattr(scores, "tolist") else [],
+        }
 
     def shutdown(self) -> None:
         """Release vLLM engine."""

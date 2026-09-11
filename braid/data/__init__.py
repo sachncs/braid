@@ -12,11 +12,13 @@ from braid.metadata import csvmetadata, jsonapi, embedded
 try:
     from braid.data.schemas import validateevents, validateitems  # noqa: F401
 except ImportError:
+
     def validateevents(df):
         return None
 
     def validateitems(df):
         return None
+
 
 __all__ = [
     "localparquet",

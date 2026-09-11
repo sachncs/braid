@@ -30,7 +30,9 @@ class everyn:
 
     def rotate(self) -> None:
         """Delete old checkpoints beyond ``maxkeep``."""
-        candidates = sorted(self.dir.glob("step*.pt"), key=lambda p: p.stat().st_mtime, reverse=True)
+        candidates = sorted(
+            self.dir.glob("step*.pt"), key=lambda p: p.stat().st_mtime, reverse=True
+        )
         for old in candidates[self.maxkeep :]:
             try:
                 old.unlink()

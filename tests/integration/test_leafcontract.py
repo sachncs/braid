@@ -1,6 +1,5 @@
 """Real assertion tests for metadata, regularizer, datasource/sink, loss, optimizer, cflog."""
 
-
 import pytest
 
 pytestmark = pytest.mark.integration
@@ -152,6 +151,7 @@ def test_optimizer_lion_create_or_typed() -> None:
         assert opt is not None
     except Exception as exc:
         from braid.core.error import requiresenvironment
+
         if isinstance(exc, requiresenvironment):
             return
         raise

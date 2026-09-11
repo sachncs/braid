@@ -67,7 +67,9 @@ class trainer:
     def setup(self) -> None:
         """Build encoder, decoder, codebook, optimizer."""
         self.encoder = encoderconcrete(self.inputdim, self.hiddendim)
-        self.qzr = quantizerconcrete(numcodes=self.numcodes, dim=self.hiddendim, numstages=self.numstages)
+        self.qzr = quantizerconcrete(
+            numcodes=self.numcodes, dim=self.hiddendim, numstages=self.numstages
+        )
         self.decoder = decoderconcrete(self.hiddendim, self.inputdim)
 
         params = list(self.encoder.parameters()) + list(self.decoder.parameters())
@@ -111,7 +113,9 @@ class trainer:
             loss.backward()
             self.opt.step()
             self.hist.append(float(loss.detach()))
-        log.info("trainer.complete", steps=len(self.hist), lastloss=self.hist[-1] if self.hist else None)
+        log.info(
+            "trainer.complete", steps=len(self.hist), lastloss=self.hist[-1] if self.hist else None
+        )
         return {"phase": "quantizer", "artifact": "quantizer.pt", "steps": len(self.hist)}
 
     def observability(self) -> dict[str, Any]:

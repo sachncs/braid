@@ -13,7 +13,11 @@ class tokendropout:
 
     name: str = "tokendropout"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def __init__(self, p: float = 0.1, replacetoken: int = 0) -> None:
         if not 0 <= p < 1:

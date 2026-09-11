@@ -15,7 +15,11 @@ class ks:
 
     name: str = "ks"
     version: str = "1.0.0"
-    capabilities: frozenset[str] = frozenset({"observable", })
+    capabilities: frozenset[str] = frozenset(
+        {
+            "observable",
+        }
+    )
 
     def __init__(self, threshold: float = 0.05) -> None:
         self.threshold = threshold

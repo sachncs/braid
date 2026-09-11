@@ -98,8 +98,10 @@ def applymigrations(
         if (category, name) not in registry._items.get("migrator", {}):
             continue
         mig: configmigrator = registry.create("migrator", name)
-        if not (versioninfo.parse(mig.fromversion) >= versioninfo.parse(fromversion)
-                and versioninfo.parse(mig.toversion) <= versioninfo.parse(target)):
+        if not (
+            versioninfo.parse(mig.fromversion) >= versioninfo.parse(fromversion)
+            and versioninfo.parse(mig.toversion) <= versioninfo.parse(target)
+        ):
             continue
         raw = mig.migrate(raw)
     return raw

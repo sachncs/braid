@@ -56,11 +56,55 @@ def sampledefault(name: str) -> Any:
         return "./artifacts/tmp"
     if "dir" == n:
         return "./artifacts/tmp"
-    if n in {"name", "tokenizername", "modelname", "repo", "encoding", "model", "template", "token"} or any(k in n for k in ["project", "run", "experiment", "mountpoint", "client", "namespace"]):
+    if n in {
+        "name",
+        "tokenizername",
+        "modelname",
+        "repo",
+        "encoding",
+        "model",
+        "template",
+        "token",
+    } or any(k in n for k in ["project", "run", "experiment", "mountpoint", "client", "namespace"]):
         return "test"
-    if any(k in n for k in ["dim", "size", "epochs", "stages", "buckets", "nbins", "capacity", "max", "n", "k", "m", "topk", "minratio", "maxattempts"]):
+    if any(
+        k in n
+        for k in [
+            "dim",
+            "size",
+            "epochs",
+            "stages",
+            "buckets",
+            "nbins",
+            "capacity",
+            "max",
+            "n",
+            "k",
+            "m",
+            "topk",
+            "minratio",
+            "maxattempts",
+        ]
+    ):
         return 4
-    if any(k in n for k in ["rate", "p_", "alpha", "weight", "epsilon", "decay", "beta", "lr", "weightdecay", "alpha_", "minloss", "temperature", "freq"]):
+    if any(
+        k in n
+        for k in [
+            "rate",
+            "p_",
+            "alpha",
+            "weight",
+            "epsilon",
+            "decay",
+            "beta",
+            "lr",
+            "weightdecay",
+            "alpha_",
+            "minloss",
+            "temperature",
+            "freq",
+        ]
+    ):
         return 0.5
     if "weights" in n:
         return None
@@ -116,7 +160,14 @@ def trycreate(klass: type) -> tuple[Any | None, str | None]:
         return None, f"construction failed: {type(exc).__name__}: {exc}"
 
 
-def verifyone(category: str, name: str, *, traits: bool = True, lifecycle: bool = True, observability: bool = True) -> conformancecheck:
+def verifyone(
+    category: str,
+    name: str,
+    *,
+    traits: bool = True,
+    lifecycle: bool = True,
+    observability: bool = True,
+) -> conformancecheck:
     """Verify a single concrete against all enabled contracts.
 
     Construction failures are reported as skips (``passed=False``,
@@ -137,10 +188,18 @@ def verifyone(category: str, name: str, *, traits: bool = True, lifecycle: bool 
     try:
         klass = registry.resolve(category, name)
     except Exception as exc:  # noqa: BLE001
-        return conformancecheck(category=category, name=name, passed=False, skipped=True, failures=[f"resolve failed: {exc}"])
+        return conformancecheck(
+            category=category,
+            name=name,
+            passed=False,
+            skipped=True,
+            failures=[f"resolve failed: {exc}"],
+        )
     obj, err = trycreate(klass)
     if obj is None:
-        return conformancecheck(category=category, name=name, passed=False, skipped=True, failures=[f"skipped: {err}"])
+        return conformancecheck(
+            category=category, name=name, passed=False, skipped=True, failures=[f"skipped: {err}"]
+        )
     failures: list[str] = []
     if observability and not hasmethod(obj, "metrics"):
         failures.append("missing metrics() declaration")
@@ -189,6 +248,4 @@ def assertconformant(category: str, name: str) -> None:
     """
     check = verifyone(category, name)
     if not check.passed:
-        raise protocolviolation(
-            f"concrete {category}.{name} failed contracts: {check.failures}"
-        )
+        raise protocolviolation(f"concrete {category}.{name} failed contracts: {check.failures}")

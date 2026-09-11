@@ -131,7 +131,12 @@ def _readratings(path: str | Path) -> list[dict[str, Any]]:
     except Exception as exc:
         raise ioerror(f"could not read ratings CSV: {path}", cause=str(exc)) from exc
     out: list[dict[str, Any]] = []
-    for u, m, r, t in zip(df["userId"].tolist(), df["movieId"].tolist(), df["rating"].tolist(), df["timestamp"].tolist()):
+    for u, m, r, t in zip(
+        df["userId"].tolist(),
+        df["movieId"].tolist(),
+        df["rating"].tolist(),
+        df["timestamp"].tolist(),
+    ):
         out.append({"user": int(u), "item": int(m), "rating": float(r), "ts": int(t)})
     return out
 
@@ -162,7 +167,9 @@ def ingest(configpath: str) -> dict[str, Any]:
 
     src_cfg = cfg.get("datasource", {}) or {}
     if src_cfg.get("url"):
-        ratings = downloadmovielens(target=src_cfg.get("path", "data/raw/movielens"), variant=src_cfg.get("variant", "25m"))
+        ratings = downloadmovielens(
+            target=src_cfg.get("path", "data/raw/movielens"), variant=src_cfg.get("variant", "25m")
+        )
     else:
         ratings = Path(src_cfg.get("path", "data/raw/movielens/ratings.csv"))
 
@@ -170,7 +177,9 @@ def ingest(configpath: str) -> dict[str, Any]:
         rows = _readratings(ratings)
     else:
         try:
-            src = registry.create("datasource", src_cfg["type"], **{k: v for k, v in src_cfg.items() if k != "type"})
+            src = registry.create(
+                "datasource", src_cfg["type"], **{k: v for k, v in src_cfg.items() if k != "type"}
+            )
             rows = list(src.read())
         except Exception as exc:
             raise requiresresource(
@@ -180,7 +189,9 @@ def ingest(configpath: str) -> dict[str, Any]:
 
     sess_cfg = cfg.get("sessionizer", {}) or {}
     try:
-        sess = registry.create("sessionizer", sess_cfg["type"], **{k: v for k, v in sess_cfg.items() if k != "type"})
+        sess = registry.create(
+            "sessionizer", sess_cfg["type"], **{k: v for k, v in sess_cfg.items() if k != "type"}
+        )
         sessions = sess.sessionize(rows)
     except Exception as exc:
         raise requiresenvironment(
@@ -192,7 +203,9 @@ def ingest(configpath: str) -> dict[str, Any]:
 
     split_cfg = cfg.get("splitter", {}) or {}
     try:
-        split = registry.create("splitter", split_cfg["type"], **{k: v for k, v in split_cfg.items() if k != "type"})
+        split = registry.create(
+            "splitter", split_cfg["type"], **{k: v for k, v in split_cfg.items() if k != "type"}
+        )
         train, val, test = split.split(rows)
     except Exception as exc:
         raise requiresenvironment(
@@ -204,7 +217,9 @@ def ingest(configpath: str) -> dict[str, Any]:
 
     sink_cfg = cfg.get("datasink", {}) or {}
     try:
-        sink = registry.create("datasink", sink_cfg["type"], **{k: v for k, v in sink_cfg.items() if k != "type"})
+        sink = registry.create(
+            "datasink", sink_cfg["type"], **{k: v for k, v in sink_cfg.items() if k != "type"}
+        )
         sinkpath = Path(sink_cfg.get("path", "data/processed/movielens"))
         sinkpath.parent.mkdir(parents=True, exist_ok=True)
         for sub, items in [("train", train), ("val", val), ("test", test)]:

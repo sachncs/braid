@@ -31,7 +31,11 @@ class calibrationloss:
         for i in range(self.nbins):
             mask = (confidences > bins[i]) & (confidences <= bins[i + 1])
             if mask.any():
-                ece = ece + (accuracies[mask].mean() - confidences[mask].mean()).abs() * mask.float().mean()
+                ece = (
+                    ece
+                    + (accuracies[mask].mean() - confidences[mask].mean()).abs()
+                    * mask.float().mean()
+                )
         return weight * ece
 
     def observability(self) -> dict[str, Any]:

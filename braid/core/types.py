@@ -1,4 +1,5 @@
 """Shared type aliases and ``TypeVar``s used across braid."""
+
 from __future__ import annotations
 
 from typing import TypeVar

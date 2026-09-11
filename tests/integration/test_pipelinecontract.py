@@ -35,7 +35,9 @@ def test_resppost_rerank_uses_scorer() -> None:
     from braid.resppost.rerank import rerank
 
     r = rerank()
-    out = r.process({"ids": [1, 2, 3], "scores": [1.0, 2.0, 3.0]}, scorer=lambda i: 100 if i == 7 else 0)
+    out = r.process(
+        {"ids": [1, 2, 3], "scores": [1.0, 2.0, 3.0]}, scorer=lambda i: 100 if i == 7 else 0
+    )
     assert "ids" in out
     assert out["ids"] == [1, 2, 3]  # 7 not in ids, so unchanged
 

@@ -7,7 +7,9 @@ from typing import Any
 import numpy as np
 
 
-def scoresfromcatalog(userrepr: np.ndarray, catalogstore: Any, ids: np.ndarray | None = None) -> np.ndarray:
+def scoresfromcatalog(
+    userrepr: np.ndarray, catalogstore: Any, ids: np.ndarray | None = None
+) -> np.ndarray:
     """Compute scores for ``userrepr`` against the catalog store.
 
     Args:

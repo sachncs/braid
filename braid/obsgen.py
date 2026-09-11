@@ -4,6 +4,7 @@ Walks the registry, asks each concrete for its ``observability()``, and emits:
 - ``grafana/dashboards/braid.json`` — a unified dashboard.
 - ``prometheus/alerts.yml`` — recommended alerts per metric.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -20,11 +21,7 @@ def collect() -> list[dict]:
         A list of ``{category, name, capabilities, metrics, traces, logs}``.
     """
     out: list[dict] = []
-    for category, name in [
-        (c, n)
-        for c in registry.categories()
-        for n in registry.available(c)
-    ]:
+    for category, name in [(c, n) for c in registry.categories() for n in registry.available(c)]:
         try:
             obj = registry.create(category, name)
             obs = obj.observability() if hasattr(obj, "observability") else {}
@@ -75,7 +72,9 @@ def renderalerts(entries: list[dict]) -> str:
             if not name:
                 continue
             lines.append(f"      - alert: braid_{name.replace('.', '_')}_p95_high")
-            lines.append(f"        expr: histogram_quantile(0.95, sum(rate({name}[5m])) by (le)) > 200")
+            lines.append(
+                f"        expr: histogram_quantile(0.95, sum(rate({name}[5m])) by (le)) > 200"
+            )
             lines.append("        for: 5m")
             lines.append("        labels:")
             lines.append("          severity: warning")
