@@ -1,0 +1,25 @@
+name: Question
+description: Ask how to use or extend braid
+title: "[question] "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      placeholder: How do I…?
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried so far?
+      placeholder: |
+        - `grep`-ed the source
+        - read `docs/<file>.md`
+        - opened an issue
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      placeholder: links, snippets, expected vs actual output
