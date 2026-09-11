@@ -29,7 +29,7 @@ class wsd:
 
             raise ioerror("pytorch required") from exc
 
-        baselr = optimizer.defaults["lr"]
+        optimizer.defaults["lr"]
         decsteps = int(self.decayfrac * self.totalsteps)
         decaystart = self.totalsteps - decsteps
 

@@ -7,10 +7,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import torch
 import torch.nn.functional as F
 
-from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -23,12 +21,7 @@ class diversityentropy:
     capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
     def __init__(self) -> None:
-        try:
-            import torch
-        except ImportError as exc:
-            raise requiresenvironment(
-                "torch is required for loss:diversityentropy", hint="pip install torch"
-            ) from exc
+        """No parameters."""
 
     def compute(self, scores: Any, weight: float = 1.0) -> Any:
         """Return negative entropy of softmax(scores).

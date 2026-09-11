@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 import torch
-import torch.nn as nn
+import torch.nn as nn  # noqa: F401 — used in body via nn alias
 
 from braid.core.error import requiresenvironment
 from braid.core.registry import registry
@@ -23,15 +23,14 @@ class encoder:
     capabilities: frozenset[str] = frozenset({"observable"})
 
     def __init__(self, inputdim: int = 64, hiddendim: int = 128) -> None:
+        if inputdim <= 0 or hiddendim <= 0:
+            raise ValueError("dims must be > 0")
         try:
-            import torch
-            import torch.nn as nn
+            import torch.nn as nn  # noqa: F401 — imported for side effect of raising
         except ImportError as exc:
             raise requiresenvironment(
                 "torch required for quantizer:encoder", hint="pip install torch"
             ) from exc
-        if inputdim <= 0 or hiddendim <= 0:
-            raise ValueError("dims must be > 0")
         self.inputdim = inputdim
         self.hiddendim = hiddendim
         self.net = nn.Sequential(nn.Linear(inputdim, hiddendim), nn.ReLU())

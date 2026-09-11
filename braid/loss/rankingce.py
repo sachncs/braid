@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import torch.nn.functional as F
+
 from braid.core.registry import registry
 
 
@@ -33,13 +35,6 @@ class rankingce:
         Returns:
             Scalar loss value (tensor).
         """
-        try:
-            import torch
-            import torch.nn.functional as F
-        except ImportError as exc:
-            from braid.core.error import ioerror
-
-            raise ioerror("pytorch required for rankingce") from exc
         loss = F.cross_entropy(scores, labels, label_smoothing=self.labelSmoothing)
         return weight * loss
 

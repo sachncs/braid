@@ -1,4 +1,4 @@
-"""End-to-end ingest pipeline composed of registered concretes.
+r"""End-to-end ingest pipeline composed of registered concretes.
 
 For the offline sandbox, the stage that requires network — downloading the
 MovieLens-25M ``ml-25m.zip`` archive from ``files.grouplens.org`` — is wrapped in

@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import torch
 
 from braid.core.error import requiresenvironment, requiresresource
 from braid.core.registry import registry

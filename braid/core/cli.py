@@ -177,14 +177,14 @@ def _runpipeline(args: argparse.Namespace, phase: str) -> int:
 
     runners = {
         "data": run_data,
-        "phase1": lambda c, l: run_phase(c, "pretrain", l),
-        "rewards": lambda c, l: run_phase(c, "reward", l),
+        "phase1": lambda c, log: run_phase(c, "pretrain", log),
+        "rewards": lambda c, log: run_phase(c, "reward", log),
         "train": run_postrain,
         "eval": run_eval,
         "drift": run_drift,
         "elbow": run_elbow,
         "serve": run_serve,
-        "obsgen": lambda c, l: run_obsgen(argparse.Namespace(out="artifacts/obsgen")),
+        "obsgen": lambda c, log: run_obsgen(argparse.Namespace(out="artifacts/obsgen")),
     }
     runner = runners.get(phase)
     if runner is None:
@@ -276,7 +276,6 @@ def run_elbow(cfg: dict, log: Any) -> None:
 
     log.info("elbow.run")
     try:
-        import numpy as np
 
         events = [
             {"duration": float(i % 100 + 1), "kind": ["play", "thumbup", "click"][i % 3]}

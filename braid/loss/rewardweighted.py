@@ -7,10 +7,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import torch
 import torch.nn.functional as F
 
-from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -23,12 +21,6 @@ class rewardweighted:
     capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
     def __init__(self, normalize: bool = True) -> None:
-        try:
-            import torch
-        except ImportError as exc:
-            raise requiresenvironment(
-                "torch is required for loss:rewardweighted", hint="pip install torch"
-            ) from exc
         self.normalize = normalize
 
     def compute(self, scores: Any, labels: Any, rewards: Any, weight: float = 1.0) -> Any:

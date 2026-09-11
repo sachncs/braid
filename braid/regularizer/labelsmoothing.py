@@ -23,7 +23,6 @@ class labelsmoothing:
     def smooth(self, labels: Any, numclasses: int) -> Any:
         """Smooth integer labels to a soft target distribution."""
         try:
-            import torch
             import torch.nn.functional as F
         except ImportError:
             return labels

@@ -7,7 +7,6 @@ from typing import Any
 import torch
 import torch.nn.functional as F
 
-from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -20,12 +19,6 @@ class calibrationloss:
     capabilities: frozenset[str] = frozenset({"observable", "idempotent"})
 
     def __init__(self, nbins: int = 10) -> None:
-        try:
-            import torch
-        except ImportError as exc:
-            raise requiresenvironment(
-                "torch is required for loss:calibrationloss", hint="pip install torch"
-            ) from exc
         self.nbins = nbins
 
     def compute(self, scores: Any, labels: Any, weight: float = 1.0) -> Any:

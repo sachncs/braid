@@ -4,10 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from braid.core.registry import registry
 from braid.splitter.chronological import chronologicalsplitter
-from braid.splitter.leaveoneout import leaveoneoutsplitter
-from braid.splitter.timestratified import timestratifiedsplitter
 
 
 class datamodule:

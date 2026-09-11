@@ -16,7 +16,6 @@ def extractpooled(hiddenstates: Any, attentionmask: Any | None = None) -> Any:
         ``[batch, dim]`` pooled tensor.
     """
     try:
-        import torch
 
         if attentionmask is None:
             return hiddenstates[:, -1, :]

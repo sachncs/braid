@@ -4,7 +4,6 @@ These run real components wired through their registry entries. They
 use minimal CPU/MPS inputs so a developer can run them on a laptop.
 """
 
-from pathlib import Path
 
 import pytest
 

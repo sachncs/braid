@@ -96,5 +96,5 @@ def _gini(counts: np.ndarray) -> float:
     s = float(cum[-1])
     if s == 0.0:
         return 0.0
-    l = (np.arange(1, n + 1) * counts).sum()
-    return float(2.0 * l / (n * s) - (n + 1) / n)
+    weighted = (np.arange(1, n + 1) * counts).sum()
+    return float(2.0 * weighted / (n * s) - (n + 1) / n)

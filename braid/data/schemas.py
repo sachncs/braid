@@ -6,7 +6,7 @@ If pandera is not installed, the schema helpers degrade gracefully.
 from __future__ import annotations
 
 try:
-    import pandera as pa
+    import pandera as pa  # noqa: F401
     from pandera import Check, Column, DataFrameSchema, Index
 
     EVENT_SCHEMA = DataFrameSchema(

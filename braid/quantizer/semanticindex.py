@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
 
 from braid.core.registry import registry
 from braid.quantizer.quantizer import quantizer as quantizerconcrete

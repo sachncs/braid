@@ -39,14 +39,6 @@ class checkpoint:
         Returns:
             ``[batch, k]`` int64 tensor of hard-negative ids per row.
         """
-        try:
-            import torch
-
-            scores = scoresfn()
-            topk = scores.topk(self.k, dim=-1).indices
-            return topk
-        except ImportError:
-            raise
 
     def observability(self) -> dict[str, Any]:
         return {}
