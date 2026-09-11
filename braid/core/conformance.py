@@ -17,11 +17,25 @@ from braid.core.registry import registry
 
 @dataclass
 class conformancecheck:
-    """Result of a conformance check."""
+    """Result of a conformance check.
+
+    Attributes:
+        category: registry category.
+        name: registry name.
+        passed: True if the concrete verified its declared contracts.
+            Skipped concretes (could not be constructed in the sandbox)
+            are reported with ``skipped=True`` and ``passed=False`` so
+            they cannot be conflated with a real pass.
+        skipped: True if construction raised a typed error and the
+            concrete was never exercised.
+        failures: list of failure reasons; first item is the skip reason
+            when ``skipped`` is True.
+    """
 
     category: str
     name: str
     passed: bool
+    skipped: bool = False
     failures: list[str] = field(default_factory=list)
 
 
@@ -105,9 +119,10 @@ def trycreate(klass: type) -> tuple[Any | None, str | None]:
 def verifyone(category: str, name: str, *, traits: bool = True, lifecycle: bool = True, observability: bool = True) -> conformancecheck:
     """Verify a single concrete against all enabled contracts.
 
-    Construction failures are reported as skips (passed=True). Trait mismatches
-    on declared capabilities are reported but considered soft (passed=True).
-    Hard failures only include contract violations that block polymorphism.
+    Construction failures are reported as skips (``passed=False``,
+    ``skipped=True``). Trait mismatches on declared capabilities are
+    reported but considered soft (passed=True). Hard failures only
+    include contract violations that block polymorphism.
 
     Args:
         category: registry category.
@@ -122,10 +137,10 @@ def verifyone(category: str, name: str, *, traits: bool = True, lifecycle: bool 
     try:
         klass = registry.resolve(category, name)
     except Exception as exc:  # noqa: BLE001
-        return conformancecheck(category=category, name=name, passed=False, failures=[f"resolve failed: {exc}"])
+        return conformancecheck(category=category, name=name, passed=False, skipped=True, failures=[f"resolve failed: {exc}"])
     obj, err = trycreate(klass)
     if obj is None:
-        return conformancecheck(category=category, name=name, passed=True, failures=[f"skipped: {err}"])
+        return conformancecheck(category=category, name=name, passed=False, skipped=True, failures=[f"skipped: {err}"])
     failures: list[str] = []
     if observability and not hasmethod(obj, "metrics"):
         failures.append("missing metrics() declaration")

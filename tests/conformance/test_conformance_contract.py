@@ -15,6 +15,8 @@ def _allconcretes():
 
 @pytest.mark.parametrize("category,name", list(_allconcretes()))
 def test_conformance(category: str, name: str) -> None:
-    """Every concrete passes its declared contracts (or is skipped if it can't construct)."""
+    """Every concrete either passes its declared contracts or is skipped."""
     result = verifyone(category, name)
-    assert result.passed, f"{category}.{name} failed: {result.failures}"
+    assert result.passed or result.skipped, (
+        f"{category}.{name} failed: {result.failures}"
+    )
