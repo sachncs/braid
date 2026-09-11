@@ -9,6 +9,7 @@ from typing import Any
 
 import numpy as np
 
+from braid.core.error import requiresenvironment
 from braid.core.registry import registry
 
 
@@ -16,8 +17,8 @@ from braid.core.registry import registry
 class faissivfstore:
     """FAISS-IVF catalog store.
 
-    Falls back to a deterministic np-based implementation when faiss is
-    unavailable.
+    Requires ``faiss`` to be installed; raises :class:`requiresenvironment`
+    otherwise rather than silently degrading to brute-force scoring.
     """
 
     name: str = "faissivfstore"
@@ -31,19 +32,24 @@ class faissivfstore:
             embeddings: ``[numitems, dim]`` array.
             nlist: number of Voronoi cells.
             nprobe: cells probed at query time.
+
+        Raises:
+            requiresenvironment: if faiss is not installed.
         """
         self.embeddings = np.asarray(embeddings, dtype=np.float32)
         self.nlist = max(1, min(nlist, self.embeddings.shape[0]))
         self.nprobe = min(nprobe, self.nlist)
         self.numitems = self.embeddings.shape[0]
         self.dim = self.embeddings.shape[1]
-        self.faiss: Any | None = None
         try:
-            import faiss  # noqa: F401 — imported lazily
+            import faiss
 
             self.faiss = faiss
-        except Exception:  # noqa: BLE001
-            self.faiss = None
+        except ImportError as exc:
+            raise requiresenvironment(
+                "faiss required for catalogstore:faissivfstore",
+                hint="pip install faiss-cpu",
+            ) from exc
         self.index: Any | None = None
         self.build()
 
