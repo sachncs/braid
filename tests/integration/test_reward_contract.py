@@ -2,6 +2,8 @@
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_compositereward_runs() -> None:
     """Composite reward returns a scalar in [0, 1]."""

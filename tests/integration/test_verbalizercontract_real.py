@@ -2,6 +2,8 @@
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_elbowfinder_finds_kink() -> None:
     """For a left-peaked histogram (elbow at K=3), the elbow finder should pick K<=5."""

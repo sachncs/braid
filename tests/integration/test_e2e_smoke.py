@@ -9,6 +9,9 @@ from pathlib import Path
 import pytest
 
 
+pytestmark = pytest.mark.e2e
+
+
 def test_e2e_data_ingest_via_registry(tmp_path) -> None:
     """Drive the data-ingest pipeline through the registry."""
     from braid.core.registry import registry

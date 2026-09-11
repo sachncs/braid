@@ -3,6 +3,8 @@
 import numpy as np
 import pytest
 
+pytestmark = pytest.mark.integration
+
 
 def test_sessionizer_gap_splits_correctly() -> None:
     """A gap > threshold creates a new session."""
