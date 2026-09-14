@@ -1,0 +1,151 @@
+---
+const dryrunJson = `{
+  "wouldinstantiate": [
+    { "category": "backbone",     "name": "minicpm5" },
+    { "category": "catalogstore", "name": "matmulinmem" },
+    { "category": "verbalizer",   "name": "eventsignal" },
+    { "category": "loss",         "name": "braidedloss" },
+    { "category": "rewards",      "name": "composite" },
+    { "category": "curriculum",   "name": "cosine" },
+    { "category": "miner",        "name": "checkpoint" },
+    { "category": "server",       "name": "vllm" }
+  ],
+  "maxsteps": 8000,
+  "resolves": true
+}`;
+
+const inspectTxt = `name            matmulinmem
+category        catalogstore
+version         1.0.0
+module          braid.catalogstore.matmulinmem
+capabilities    distributable, observable
+
+methods:
+  build
+  metrics
+  numshards
+  observability
+  score
+  shardrank
+  warmup`;
+---
+
+<section
+  id="code"
+  class="relative scroll-mt-24 border-y border-[var(--line-soft)] bg-[var(--bg-elev)] py-28 md:py-36"
+>
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="eyebrow">How it feels</span>
+      <h2
+        class="display mt-5 text-[clamp(2rem,5vw,3.6rem)] tracking-[-0.035em]"
+      >
+        <span class="block">One CLI.</span>
+        <span class="block">The registry, surfaced.</span>
+      </h2>
+      <p class="mx-auto mt-6 max-w-2xl text-[1.05rem] leading-[1.55] text-[var(--fg-muted)]">
+        Every subcommand resolves a concrete. Inspect any component. Dryrun a config
+        without executing. Generate observability assets with one command.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-2">
+      <article class="card overflow-hidden">
+        <header
+          class="flex items-center justify-between border-b border-[var(--line-soft)] px-5 py-3"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="font-mono text-[11.5px] uppercase tracking-[0.14em] text-[var(--fg-muted)]"
+              >config → plan</span
+            >
+          </div>
+          <span
+            class="rounded-full px-2 py-0.5 font-mono text-[10.5px] uppercase tracking-[0.14em] ring-soft"
+            style="color:var(--accent);"
+          >
+            dryrun
+          </span>
+        </header>
+        <pre
+          class="overflow-x-auto bg-[var(--bg-elev)] p-5 font-mono text-[12.5px] leading-[1.7]"
+        ><code><span style="color:var(--fg-muted);">$</span> python -m braid dryrun \\
+        --config configs/train/phase2.yaml
+
+<span style="color:var(--fg-soft);">{</span>
+  <span style="color:var(--accent);">"wouldinstantiate"</span><span style="color:var(--fg-soft);">: [</span>
+    <span style="color:var(--fg-muted);">{</span> <span style="color:var(--accent);">"category"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">"backbone"</span><span style="color:var(--fg-muted);">,</span>     <span style="color:var(--accent);">"name"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">"minicpm5"</span> <span style="color:var(--fg-muted);">},</span>
+    <span style="color:var(--fg-muted);">{</span> <span style="color:var(--accent);">"category"</span><span style="color:var(--fg-soft);">:</span> <span style="color:var(--accent);">"catalogstore"</span><span style="color:var(--fg-muted);">,</span> <span style="color:var(--accent);">"name"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">"matmulinmem"</span> <span style="color:var(--fg-muted);">},</span>
+    <span style="color:var(--fg-muted);">{</span> <span style="color:var(--accent);">"category"</span><span style="color:var(--fg-soft);">:</span> <span style="color:var(--accent);">"loss"</span><span style="color:var(--fg-muted);">,</span>         <span style="color:var(--accent);">"name"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">"braidedloss"</span> <span style="color:var(--fg-muted);">},</span>
+    <span style="color:var(--fg-muted);">{</span> <span style="color:var(--accent);">"category"</span><span style="color:var(--fg-soft);">:</span> <span style="color:var(--accent);">"rewards"</span><span style="color:var(--fg-muted);">,</span>      <span style="color:var(--accent);">"name"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">"composite"</span> <span style="color:var(--fg-muted);">}</span>
+  <span style="color:var(--fg-soft);">],</span>
+  <span style="color:var(--accent);">"maxsteps"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">8000</span><span style="color:var(--fg-muted);">,</span>
+  <span style="color:var(--accent);">"resolves"</span><span style="color:var(--fg-soft);">:</span> <span style="color:#4586C4;">true</span>
+<span style="color:var(--fg-soft);">}</span></code></pre>
+      </article>
+
+      <article class="card overflow-hidden">
+        <header
+          class="flex items-center justify-between border-b border-[var(--line-soft)] px-5 py-3"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="font-mono text-[11.5px] uppercase tracking-[0.14em] text-[var(--fg-muted)]"
+              >concrete → capabilities</span
+            >
+          </div>
+          <span
+            class="rounded-full px-2 py-0.5 font-mono text-[10.5px] uppercase tracking-[0.14em] ring-soft"
+            style="color:var(--accent);"
+          >
+            inspect
+          </span>
+        </header>
+        <pre
+          class="overflow-x-auto bg-[var(--bg-elev)] p-5 font-mono text-[12.5px] leading-[1.7]"
+        ><code><span style="color:var(--fg-muted);">$</span> python -m braid inspect \\
+        catalogstore matmulinmem
+
+<span style="color:var(--fg-muted);">name            </span><span style="color:var(--fg-soft);">matmulinmem</span>
+<span style="color:var(--fg-muted);">category        </span><span style="color:var(--fg-soft);">catalogstore</span>
+<span style="color:var(--fg-muted);">version         </span><span style="color:var(--fg-soft);">1.0.0</span>
+<span style="color:var(--fg-muted);">module          </span><span style="color:var(--fg-soft);">braid.catalogstore.matmulinmem</span>
+<span style="color:var(--fg-muted);">capabilities    </span><span style="color:var(--accent);">distributable, observable</span>
+
+<span style="color:var(--fg-muted);">methods:</span>
+  build
+  metrics
+  numshards
+  observability
+  score
+  shardrank
+  warmup</code></pre>
+      </article>
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-2.5">
+      {
+        [
+          "list",
+          "inspect",
+          "dryrun",
+          "conformance",
+          "data",
+          "phase1",
+          "rewards",
+          "train",
+          "serve",
+          "eval",
+          "drift",
+          "elbow",
+          "obsgen",
+        ].map((c) => (
+          <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[12px] ring-soft">
+            <span class="text-[var(--accent)]">$</span>
+            <span class="text-[var(--fg-soft)]">braid {c}</span>
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>

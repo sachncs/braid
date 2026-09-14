@@ -65,5 +65,13 @@ logs/
 runs/
 wandb/
 mlruns/
-```
+
+# site (Astro)
+site/dist/
+site/node_modules/
+site/.astro/
+site/.env
+site/.env.*
+*.log
+
 

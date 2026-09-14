@@ -1,0 +1,128 @@
+---
+const layers = [
+  {
+    n: "1",
+    name: "Registry",
+    detail: "create(category, name, **cfg)",
+  },
+  {
+    n: "2",
+    name: "Traits",
+    detail: "streamable · cachable · persistable · observable · idempotent · distributable · teachable · asyncable",
+  },
+  {
+    n: "3",
+    name: "Lifecycle",
+    detail: "setup · warmup · shutdown · health",
+  },
+  {
+    n: "4",
+    name: "Capabilities",
+    detail: "gpu · async · fusedkernel · int4quantize · distributable · teachable",
+  },
+  {
+    n: "5",
+    name: "Versioning",
+    detail: "configmigrator walks configs between versions",
+  },
+  {
+    n: "6",
+    name: "Schema",
+    detail: "item · event · context · prompt · rankrequest/response (versioned)",
+  },
+  {
+    n: "7",
+    name: "Observability",
+    detail: "obsgen → Prometheus rules + Grafana JSON + metric catalogue",
+  },
+  {
+    n: "8",
+    name: "Context",
+    detail: "requestcontext flows through every layer",
+  },
+];
+---
+
+<section
+  id="architecture"
+  class="relative scroll-mt-24 border-y border-[var(--line-soft)] py-28 md:py-36"
+>
+  <div class="container-page">
+    <div class="grid items-end gap-10 md:grid-cols-[1.05fr_1fr] md:gap-16">
+      <div>
+        <span class="eyebrow">The polymorphic spine</span>
+        <h2
+          class="display mt-5 text-[clamp(2rem,5vw,3.6rem)] tracking-[-0.035em]"
+        >
+          <span class="block">Eight layers,</span>
+          <span class="block">one dispatch.</span>
+        </h2>
+        <p
+          class="mt-6 max-w-xl text-[1.05rem] leading-[1.55] text-[var(--fg-muted)]"
+        >
+          Every concrete in braid opts in to the same eight layers.
+          Capabilities, traits, observability, and a fail-fast error model
+          compose into a single uniform surface — the spine.
+        </p>
+
+        <div class="mt-8 grid grid-cols-2 gap-2.5 text-[13px] sm:grid-cols-3">
+          {
+            [
+              "No silent fallbacks",
+              "Typed errors",
+              "Manifest-registered",
+              "Pydantic config",
+              "Polymorphic dispatch",
+              "Entry-point extensible",
+            ].map((t) => (
+              <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 ring-soft">
+                <svg
+                  class="h-3 w-3 text-[var(--accent)]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                <span class="text-[var(--fg-soft)]">{t}</span>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <ol class="relative space-y-2.5">
+        <span
+          aria-hidden="true"
+          class="absolute left-[18px] top-3 bottom-3 w-px bg-gradient-to-b from-transparent via-[var(--line)] to-transparent"
+        ></span>
+        {
+          layers.map((l) => (
+            <li class="group relative flex items-start gap-4 rounded-xl p-3 transition-colors hover:bg-[color-mix(in_oklab,var(--fg)_3%,transparent)]">
+              <span class="relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full text-[12px] font-semibold tabular-nums ring-firm bg-[var(--bg-elev)] text-[var(--fg-soft)]">
+                {l.n}
+              </span>
+              <div class="min-w-0">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-[15px] font-semibold tracking-tight text-[var(--fg)]">
+                    {l.name}
+                  </span>
+                  <span class="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--accent)]">
+                    layer
+                  </span>
+                </div>
+                <p class="mt-0.5 text-[13.5px] leading-[1.55] text-[var(--fg-muted)]">
+                  {l.detail}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

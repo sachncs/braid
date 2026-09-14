@@ -1,0 +1,51 @@
+---
+import { RegistryExplorer } from "./RegistryExplorer.tsx";
+---
+
+<section
+  id="registry"
+  class="relative scroll-mt-24 py-28 md:py-36"
+>
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="eyebrow">Inside the registry</span>
+      <h2
+        class="display mt-5 text-[clamp(2rem,5vw,3.6rem)] tracking-[-0.035em]"
+      >
+        <span class="block">Six categories.</span>
+        <span class="block">One dispatch API.</span>
+      </h2>
+      <p class="mx-auto mt-6 max-w-2xl text-[1.05rem] leading-[1.55] text-[var(--fg-muted)]">
+        Every concrete is real. Every capability is declared. Inspect, swap, and
+        compose them at runtime — or extend the registry from your own entry points.
+      </p>
+    </div>
+
+    <div class="mt-14">
+      <RegistryExplorer client:visible />
+    </div>
+
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="https://github.com/sachncs/braid#polymorphic-spine"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-ghost"
+      >
+        Read the spine docs
+        <svg
+          class="h-3.5 w-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

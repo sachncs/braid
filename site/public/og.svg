@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0b09"/>
+      <stop offset="100%" stop-color="#161613"/>
+    </linearGradient>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4586C4"/>
+      <stop offset="100%" stop-color="#2B5E94"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#4586C4" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#4586C4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g transform="translate(96,96)">
+    <rect width="84" height="84" rx="20" fill="url(#lg)"/>
+    <path d="M28 22 C 38 28, 50 28, 60 22 M28 42 C 38 48, 50 48, 60 42 M28 62 C 38 68, 50 68, 60 62" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+  </g>
+  <text x="96" y="320" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="96" font-weight="600" fill="#FAFAF7" letter-spacing="-3.5">braid</text>
+  <text x="96" y="380" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="32" font-weight="400" fill="#9E9E96" letter-spacing="-0.5">Braiding signals into ranks.</text>
+  <g transform="translate(96,500)">
+    <text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" fill="#6EA3DA">
+      <tspan>$</tspan>
+      <tspan dx="10" fill="#FAFAF7">python -m braid list</tspan>
+      <tspan dx="14" fill="#9E9E96">·</tspan>
+      <tspan dx="14" fill="#FAFAF7">dryrun</tspan>
+      <tspan dx="14" fill="#9E9E96">·</tspan>
+      <tspan dx="14" fill="#FAFAF7">conformance</tspan>
+    </text>
+  </g>
+  <text x="1104" y="582" text-anchor="end" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18" fill="#6c6c66">github.com/sachncs/braid</text>
+</svg>

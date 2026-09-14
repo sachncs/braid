@@ -1,0 +1,140 @@
+---
+const categories = [
+  "auth",
+  "backbone",
+  "bandit",
+  "batcher",
+  "cache",
+  "catalogstore",
+  "cflog",
+  "checkpoint",
+  "curriculum",
+  "datasink",
+  "datasource",
+  "drift",
+  "driftresponse",
+  "embedding",
+  "eval",
+  "indexer",
+  "log",
+  "loss",
+  "metadata",
+  "metrics",
+  "migrator",
+  "miner",
+  "optimizer",
+  "phase",
+  "quantizer",
+  "rankaggregator",
+  "ratelimit",
+  "regularizer",
+  "reqpre",
+  "resppost",
+  "reward",
+  "router",
+  "scheduler",
+  "secret",
+  "server",
+  "sessionizer",
+  "splitter",
+  "template",
+  "tokencounter",
+  "tokenizer",
+  "tracing",
+  "tracker",
+  "truncation",
+  "verbalizer",
+];
+
+const counts: Record<string, number> = {
+  auth: 3,
+  backbone: 4,
+  bandit: 3,
+  batcher: 4,
+  catalogstore: 4,
+  cflog: 1,
+  checkpoint: 4,
+  curriculum: 5,
+  datasink: 2,
+  datasource: 1,
+  drift: 4,
+  driftresponse: 3,
+  embedding: 3,
+  eval: 7,
+  indexer: 4,
+  log: 2,
+  loss: 6,
+  metadata: 3,
+  miner: 5,
+  optimizer: 4,
+  phase: 5,
+  quantizer: 5,
+  rankaggregator: 3,
+  ratelimit: 3,
+  regularizer: 4,
+  reqpre: 3,
+  resppost: 3,
+  reward: 5,
+  router: 4,
+  scheduler: 4,
+  server: 2,
+  sessionizer: 3,
+  splitter: 3,
+  template: 3,
+  tokencounter: 3,
+  tokenizer: 3,
+  tracker: 4,
+  truncation: 5,
+  verbalizer: 5,
+};
+---
+
+<section
+  class="relative border-b border-[var(--line-soft)] py-10"
+  aria-label="Registry categories"
+>
+  <div class="container-page mb-6 flex items-center justify-between">
+    <span class="eyebrow">One registry · 44 categories</span>
+    <a
+      href="#registry"
+      class="hidden text-[12.5px] font-medium text-[var(--fg-muted)] underline-offset-4 transition-colors hover:text-[var(--fg)] hover:underline sm:inline-flex"
+    >
+      Explore the spine →
+    </a>
+  </div>
+
+  <div class="marquee">
+    <div class="marquee-track pr-4">
+      {
+        categories.map((c) => (
+          <span
+            class="inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-[13.5px] font-medium ring-soft"
+            style="background:var(--bg-elev);color:var(--fg-soft);"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+            <span>{c}</span>
+            <span class="text-[var(--fg-muted)]">
+              {counts[c] ?? "·"}
+            </span>
+          </span>
+        ))
+      }
+    </div>
+    <div class="marquee-track pr-4" aria-hidden="true">
+      {
+        categories.map((c) => (
+          <span
+            class="inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-[13.5px] font-medium ring-soft"
+            style="background:var(--bg-elev);color:var(--fg-soft);"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+            <span>{c}</span>
+            <span class="text-[var(--fg-muted)]">
+              {counts[c] ?? "·"}
+            </span>
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>

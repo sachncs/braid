@@ -1,0 +1,59 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "braid — Braiding signals into ranks",
+  description = "A polymorphic, LLM-backed recommendation ranker. Every backbone, store, reward, and loss is a registered concrete — swappable from one config, runnable from one CLI.",
+} = Astro.props;
+
+const ogImage = "/braid/og.svg";
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0b0b09" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" type="image/svg+xml" href="/braid/favicon.svg" />
+    <link rel="apple-touch-icon" href="/braid/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://sachncs.github.io/braid" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>
+      // Apply theme before paint to avoid FOUC
+      (function () {
+        try {
+          var stored = localStorage.getItem("braid-theme");
+          var prefers = matchMedia("(prefers-color-scheme: dark)").matches;
+          if (stored === "dark" || (!stored && prefers)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+  <body class="antialiased">
+    <slot />
+  </body>
+</html>

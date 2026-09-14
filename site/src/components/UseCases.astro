@@ -1,0 +1,102 @@
+---
+const cases = [
+  {
+    title: "For research labs",
+    body:
+      "Drop in a new backbone, reward, or loss without forking the training loop. The conformance harness reports pass / fail-fast across all 147 concretes.",
+    bullets: ["Pydantic-typed configs", "Hydra & OmegaConf wired", "Polymorphic registry"],
+    icon: "lab",
+  },
+  {
+    title: "For production rankers",
+    body:
+      "A FastAPI app with `/rank`, `/metrics`, `/health`, `/ready`. Lifecycle hooks, typed errors, prefix KV-cache, drift-aware routers.",
+    bullets: ["Prometheus + Grafana", "Typed error model", "Sticky-bucket & shadow A/B"],
+    icon: "prod",
+  },
+  {
+    title: "For multi-reward teams",
+    body:
+      "Composite rewards and braided losses let product, growth, and policy teams share one ranker without rule soup. Inspect every weight at runtime.",
+    bullets: ["Real long-term return", "Diversity & novelty", "Weighted scalar composites"],
+    icon: "multi",
+  },
+];
+---
+
+<section
+  id="use-cases"
+  class="relative scroll-mt-24 py-28 md:py-36"
+>
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="eyebrow">Who it's for</span>
+      <h2
+        class="display mt-5 text-[clamp(2rem,5vw,3.6rem)] tracking-[-0.035em]"
+      >
+        <span class="block">Built for teams who ship</span>
+        <span class="block">recommendations for real.</span>
+      </h2>
+    </div>
+
+    <div class="mt-14 grid gap-4 md:grid-cols-3">
+      {
+        cases.map((c) => (
+          <article class="card flex flex-col gap-5 p-7">
+            <span class="inline-grid h-10 w-10 place-items-center rounded-xl ring-soft">
+              {c.icon === "lab" && (
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 2v6L4.5 17a2 2 0 0 0 1.74 3h11.52a2 2 0 0 0 1.74-3L14 8V2"></path>
+                  <path d="M8 2h8"></path>
+                </svg>
+              )}
+              {c.icon === "prod" && (
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+                  <path d="M3 10h18"></path>
+                  <path d="M9 14h6"></path>
+                  <path d="M8 18v3M16 18v3"></path>
+                </svg>
+              )}
+              {c.icon === "multi" && (
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="9" cy="7" r="3"></circle>
+                  <circle cx="17" cy="9" r="2.5"></circle>
+                  <path d="M3 20c0-3 2.7-5 6-5s6 2 6 5"></path>
+                  <path d="M14 20c0-2 1.3-4 3.5-4s3.5 2 3.5 4"></path>
+                </svg>
+              )}
+            </span>
+
+            <h3 class="text-[1.25rem] font-semibold tracking-tight">
+              {c.title}
+            </h3>
+            <p class="text-[14px] leading-[1.6] text-[var(--fg-muted)]">
+              {c.body}
+            </p>
+
+            <ul class="mt-auto space-y-2 border-t border-[var(--line-soft)] pt-4 text-[12.5px]">
+              {c.bullets.map((b) => (
+                <li class="flex items-center gap-2 text-[var(--fg-soft)]">
+                  <svg
+                    class="h-3 w-3 text-[var(--accent)]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

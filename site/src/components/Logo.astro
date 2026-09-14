@@ -1,0 +1,58 @@
+---
+interface Props {
+  size?: number;
+  showWordmark?: boolean;
+  className?: string;
+}
+const { size = 28, showWordmark = true, className = "" } = Astro.props;
+const { logo } = Astro.props as Props & { logo?: undefined };
+---
+
+<a
+  href="#top"
+  class:list={[
+    "group inline-flex items-center gap-2.5 rounded-lg transition-opacity hover:opacity-90",
+    className,
+  ]}
+  aria-label="braid — back to top"
+>
+  <span
+    class="relative inline-grid place-items-center"
+    style={`width:${size}px;height:${size}px;`}
+  >
+    <span
+      class="absolute inset-0 rounded-[28%] bg-[var(--accent)] opacity-25 blur-md transition-opacity group-hover:opacity-60"
+      aria-hidden="true"
+    ></span>
+    <svg
+      viewBox="0 0 64 64"
+      width={size}
+      height={size}
+      fill="none"
+      aria-hidden="true"
+      class="relative"
+    >
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#4586C4"></stop>
+          <stop offset="100%" stop-color="#2B5E94"></stop>
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="14" fill="url(#lg)"></rect>
+      <path
+        d="M22 18 C 28 22, 36 22, 42 18 M22 32 C 28 36, 36 36, 42 32 M22 46 C 28 50, 36 50, 42 46"
+        stroke="#FFFFFF"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        fill="none"></path>
+    </svg>
+  </span>
+  {showWordmark && (
+    <span
+      class="text-[1.05rem] font-semibold tracking-tight"
+      style="letter-spacing:-0.025em;"
+    >
+      braid
+    </span>
+  )}
+</a>
